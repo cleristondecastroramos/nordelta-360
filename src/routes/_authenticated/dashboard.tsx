@@ -40,7 +40,7 @@ function DashboardPage() {
       const { data: colabs, error } = await supabase
         .from("colaboradores")
         .select(
-          "matricula, departamento, " + COMPETENCIAS.map((c) => c.key).join(", ")
+          "matricula, departamento, resp_competencia_tecnica, resp_qualidade_trabalho, resp_produtividade, resp_trabalho_em_equipe, resp_comunicacao, resp_lideranca, resp_iniciativa, resp_resolucao_problemas, resp_orientacao_cliente, resp_etica, resp_adaptacao, resp_desenvolvimento"
         );
       if (error) throw error;
       const total = colabs?.length ?? 0;
