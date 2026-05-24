@@ -50,9 +50,13 @@ function ColaboradorDetail() {
   if (isLoading) return <div className="text-muted-foreground">Carregando…</div>;
   if (!data) return <div className="text-muted-foreground">Colaborador não encontrado.</div>;
 
+  const getNum = (key: string) => {
+    const v = (data as unknown as Record<string, unknown>)[key];
+    return typeof v === "number" ? v : 0;
+  };
   const radarData = COMPETENCIAS.map((c) => ({
     competencia: c.label,
-    nota: (data as Record<string, number | null>)[c.key] ?? 0,
+    nota: getNum(c.key),
   }));
 
   return (
@@ -105,7 +109,8 @@ function ColaboradorDetail() {
         <h2 className="mb-4 text-base font-semibold">Notas detalhadas</h2>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {COMPETENCIAS.map((c) => {
-            const v = (data as Record<string, number | null>)[c.key];
+            const raw = (data as unknown as Record<string, unknown>)[c.key];
+            const v = typeof raw === "number" ? raw : null;
             return (
               <div key={c.key} className="rounded border border-border p-3">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">
