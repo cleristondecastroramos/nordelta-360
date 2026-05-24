@@ -1,0 +1,17 @@
+matricula,ciclo,tipo_avaliador,avaliador_id,competencia,nota,comentario
+1001,Ciclo 2025.1,Autoavaliação,1001,Liderança,5,Tenho liderado a equipe com foco.
+1001,Ciclo 2025.1,Autoavaliação,1001,Comunicação,4,Sempre busco ser claro.
+1001,Ciclo 2025.1,Gestor,9000,Liderança,5,Excelente capacidade de guiar o time comercial.
+1001,Ciclo 2025.1,Gestor,9000,Comunicação,5,Muito articulado.
+1001,Ciclo 2025.1,Par,1002,Liderança,4,Bom colega, ajuda nos projetos.
+1001,Ciclo 2025.1,Subordinado,1005,Comunicação,4,As diretrizes são claras na maioria das vezes.
+1002,Ciclo 2025.1,Autoavaliação,1002,Foco em Resultados,5,Entreguei todos os projetos no prazo.
+1002,Ciclo 2025.1,Gestor,9000,Foco em Resultados,4,Bons resultados, mas pode melhorar o planejamento.
+1002,Ciclo 2025.1,Par,1001,Foco em Resultados,5,Excelente parceira de trabalho.
+1003,Ciclo 2025.1,Autoavaliação,1003,Inovação,5,Sempre busco novas tecnologias.
+1003,Ciclo 2025.1,Gestor,1002,Inovação,4,Muito técnico e inovador.
+1003,Ciclo 2025.1,Gestor,1002,Trabalho em Equipe,3,Precisa interagir mais com outras áreas.
+1004,Ciclo 2025.1,Autoavaliação,1004,Resolução de Problemas,4,Consigo resolver bem os conflitos.
+1004,Ciclo 2025.1,Par,1005,Resolução de Problemas,5,A Ana é ótima em mediar conflitos no marketing.
+1005,Ciclo 2025.1,Autoavaliação,1005,Visão Sistêmica,3,Preciso entender melhor os processos gerais.
+1005,Ciclo 2025.1,Gestor,1001,Visão Sistêmica,4,Está aprendendo rápido.

@@ -112,13 +112,17 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { Layout } from "@/components/layout/Layout";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSync />
-      <Outlet />
+      <Layout>
+        <Outlet />
+      </Layout>
       <Toaster />
     </QueryClientProvider>
   );
