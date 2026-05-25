@@ -8,6 +8,7 @@ interface Talent {
   nota: number;
   potencial: number;
   percentil: number;
+  avatar_url?: string;
 }
 
 interface TalentRankingTableProps {
@@ -53,7 +54,25 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
             {ranking.slice(0, 7).map((colab, i) => (
               <tr key={colab.matricula} className="hover:bg-muted/30 transition-colors">
                 <td className="p-4 text-center font-semibold text-muted-foreground">{i + 1}</td>
-                <td className="p-4 font-medium text-foreground">{colab.nome}</td>
+                <td className="p-4 font-medium text-foreground">
+                  <div className="flex items-center gap-3">
+                    {colab.avatar_url ? (
+                      <img 
+                        src={colab.avatar_url} 
+                        alt={colab.nome} 
+                        className="w-8 h-8 rounded-full border border-border object-cover" 
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colab.nome)}&background=1e40af&color=fff&size=32`;
+                        }}
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                        {colab.nome.substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <span>{colab.nome}</span>
+                  </div>
+                </td>
                 <td className="p-4 font-bold text-primary">{colab.nota.toFixed(2)}</td>
                 <td className="p-4 text-muted-foreground">{colab.percentil} P</td>
                 <td className="p-4">

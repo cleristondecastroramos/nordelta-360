@@ -47,7 +47,14 @@ export function AvatarUpload({ name, initialImage, onUpload }: AvatarUploadProps
     >
       <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-background shadow-md bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground relative">
         {preview ? (
-          <img src={preview} alt={name} className="h-full w-full object-cover transition-opacity duration-300" />
+          <img 
+            src={preview} 
+            alt={name} 
+            className="h-full w-full object-cover transition-opacity duration-300" 
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1e40af&color=fff&size=128`;
+            }}
+          />
         ) : (
           getInitials(name)
         )}

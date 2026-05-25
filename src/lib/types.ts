@@ -5,8 +5,27 @@ export interface Colaborador {
   departamento: string;
   estado: string;
   foto_url: string;
+  avatar_url?: string;
   email: string;
-  telefone: string;
+  telefone?: string;
+  celular?: string;
+  telefone_fixo?: string;
+  sexo?: string | null;
+  idade?: number;
+  cpf?: string;
+  rg?: string;
+  data_nasc?: string;
+  data_admissao?: string;
+  mae?: string;
+  pai?: string;
+  cep?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado_uf?: string; // Evitar conflito com 'estado' (Ativo/Inativo)
+  altura?: string;
+  peso?: string;
 }
 
 export interface Avaliacao360 {
@@ -21,6 +40,7 @@ export interface Avaliacao360 {
 
 export interface CompetenciaScore {
   competencia: string;
+  descricao?: string;
   mediaGeral: number;
   mediaAuto: number;
   mediaGestor: number;
@@ -69,6 +89,7 @@ export interface DepartmentStats {
 export interface GapAnalysis {
   departamento: string;
   competencia: string;
+  descricao?: string;
   gap: number; // Gestor - Auto
 }
 
@@ -90,9 +111,9 @@ export interface DashboardMetrics {
   totalCompetencias: number;
   participacaoCiclo: number;
   percentilMedio: number;
-  mediasPorCompetencia: { competencia: string; media: number; mediaAnterior?: number }[];
+  mediasPorCompetencia: { competencia: string; descricao?: string; media: number; mediaAnterior?: number }[];
   departamentos: DepartmentStats[];
-  ranking: { matricula: string; nome: string; nota: number; potencial: number; percentil: number }[];
+  ranking: { matricula: string; nome: string; nota: number; potencial: number; percentil: number; avatar_url?: string }[];
   alertas: string[];
   insights: InsightText[];
   gapHeatmap: GapAnalysis[];

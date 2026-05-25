@@ -1,5 +1,7 @@
 import type { CompetenciaScore } from "@/lib/types";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { getCompetenceInfo } from "@/lib/competence-map";
+import { MetricTooltip } from "./metric-tooltip";
 
 interface CompetencyTableProps {
   competencias: CompetenciaScore[];
@@ -22,7 +24,7 @@ export function CompetencyTable({ competencias }: CompetencyTableProps) {
         <table className="w-full text-sm text-left">
           <thead className="bg-muted/50 font-medium text-muted-foreground border-b">
             <tr>
-              <th className="p-4 whitespace-nowrap">Competência</th>
+              <th className="p-4 whitespace-nowrap min-w-[300px]">Competência</th>
               <th className="p-4 whitespace-nowrap">Média Geral</th>
               <th className="p-4 whitespace-nowrap">Gestor</th>
               <th className="p-4 whitespace-nowrap">Autoavaliação</th>
@@ -39,12 +41,28 @@ export function CompetencyTable({ competencias }: CompetencyTableProps) {
                 </td>
               </tr>
             ) : (
-              sorted.map((c) => (
-                <tr key={c.competencia} className="hover:bg-muted/30 transition-colors group">
-                  <td className="p-4 font-medium text-foreground">{c.competencia}</td>
-                  <td className="p-4 font-bold text-primary text-base">
-                    {c.mediaGeral.toFixed(2)}
-                  </td>
+              sorted.map((c) => {
+                const info = getCompetenceInfo(c.competencia);
+                const Icon = info.icone;
+                
+                return (
+                  <tr key={c.competencia} className="hover:bg-muted/30 transition-colors group">
+                    <td className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 p-2 bg-primary/10 rounded-md text-primary shrink-0">
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground leading-tight">{info.nome}</p>
+                          <p className="text-xs text-muted-foreground mt-1 max-w-[280px] line-clamp-2" title={info.descricao}>
+                            {info.descricao}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4 font-bold text-primary text-base align-middle">
+                      {c.mediaGeral.toFixed(2)}
+                    </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <span className={c.mediaGestor > 0 ? "text-foreground" : "text-muted-foreground/50"}>
@@ -81,7 +99,8 @@ export function CompetencyTable({ competencias }: CompetencyTableProps) {
                     {c.min > 0 ? `${c.min} / ${c.max}` : '-'}
                   </td>
                 </tr>
-              ))
+                );
+              })
             )}
           </tbody>
         </table>

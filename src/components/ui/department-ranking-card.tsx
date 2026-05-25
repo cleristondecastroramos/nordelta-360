@@ -9,13 +9,13 @@ export function DepartmentRankingCard({ departamentos }: DepartmentRankingCardPr
   const topDepto = [...departamentos].sort((a, b) => b.media - a.media);
 
   return (
-    <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden h-full">
-      <div className="p-6 pb-4 border-b bg-muted/10">
+    <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden h-full flex flex-col">
+      <div className="p-6 pb-4 border-b bg-muted/10 shrink-0">
         <h3 className="font-semibold leading-none tracking-tight">Desempenho por Departamento</h3>
       </div>
-      <div className="p-0">
+      <div className="p-0 flex-1 overflow-y-auto custom-scrollbar">
         <div className="divide-y">
-          {topDepto.slice(0, 5).map((depto, i) => (
+          {topDepto.map((depto, i) => (
             <div key={depto.departamento} className="flex items-center p-4 hover:bg-muted/30 transition-colors">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
                 {i + 1}

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as FeedbacksRouteImport } from './routes/feedbacks'
+import { Route as DemografiaRouteImport } from './routes/demografia'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CiclosRouteImport } from './routes/ciclos'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +26,11 @@ const RelatoriosRoute = RelatoriosRouteImport.update({
 const FeedbacksRoute = FeedbacksRouteImport.update({
   id: '/feedbacks',
   path: '/feedbacks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemografiaRoute = DemografiaRouteImport.update({
+  id: '/demografia',
+  path: '/demografia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/demografia': typeof DemografiaRoute
   '/feedbacks': typeof FeedbacksRoute
   '/relatorios': typeof RelatoriosRoute
   '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/demografia': typeof DemografiaRoute
   '/feedbacks': typeof FeedbacksRoute
   '/relatorios': typeof RelatoriosRoute
   '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/demografia': typeof DemografiaRoute
   '/feedbacks': typeof FeedbacksRoute
   '/relatorios': typeof RelatoriosRoute
   '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ciclos'
     | '/configuracoes'
+    | '/demografia'
     | '/feedbacks'
     | '/relatorios'
     | '/colaboradores/$matricula'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ciclos'
     | '/configuracoes'
+    | '/demografia'
     | '/feedbacks'
     | '/relatorios'
     | '/colaboradores/$matricula'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ciclos'
     | '/configuracoes'
+    | '/demografia'
     | '/feedbacks'
     | '/relatorios'
     | '/colaboradores/$matricula'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CiclosRoute: typeof CiclosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  DemografiaRoute: typeof DemografiaRoute
   FeedbacksRoute: typeof FeedbacksRoute
   RelatoriosRoute: typeof RelatoriosRoute
   ColaboradoresMatriculaRoute: typeof ColaboradoresMatriculaRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/feedbacks'
       fullPath: '/feedbacks'
       preLoaderRoute: typeof FeedbacksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demografia': {
+      id: '/demografia'
+      path: '/demografia'
+      fullPath: '/demografia'
+      preLoaderRoute: typeof DemografiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CiclosRoute: CiclosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  DemografiaRoute: DemografiaRoute,
   FeedbacksRoute: FeedbacksRoute,
   RelatoriosRoute: RelatoriosRoute,
   ColaboradoresMatriculaRoute: ColaboradoresMatriculaRoute,

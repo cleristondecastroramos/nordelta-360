@@ -63,20 +63,17 @@ function ColaboradorFicha() {
 
   const radarData = data.competencias.map(c => ({
     competencia: c.competencia,
-    Autoavaliação: c.mediaAuto,
-    Gestor: c.mediaGestor,
-    Pares: c.mediaPares,
-    Subordinados: c.mediaSubordinados,
+    Colaborador: c.mediaGeral,
+    Departamento: c.mediaDepartamento,
+    Empresa: c.mediaEmpresa,
   }));
 
   const handleExport = () => {
-    // In a real app, this would use html2canvas + jsPDF to render a hidden report component
-    // For this portfolio version, we trigger a print view
     window.print();
   };
 
   return (
-    <div className="space-y-6 print:space-y-4 print:bg-white print:text-black">
+    <div className="space-y-6 print:space-y-4 print:bg-white print:text-black animate-in fade-in duration-500">
       
       <div className="print:hidden">
         <EmployeeProfileHeader 
@@ -109,6 +106,48 @@ function ColaboradorFicha() {
         <KpiCard title="Gap Gestor x Auto" value={data.gapGestorAuto} icon={<AlertTriangle className="h-4 w-4" />} />
       </div>
 
+      {/* Dossiê Pessoal - Dados Estendidos */}
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 print:break-inside-avoid">
+        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+          <FileText className="h-5 w-5 text-primary" />
+          Dossiê Profissional e Cadastral
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Idade</p>
+            <p className="font-semibold">{colaborador.idade || "-"} anos</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Data de Admissão</p>
+            <p className="font-semibold">{colaborador.data_admissao ? new Date(colaborador.data_admissao).toLocaleDateString('pt-BR') : "-"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Contato (Celular)</p>
+            <p className="font-semibold">{colaborador.celular || colaborador.telefone || "-"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">E-mail Corporativo</p>
+            <p className="font-semibold text-primary truncate" title={colaborador.email}>{colaborador.email}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Nome da Mãe</p>
+            <p className="font-medium text-sm">{colaborador.mae || "-"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Nome do Pai</p>
+            <p className="font-medium text-sm">{colaborador.pai || "-"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">CPF</p>
+            <p className="font-medium text-sm">{colaborador.cpf || "-"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">RG</p>
+            <p className="font-medium text-sm">{colaborador.rg || "-"}</p>
+          </div>
+        </div>
+      </div>
+
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm print:border-none print:shadow-none">
         <div className="border-b px-4 print:hidden">
           <nav className="flex space-x-6 overflow-x-auto">
@@ -132,11 +171,11 @@ function ColaboradorFicha() {
           {(activeTab === "resumo" || activeTab === "competências") && ( // Show both in print mode
             <div className={`grid md:grid-cols-2 gap-8 ${activeTab === 'competências' ? 'print:hidden' : ''} print:block`}>
               <div className="print:break-inside-avoid">
-                <h3 className="font-semibold text-lg mb-4">Radar de Competências 360°</h3>
+                <h3 className="font-semibold text-lg mb-4">Análise Comparativa (Radar)</h3>
                 <RadarChart 
                   data={radarData} 
-                  keys={["Autoavaliação", "Gestor", "Pares", "Subordinados"]}
-                  colors={["#94a3b8", "#1e40af", "#10b981", "#f59e0b"]}
+                  keys={["Colaborador", "Departamento", "Empresa"]}
+                  colors={["#2563eb", "#64748b", "#10b981"]}
                 />
               </div>
               <div className="space-y-6 print:break-inside-avoid">

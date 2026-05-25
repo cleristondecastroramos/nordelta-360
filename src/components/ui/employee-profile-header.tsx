@@ -47,7 +47,7 @@ export function EmployeeProfileHeader({ colaborador, onBack, onExport, onPhotoUp
         
         <AvatarUpload 
           name={colaborador.nome} 
-          initialImage={colaborador.foto_url !== "/placeholder.svg" ? colaborador.foto_url : undefined} 
+          initialImage={colaborador.avatar_url || (colaborador.foto_url !== "/placeholder.svg" ? colaborador.foto_url : undefined)} 
           onUpload={onPhotoUpload}
         />
         
