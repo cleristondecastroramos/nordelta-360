@@ -54,7 +54,7 @@ function Dashboard() {
         <AlertPanel 
           type="error"
           title="Base de dados não encontrada ou vazia"
-          message="Para que o Dashboard Executivo seja renderizado, certifique-se de que os arquivos CSV ('data_profiles_applied.csv' e 'evaluations_360.csv') estejam presentes no diretório public/data."
+          items={["Para que o Dashboard Executivo seja renderizado, certifique-se de que os arquivos CSV ('data_profiles_applied.csv' e 'evaluations_360.csv') estejam presentes no diretório public/data."]}
         />
       </div>
     );
