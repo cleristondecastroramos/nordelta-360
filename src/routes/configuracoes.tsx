@@ -57,17 +57,17 @@ function ConfiguracoesPage() {
         <div className="rounded-xl border bg-card p-6 shadow-sm md:col-span-2">
           <div className="flex items-center gap-3 mb-4">
             <Database className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-lg">Gerenciamento de Dados (CSV)</h3>
+            <h3 className="font-semibold text-lg">Gerenciamento de Dados</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Faça o upload manual dos arquivos de dados para atualizar o sistema em tempo real.
+            Sincronize os dados de colaboradores e avaliações diretamente com o banco de dados em tempo real.
           </p>
           <div className="flex gap-4">
             <button className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-              Atualizar Profiles (CSV)
+              Sincronizar Colaboradores
             </button>
             <button className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-              Atualizar Avaliações (CSV)
+              Sincronizar Avaliações
             </button>
           </div>
         </div>

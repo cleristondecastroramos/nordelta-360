@@ -53,8 +53,8 @@ function Dashboard() {
       <div className="max-w-3xl mx-auto mt-12">
         <AlertPanel 
           type="error"
-          title="Base de dados não encontrada ou vazia"
-          items={["Para que o Dashboard Executivo seja renderizado, certifique-se de que os arquivos CSV ('data_profiles_applied.csv' e 'evaluations_360.csv') estejam presentes no diretório public/data."]}
+          title="Base de dados vazia"
+          items={["Dados ainda não disponíveis no banco. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias."]}
         />
       </div>
     );

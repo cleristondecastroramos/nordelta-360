@@ -15,7 +15,7 @@ function RelatoriosPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[
-          { title: "Consolidado Geral (CSV)", desc: "Dataset completo de notas do ciclo ativo." },
+          { title: "Consolidado Geral (Planilha)", desc: "Dataset completo de notas do ciclo ativo." },
           { title: "Matriz 9 Box (PDF)", desc: "Cruzamento Potencial vs Desempenho." },
           { title: "Relatório de Departamentos (PDF)", desc: "Comparativo de médias por área." }
         ].map((item, i) => (
