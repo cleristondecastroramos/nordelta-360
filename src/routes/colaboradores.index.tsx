@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Search, Eye, FileText, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
 import { getColaboradoresList } from "@/lib/data-service";
 import { StatusChip } from "@/components/ui/status-chip";
+import { calculateTenure } from "@/lib/utils";
 
 export const Route = createFileRoute("/colaboradores/")({
   component: ColaboradoresList,
@@ -202,6 +203,9 @@ function ColaboradoresList() {
                 >
                   <div className="flex items-center">Cargo / Departamento {getSortIcon('cargo')}</div>
                 </th>
+                <th className="h-12 px-4 text-left align-middle font-semibold text-foreground">
+                  Tempo de Empresa
+                </th>
                 <th 
                   className="h-12 px-4 text-left align-middle font-semibold text-foreground cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700/60 group select-none transition-colors"
                   onClick={() => handleSort('notaMediaGeral')}
@@ -220,11 +224,11 @@ function ColaboradoresList() {
             <tbody className="[&_tr:last-child]:border-0">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="h-24 text-center">Carregando colaboradores...</td>
+                  <td colSpan={7} className="h-24 text-center">Carregando colaboradores...</td>
                 </tr>
               ) : sortedData.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="h-24 text-center text-muted-foreground">Nenhum colaborador encontrado.</td>
+                  <td colSpan={7} className="h-24 text-center text-muted-foreground">Nenhum colaborador encontrado.</td>
                 </tr>
               ) : (
                 sortedData.map((colab) => (
@@ -254,6 +258,9 @@ function ColaboradoresList() {
                         <span>{colab.cargo}</span>
                         <span className="text-xs text-muted-foreground">{colab.departamento}</span>
                       </div>
+                    </td>
+                    <td className="p-4 align-middle text-muted-foreground text-sm">
+                      {calculateTenure(colab.data_admissao)}
                     </td>
                     <td className="p-4 align-middle font-semibold text-primary">
                       {colab.notaMediaGeral.toFixed(2)}

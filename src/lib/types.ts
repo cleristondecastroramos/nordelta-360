@@ -26,6 +26,7 @@ export interface Colaborador {
   estado_uf?: string; // Evitar conflito com 'estado' (Ativo/Inativo)
   altura?: string;
   peso?: string;
+  is_lideranca?: boolean;
 }
 
 export interface Avaliacao360 {
@@ -68,6 +69,7 @@ export interface PlanoDesenvolvimento {
 
 export interface ColaboradorResultados {
   colaborador: Colaborador;
+  is_lideranca: boolean;
   notaMediaGeral: number;
   gapGestorAuto: number;
   indicePotencial: number;

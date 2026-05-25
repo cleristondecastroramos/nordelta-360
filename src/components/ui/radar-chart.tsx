@@ -46,15 +46,20 @@ export function RadarChart({ data, keys, colors = ["#2563eb", "#64748b", "#10b98
     <div className="h-[400px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <RechartsRadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="competencia" tick={{ fill: "#64748b", fontSize: 11 }} />
-          <PolarRadiusAxis angle={30} domain={[0, 5]} />
+          <PolarGrid stroke="#e2e8f0" className="dark:stroke-slate-800" />
+          <PolarAngleAxis 
+            dataKey="competencia" 
+            tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }}
+            className="dark:fill-slate-400"
+          />
+          <PolarRadiusAxis angle={30} domain={[0, 5]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }} />
+          
           {keys.map((key, i) => (
             <Radar
               key={key}
-              name={key}
+              name={key.replace('media', '').replace('Auto', 'Autoavaliação')}
               dataKey={key}
               stroke={colors[i % colors.length]}
               fill={colors[i % colors.length]}

@@ -2,6 +2,94 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Colaborador, ColaboradorResultados, DashboardMetrics, DepartmentStats, GapAnalysis, InsightText } from "./types";
 import { getCompetenceInfo } from "./competence-map";
 
+export function checkIsLideranca(cargo: string): boolean {
+  const c = (cargo || "").toLowerCase();
+  return c.includes('gerente') || c.includes('coordenador') || c.includes('supervisor') || c.includes('líder') || c.includes('lider') || c.includes('head') || c.includes('diretor') || c.includes('executivo');
+}
+
+export function calculateRaterScores(baseValue: number, depto: string, comp: string, matricula: string, isLideranca: boolean) {
+  // 1. Department Bonus/Penalty
+  const d = (depto || "").toLowerCase();
+  const c = (comp || "").toLowerCase();
+  let deptOffset = 0;
+  
+  if (d.includes('ti') || d.includes('tecnologia')) {
+    if (c.includes('técnica') || c.includes('problema')) deptOffset = 0.4;
+  } else if (d.includes('rh') || d.includes('recursos')) {
+    if (c.includes('desenvolvimento') || c.includes('equipe')) deptOffset = 0.4;
+  } else if (d.includes('comercial') || d.includes('venda') || d.includes('marketing')) {
+    if (c.includes('comunica') || c.includes('cliente')) deptOffset = 0.4;
+  } else if (d.includes('finança') || d.includes('controladoria')) {
+    if (c.includes('qualidade') || c.includes('ética')) deptOffset = 0.4;
+  } else if (d.includes('operaç') || d.includes('produç') || d.includes('atendimento')) {
+    if (c.includes('produtividade') || c.includes('adaptação')) deptOffset = 0.4;
+  }
+
+  const generateSeed = (seedStr: string) => {
+    let hash = 5381;
+    for (let i = 0; i < seedStr.length; i++) {
+      hash = ((hash << 5) + hash) + seedStr.charCodeAt(i);
+    }
+    return Math.abs(hash);
+  };
+
+  // Nível global do colaborador (-2.0 a +2.0) para forçar presença nos extremos do histograma
+  // Elevando ao cubo para criar uma curva mais espalhada e evitar que tudo se concentre no meio
+  let empLevelRaw = ((generateSeed(matricula + "level") % 100) / 50) - 1; // -1 to 1
+  const empLevel = Math.pow(empLevelRaw, 3) * 2.5; // push toward edges, amplitude -2.5 a +2.5
+  
+  // Nível específico da competência (-0.5 a +0.5)
+  const compLevel = (((generateSeed(matricula + comp + "comp") % 100) / 100) * 1.0) - 0.5;
+
+  const adjustedBase = Math.min(5, Math.max(1, baseValue + deptOffset + empLevel + compLevel));
+
+  // 2. Generate Rater Noise (-0.5 a +0.5)
+  const generateNoise = (seedStr: string) => {
+    return (((generateSeed(seedStr) % 100) / 100) * 1.0) - 0.5;
+  };
+
+  // Distribuição aleatória de viés (para o Heatmap ter cores variadas)
+  const raterProfile = generateSeed(matricula + comp + "profile") % 100;
+  let gestorBias = 0;
+  let autoBias = 0;
+
+  if (raterProfile < 33) {
+    // Síndrome do impostor: Gestor avalia melhor que Auto (Azul)
+    gestorBias = 0.4;
+    autoBias = -0.4;
+  } else if (raterProfile < 66) {
+    // Efeito Dunning-Kruger: Auto avalia melhor que Gestor (Vermelho)
+    gestorBias = -0.4;
+    autoBias = 0.4;
+  } else {
+    // Alinhados (Branco/Transparente)
+    gestorBias = 0.1;
+    autoBias = -0.1;
+  }
+
+  const gestor = Math.min(5, Math.max(1, adjustedBase + gestorBias + generateNoise(matricula + comp + "Gestor")));
+  const auto = Math.min(5, Math.max(1, adjustedBase + autoBias + generateNoise(matricula + comp + "Auto")));
+  const pares = Math.min(5, Math.max(1, adjustedBase + generateNoise(matricula + comp + "Pares")));
+  
+  let subordinados = 0;
+  if (isLideranca) {
+    subordinados = Math.min(5, Math.max(1, adjustedBase + 0.2 + generateNoise(matricula + comp + "Sub")));
+  }
+
+  // 3. True Analytical Average
+  const totalRaters = isLideranca ? 4 : 3;
+  const sum = gestor + auto + pares + subordinados;
+  const mediaFinal = sum / totalRaters;
+
+  return {
+    mediaGestor: Number(gestor.toFixed(2)),
+    mediaAuto: Number(auto.toFixed(2)),
+    mediaPares: Number(pares.toFixed(2)),
+    mediaSubordinados: isLideranca ? Number(subordinados.toFixed(2)) : 0,
+    mediaGeral: Number(mediaFinal.toFixed(2))
+  };
+}
+
 // Função para gerar avatar determinístico baseado em sexo e matrícula
 export function getAvatarUrl(sexo: string | null | undefined, matricula: string, nome: string): string {
   let seed = 0;
@@ -66,7 +154,7 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
   if (!colaborador) return null;
 
   const indicadores: any = feedback?.indicadores || {};
-  const raterBreakdown: any = feedback?.rater_breakdown || {};
+  const isLideranca = checkIsLideranca(colaborador.cargo);
   
   // Simulando médias comparativas determinísticas baseadas no departamento para o Radar
   let deptSeed = 0;
@@ -77,30 +165,24 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
     return Number((Math.min(5, Math.max(1, baseValue + offset))).toFixed(2));
   };
 
-  const getRaterDeviation = (baseValue: number, raterStr: string, compStr: string) => {
-    let seed = 0;
-    const str = colaborador.matricula + raterStr + compStr;
-    for (let i = 0; i < str.length; i++) seed += str.charCodeAt(i);
-    // Cria uma variação de -0.7 a +0.7 ao redor da nota geral
-    const offset = (((baseValue * seed) % 100) / 100) * 1.4 - 0.7;
-    return Number((Math.min(5, Math.max(1, baseValue + offset))).toFixed(2));
-  };
-
   const competenciasArray = Object.keys(indicadores).map(comp => {
     const info = getCompetenceInfo(comp);
-    const mediaGeral = indicadores[comp];
+    const mediaGeralOriginal = indicadores[comp];
+    
+    const raterScores = calculateRaterScores(mediaGeralOriginal, colaborador.departamento, comp, matricula, isLideranca);
+
     return {
       competencia: info.nome,
       descricao: info.descricao,
-      mediaGeral,
-      mediaDepartamento: getSimulatedAvg(mediaGeral, true),
-      mediaEmpresa: getSimulatedAvg(mediaGeral, false),
-      mediaGestor: raterBreakdown.Gestor?.[comp] || getRaterDeviation(mediaGeral, "Gestor", comp),
-      mediaAuto: raterBreakdown.Autoavaliação?.[comp] || raterBreakdown.Auto?.[comp] || getRaterDeviation(mediaGeral, "Auto", comp),
-      mediaPares: raterBreakdown.Pares?.[comp] || getRaterDeviation(mediaGeral, "Pares", comp),
-      mediaSubordinados: raterBreakdown.Subordinados?.[comp] || getRaterDeviation(mediaGeral, "Sub", comp),
-      min: Math.max(1, mediaGeral - 1),
-      max: Math.min(5, mediaGeral + 1)
+      mediaGeral: raterScores.mediaGeral,
+      mediaDepartamento: getSimulatedAvg(mediaGeralOriginal, true),
+      mediaEmpresa: getSimulatedAvg(mediaGeralOriginal, false),
+      mediaGestor: raterScores.mediaGestor,
+      mediaAuto: raterScores.mediaAuto,
+      mediaPares: raterScores.mediaPares,
+      mediaSubordinados: raterScores.mediaSubordinados,
+      min: Math.max(1, raterScores.mediaGeral - 1),
+      max: Math.min(5, raterScores.mediaGeral + 1)
     };
   });
 
@@ -142,6 +224,7 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
       email: formatNordeltaEmail(colaborador.email, colaborador.nome),
       avatar_url: colaborador.foto_url && colaborador.foto_url !== "/placeholder.svg" ? colaborador.foto_url : avatar
     } as any,
+    is_lideranca: isLideranca,
     notaMediaGeral,
     gapGestorAuto: feedback?.gap_gestor_auto || 0,
     indicePotencial: feedback?.indice_potencial || Math.min(5, notaMediaGeral * 1.1),
@@ -181,10 +264,6 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   }>();
 
   feedbacks.forEach(fb => {
-    totalNotas += fb.nota_media || 0;
-    totalPotencial += fb.indice_potencial || 0;
-    totalPercentil += fb.percentil_empresa || 0;
-
     const colab = colaboradores.find(c => c.matricula === fb.avaliado_matricula);
     if (!colab) return;
 
@@ -192,28 +271,19 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       deptoMap.set(colab.departamento, { somaGeral: 0, countGeral: 0, somaGap: 0, competencias: new Map() });
     }
     const d = deptoMap.get(colab.departamento)!;
-    d.somaGeral += fb.nota_media || 0;
-    d.countGeral++;
-    d.somaGap += fb.gap_gestor_auto || 0;
 
     const indicadores: any = fb.indicadores || {};
-    const rater: any = fb.rater_breakdown || {};
+    
+    let userTotalScore = 0;
+    let userCompCount = 0;
     
     Object.keys(indicadores).forEach(comp => {
-      const current = compMap.get(comp) || { soma: 0, count: 0 };
-      compMap.set(comp, { soma: current.soma + indicadores[comp], count: current.count + 1 });
+      const isLideranca = checkIsLideranca(colab.cargo);
+      const raterScores = calculateRaterScores(indicadores[comp], colab.departamento, comp, fb.avaliado_matricula, isLideranca);
+      const gap = raterScores.mediaGestor - raterScores.mediaAuto;
 
-      const getRaterDeviation = (baseValue: number, raterStr: string, compStr: string, matricula: string) => {
-        let seed = 0;
-        const str = matricula + raterStr + compStr;
-        for (let i = 0; i < str.length; i++) seed += str.charCodeAt(i);
-        const offset = (((baseValue * seed) % 100) / 100) * 1.4 - 0.7;
-        return Number((Math.min(5, Math.max(1, baseValue + offset))).toFixed(2));
-      };
-
-      const gestor = rater.Gestor?.[comp] || getRaterDeviation(indicadores[comp], "Gestor", comp, fb.avaliado_matricula);
-      const auto = rater.Autoavaliação?.[comp] || rater.Auto?.[comp] || getRaterDeviation(indicadores[comp], "Auto", comp, fb.avaliado_matricula);
-      const gap = gestor - auto;
+      userTotalScore += raterScores.mediaGeral;
+      userCompCount++;
 
       if (!d.competencias.has(comp)) {
         d.competencias.set(comp, { somaGap: 0, count: 0 });
@@ -221,7 +291,21 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       const dc = d.competencias.get(comp)!;
       dc.somaGap += gap;
       dc.count++;
+      
+      const current = compMap.get(comp) || { soma: 0, count: 0 };
+      compMap.set(comp, { soma: current.soma + raterScores.mediaGeral, count: current.count + 1 });
     });
+
+    // Override the DB nota_media with the simulated one
+    fb.nota_media = userCompCount > 0 ? Number((userTotalScore / userCompCount).toFixed(2)) : (fb.nota_media || 0);
+
+    totalNotas += fb.nota_media;
+    totalPotencial += fb.indice_potencial || 0;
+    totalPercentil += fb.percentil_empresa || 0;
+
+    d.somaGeral += fb.nota_media;
+    d.countGeral++;
+    d.somaGap += fb.gap_gestor_auto || 0;
   });
 
   const notaMediaGeral = Number((totalNotas / feedbacks.length).toFixed(2));
@@ -231,11 +315,24 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
 
   const mediasPorCompetencia = Array.from(compMap.entries()).map(([comp, data]) => {
     const info = getCompetenceInfo(comp);
+    const mediaAtual = Number((data.soma / data.count).toFixed(2));
+    
+    // Hash determinístico baseado no nome da competência para não piscar dados a cada reload
+    let hash = 0;
+    for (let i = 0; i < comp.length; i++) {
+      hash = ((hash << 5) - hash) + comp.charCodeAt(i);
+    }
+    
+    // Variância simulada do ciclo anterior (entre -0.4 e +0.6 de crescimento)
+    // Se a variação for positiva, a nota anterior era menor.
+    const variacao = ((Math.abs(hash) % 100) / 100) * 1.0 - 0.4;
+    const mediaAnterior = Number(Math.min(5, Math.max(1, mediaAtual - variacao)).toFixed(2));
+
     return {
       competencia: info.nome,
       descricao: info.descricao,
-      media: Number((data.soma / data.count).toFixed(2)),
-      mediaAnterior: Number(((data.soma / data.count) - (Math.random() * 0.4)).toFixed(2))
+      media: mediaAtual,
+      mediaAnterior: mediaAnterior
     };
   }).sort((a, b) => b.media - a.media);
 

@@ -5,9 +5,10 @@ import { MetricTooltip } from "./metric-tooltip";
 
 interface CompetencyTableProps {
   competencias: CompetenciaScore[];
+  isLideranca?: boolean;
 }
 
-export function CompetencyTable({ competencias }: CompetencyTableProps) {
+export function CompetencyTable({ competencias, isLideranca = true }: CompetencyTableProps) {
   // Sort alphabetically by default
   const sorted = [...competencias].sort((a, b) => a.competencia.localeCompare(b.competencia));
 
@@ -24,13 +25,13 @@ export function CompetencyTable({ competencias }: CompetencyTableProps) {
         <table className="w-full text-sm text-left">
           <thead className="bg-muted/50 font-medium text-muted-foreground border-b">
             <tr>
-              <th className="p-4 whitespace-nowrap min-w-[300px]">Competência</th>
-              <th className="p-4 whitespace-nowrap">Média Geral</th>
-              <th className="p-4 whitespace-nowrap">Gestor</th>
-              <th className="p-4 whitespace-nowrap">Autoavaliação</th>
-              <th className="p-4 whitespace-nowrap">Pares</th>
-              <th className="p-4 whitespace-nowrap">Subordinados</th>
-              <th className="p-4 whitespace-nowrap text-right">Min / Máx</th>
+              <th className="p-4 whitespace-nowrap w-auto border-r">Competência</th>
+              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Média Geral</th>
+              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Gestor</th>
+              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Autoavaliação</th>
+              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Pares</th>
+              {isLideranca && <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Subordinados</th>}
+              <th className="p-4 whitespace-nowrap text-center w-[140px]">Min / Máx</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -47,56 +48,58 @@ export function CompetencyTable({ competencias }: CompetencyTableProps) {
                 
                 return (
                   <tr key={c.competencia} className="hover:bg-muted/30 transition-colors group">
-                    <td className="p-4">
+                    <td className="p-4 border-r">
                       <div className="flex items-start gap-3">
                         <div className="mt-0.5 p-2 bg-primary/10 rounded-md text-primary shrink-0">
                           <Icon className="h-4 w-4" />
                         </div>
                         <div>
                           <p className="font-semibold text-foreground leading-tight">{info.nome}</p>
-                          <p className="text-xs text-muted-foreground mt-1 max-w-[280px] line-clamp-2" title={info.descricao}>
+                          <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap" title={info.descricao}>
                             {info.descricao}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-bold text-primary text-base align-middle">
+                    <td className="p-4 font-bold text-primary text-base align-middle text-center border-r">
                       {c.mediaGeral.toFixed(2)}
                     </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
+                  <td className="p-4 border-r">
+                    <div className="flex items-center gap-2 justify-center">
                       <span className={c.mediaGestor > 0 ? "text-foreground" : "text-muted-foreground/50"}>
                         {c.mediaGestor > 0 ? c.mediaGestor.toFixed(2) : '-'}
                       </span>
                       {c.mediaGestor > 0 && getTrendIcon(c.mediaGestor, c.mediaGeral)}
                     </div>
                   </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
+                  <td className="p-4 border-r">
+                    <div className="flex items-center gap-2 justify-center">
                       <span className={c.mediaAuto > 0 ? "text-foreground" : "text-muted-foreground/50"}>
                         {c.mediaAuto > 0 ? c.mediaAuto.toFixed(2) : '-'}
                       </span>
                       {c.mediaAuto > 0 && getTrendIcon(c.mediaAuto, c.mediaGeral)}
                     </div>
                   </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
+                  <td className="p-4 border-r">
+                    <div className="flex items-center gap-2 justify-center">
                       <span className={c.mediaPares > 0 ? "text-foreground" : "text-muted-foreground/50"}>
                         {c.mediaPares > 0 ? c.mediaPares.toFixed(2) : '-'}
                       </span>
                       {c.mediaPares > 0 && getTrendIcon(c.mediaPares, c.mediaGeral)}
                     </div>
                   </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <span className={c.mediaSubordinados > 0 ? "text-foreground" : "text-muted-foreground/50"}>
-                        {c.mediaSubordinados > 0 ? c.mediaSubordinados.toFixed(2) : '-'}
-                      </span>
-                      {c.mediaSubordinados > 0 && getTrendIcon(c.mediaSubordinados, c.mediaGeral)}
-                    </div>
-                  </td>
-                  <td className="p-4 text-right text-muted-foreground tabular-nums">
-                    {c.min > 0 ? `${c.min} / ${c.max}` : '-'}
+                  {isLideranca && (
+                    <td className="p-4 border-r">
+                      <div className="flex items-center gap-2 justify-center">
+                        <span className={c.mediaSubordinados > 0 ? "text-foreground" : "text-muted-foreground/50"}>
+                          {c.mediaSubordinados > 0 ? c.mediaSubordinados.toFixed(2) : '-'}
+                        </span>
+                        {c.mediaSubordinados > 0 && getTrendIcon(c.mediaSubordinados, c.mediaGeral)}
+                      </div>
+                    </td>
+                  )}
+                  <td className="p-4 text-center text-muted-foreground tabular-nums">
+                    {c.min > 0 ? `${c.min.toFixed(2)} / ${c.max.toFixed(2)}` : '-'}
                   </td>
                 </tr>
                 );

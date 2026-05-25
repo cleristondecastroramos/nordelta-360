@@ -9,6 +9,7 @@ import { EmployeeProfileHeader } from "@/components/ui/employee-profile-header";
 import { CompetencyTable } from "@/components/ui/competency-table";
 import { AlertPanel } from "@/components/ui/alert-panel";
 import { LineChart } from "@/components/ui/line-chart";
+import { calculateTenure } from "@/lib/utils";
 
 export const Route = createFileRoute("/colaboradores/$matricula")({
   component: ColaboradorFicha,
@@ -122,6 +123,10 @@ function ColaboradorFicha() {
             <p className="font-semibold">{colaborador.data_admissao ? new Date(colaborador.data_admissao).toLocaleDateString('pt-BR') : "-"}</p>
           </div>
           <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Tempo de Empresa</p>
+            <p className="font-semibold text-primary">{calculateTenure(colaborador.data_admissao)}</p>
+          </div>
+          <div>
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Contato (Celular)</p>
             <p className="font-semibold">{colaborador.celular || colaborador.telefone || "-"}</p>
           </div>
@@ -173,9 +178,9 @@ function ColaboradorFicha() {
               <div className="print:break-inside-avoid">
                 <h3 className="font-semibold text-lg mb-4">Análise Comparativa (Radar)</h3>
                 <RadarChart 
-                  data={radarData} 
-                  keys={["Colaborador", "Departamento", "Empresa"]}
-                  colors={["#2563eb", "#64748b", "#10b981"]}
+                  data={data.competencias} 
+                  keys={data.is_lideranca ? ["mediaAuto", "mediaGestor", "mediaPares", "mediaSubordinados"] : ["mediaAuto", "mediaGestor", "mediaPares"]}
+                  colors={data.is_lideranca ? ["#94a3b8", "#dc2626", "#eab308", "#10b981"] : ["#94a3b8", "#dc2626", "#eab308"]}
                 />
               </div>
               <div className="space-y-6 print:break-inside-avoid">
@@ -214,7 +219,7 @@ function ColaboradorFicha() {
             {(activeTab === "competências" || activeTab === "resumo") && (
               <div className={`${activeTab === 'resumo' ? 'hidden print:block' : ''}`}>
                 <h3 className="font-semibold text-lg mb-4 hidden print:block">Detalhamento das Competências</h3>
-                <CompetencyTable competencias={data.competencias} />
+                <CompetencyTable competencias={data.competencias} isLideranca={data.is_lideranca} />
               </div>
             )}
           </div>
