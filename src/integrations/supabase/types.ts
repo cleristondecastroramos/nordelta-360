@@ -340,7 +340,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      avaliacoes_anonimas: {
+        Row: {
+          avaliado_matricula: string | null
+          ciclo_id: string | null
+          comentario: string | null
+          competencia: string | null
+          created_at: string | null
+          id: number | null
+          nota: number | null
+        }
+        Insert: {
+          avaliado_matricula?: string | null
+          ciclo_id?: string | null
+          comentario?: string | null
+          competencia?: string | null
+          created_at?: string | null
+          id?: number | null
+          nota?: number | null
+        }
+        Update: {
+          avaliado_matricula?: string | null
+          ciclo_id?: string | null
+          comentario?: string | null
+          competencia?: string | null
+          created_at?: string | null
+          id?: number | null
+          nota?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_avaliado_matricula_fkey"
+            columns: ["avaliado_matricula"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["matricula"]
+          },
+          {
+            foreignKeyName: "avaliacoes_ciclo_id_fkey"
+            columns: ["ciclo_id"]
+            isOneToOne: false
+            referencedRelation: "ciclos_avaliacao"
+            referencedColumns: ["ciclo_id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
