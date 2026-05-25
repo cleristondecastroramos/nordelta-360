@@ -53,8 +53,8 @@ function Dashboard() {
       <div className="max-w-3xl mx-auto mt-12">
         <AlertPanel 
           type="error"
-          title="Base de dados vazia"
-          items={["Dados ainda não disponíveis no banco. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias."]}
+          title="Dados ainda não disponíveis"
+          items={["Não encontramos registros no banco para renderizar o painel. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias."]}
         />
       </div>
     );
