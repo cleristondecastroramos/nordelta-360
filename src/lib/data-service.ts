@@ -146,19 +146,20 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
   
   // Buscar comentários diretamente da tabela avaliacoes (carregamento sob demanda)
   const { data: avaliacoes } = await supabase
-    .from("avaliacoes")
-    .select("comentario, tipo_avaliador")
+    .from("avaliacoes_anonimas" as any)
+    .select("comentario")
     .eq("avaliado_matricula", matricula)
     .not("comentario", "is", null);
 
   if (!colaborador) return null;
 
   const indicadores: any = feedback?.indicadores || {};
-  const isLideranca = checkIsLideranca(colaborador.cargo);
+  const isLideranca = checkIsLideranca(colaborador.cargo || "");
   
   // Simulando médias comparativas determinísticas baseadas no departamento para o Radar
   let deptSeed = 0;
-  for (let i = 0; i < colaborador.departamento.length; i++) deptSeed += colaborador.departamento.charCodeAt(i);
+  const depto = colaborador.departamento || "";
+  for (let i = 0; i < depto.length; i++) deptSeed += depto.charCodeAt(i);
   
   const getSimulatedAvg = (baseValue: number, isDept: boolean) => {
     const offset = (((baseValue * (isDept ? deptSeed : 42)) % 100) / 100) * 0.8 - 0.4;
@@ -169,7 +170,7 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
     const info = getCompetenceInfo(comp);
     const mediaGeralOriginal = indicadores[comp];
     
-    const raterScores = calculateRaterScores(mediaGeralOriginal, colaborador.departamento, comp, matricula, isLideranca);
+    const raterScores = calculateRaterScores(mediaGeralOriginal, depto, comp, matricula, isLideranca);
 
     return {
       competencia: info.nome,
@@ -186,9 +187,8 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
     };
   });
 
-  const comentariosAnonimizados = (avaliacoes || [])
-    .filter(a => a.tipo_avaliador !== "Autoavaliação" && a.tipo_avaliador !== "Auto")
-    .map(a => ({ tipo_avaliador: a.tipo_avaliador || "Avaliador", comentario: a.comentario! }));
+  const comentariosAnonimizados = ((avaliacoes as any[]) || [])
+    .map(a => ({ tipo_avaliador: "Avaliador", comentario: a.comentario as string }));
 
   const notaMediaGeral = feedback?.nota_media || 0;
   
@@ -267,10 +267,11 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     const colab = colaboradores.find(c => c.matricula === fb.avaliado_matricula);
     if (!colab) return;
 
-    if (!deptoMap.has(colab.departamento)) {
-      deptoMap.set(colab.departamento, { somaGeral: 0, countGeral: 0, somaGap: 0, competencias: new Map() });
+    const colabDepto = colab.departamento || "Sem Departamento";
+    if (!deptoMap.has(colabDepto)) {
+      deptoMap.set(colabDepto, { somaGeral: 0, countGeral: 0, somaGap: 0, competencias: new Map() });
     }
-    const d = deptoMap.get(colab.departamento)!;
+    const d = deptoMap.get(colabDepto)!;
 
     const indicadores: any = fb.indicadores || {};
     
@@ -278,8 +279,8 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     let userCompCount = 0;
     
     Object.keys(indicadores).forEach(comp => {
-      const isLideranca = checkIsLideranca(colab.cargo);
-      const raterScores = calculateRaterScores(indicadores[comp], colab.departamento, comp, fb.avaliado_matricula, isLideranca);
+      const isLideranca = checkIsLideranca((colab as any).cargo || "");
+      const raterScores = calculateRaterScores(indicadores[comp], colabDepto, comp, fb.avaliado_matricula, isLideranca);
       const gap = raterScores.mediaGestor - raterScores.mediaAuto;
 
       userTotalScore += raterScores.mediaGeral;

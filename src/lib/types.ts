@@ -49,6 +49,8 @@ export interface CompetenciaScore {
   mediaSubordinados: number;
   min: number;
   max: number;
+  mediaDepartamento?: number;
+  mediaEmpresa?: number;
   distribuicao?: { nota: number; quantidade: number }[];
 }
 

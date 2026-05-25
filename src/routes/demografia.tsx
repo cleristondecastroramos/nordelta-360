@@ -21,7 +21,7 @@ function DemografiaPage() {
       const colaboradores = await getColaboradoresList();
       
       const enriched = colaboradores.map(c => {
-        const isLeader = ["Diretor", "Gerente", "Coordenador", "Head", "Líder"].some(cargo => c.cargo.includes(cargo));
+        const isLeader = ["Diretor", "Gerente", "Coordenador", "Head", "Líder"].some(cargo => (c.cargo || "").includes(cargo));
         
         // Calcula anos de empresa de forma simplificada
         let anosEmpresa = 0;
