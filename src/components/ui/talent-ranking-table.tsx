@@ -83,7 +83,8 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
                 </td>
                 <td className="p-4 text-right">
                   <Link 
-                    to={`/colaboradores/${colab.matricula}`}
+                    to="/ficha-individual/$matricula"
+                    params={{ matricula: colab.matricula }}
                     className="text-xs font-medium text-primary hover:underline"
                   >
                     Ver Perfil

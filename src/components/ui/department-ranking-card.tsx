@@ -1,4 +1,32 @@
 import type { DepartmentStats } from "@/lib/types";
+import { 
+  Building2, 
+  Code, 
+  LineChart, 
+  Users, 
+  Briefcase, 
+  Megaphone, 
+  ShieldCheck, 
+  Headset, 
+  Wrench,
+  Stethoscope,
+  HeartHandshake
+} from "lucide-react";
+
+const getDepartmentIcon = (dept: string) => {
+  const d = dept.toLowerCase();
+  if (d.includes("tecnologia") || d.includes("ti") || d.includes("desenvolvimento") || d.includes("engenharia de software")) return <Code className="w-4 h-4" />;
+  if (d.includes("venda") || d.includes("comercial") || d.includes("negócio")) return <LineChart className="w-4 h-4" />;
+  if (d.includes("rh") || d.includes("recursos") || d.includes("pessoas") || d.includes("talentos")) return <Users className="w-4 h-4" />;
+  if (d.includes("financeiro") || d.includes("finança") || d.includes("controladoria")) return <Briefcase className="w-4 h-4" />;
+  if (d.includes("marketing") || d.includes("comunicação")) return <Megaphone className="w-4 h-4" />;
+  if (d.includes("jurídico") || d.includes("legal") || d.includes("compliance")) return <ShieldCheck className="w-4 h-4" />;
+  if (d.includes("atendimento") || d.includes("suporte") || d.includes("cliente")) return <Headset className="w-4 h-4" />;
+  if (d.includes("operações") || d.includes("engenharia") || d.includes("produção")) return <Wrench className="w-4 h-4" />;
+  if (d.includes("saúde") || d.includes("médico")) return <Stethoscope className="w-4 h-4" />;
+  if (d.includes("parceria") || d.includes("relacionamento")) return <HeartHandshake className="w-4 h-4" />;
+  return <Building2 className="w-4 h-4" />;
+};
 
 interface DepartmentRankingCardProps {
   departamentos: DepartmentStats[];
@@ -17,8 +45,8 @@ export function DepartmentRankingCard({ departamentos }: DepartmentRankingCardPr
         <div className="divide-y">
           {topDepto.map((depto, i) => (
             <div key={depto.departamento} className="flex items-center p-4 hover:bg-muted/30 transition-colors">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
-                {i + 1}
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary shadow-sm border border-primary/20">
+                {getDepartmentIcon(depto.departamento)}
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium leading-none mb-1">{depto.departamento}</p>

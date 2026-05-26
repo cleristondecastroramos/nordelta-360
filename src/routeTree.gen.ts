@@ -10,22 +10,42 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeedbacksRouteImport } from './routes/feedbacks'
+import { Route as EvolucaoHistoricaRouteImport } from './routes/evolucao-historica'
+import { Route as DepartamentosRouteImport } from './routes/departamentos'
 import { Route as DemografiaRouteImport } from './routes/demografia'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CiclosRouteImport } from './routes/ciclos'
+import { Route as AdministracaoPerfisRouteImport } from './routes/administracao-perfis'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FichaIndividualIndexRouteImport } from './routes/ficha-individual.index'
 import { Route as ColaboradoresIndexRouteImport } from './routes/colaboradores.index'
-import { Route as ColaboradoresMatriculaRouteImport } from './routes/colaboradores.$matricula'
+import { Route as FichaIndividualMatriculaRouteImport } from './routes/ficha-individual.$matricula'
 
 const RelatoriosRoute = RelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedbacksRoute = FeedbacksRouteImport.update({
   id: '/feedbacks',
   path: '/feedbacks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvolucaoHistoricaRoute = EvolucaoHistoricaRouteImport.update({
+  id: '/evolucao-historica',
+  path: '/evolucao-historica',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DepartamentosRoute = DepartamentosRouteImport.update({
+  id: '/departamentos',
+  path: '/departamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemografiaRoute = DemografiaRouteImport.update({
@@ -43,9 +63,19 @@ const CiclosRoute = CiclosRouteImport.update({
   path: '/ciclos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdministracaoPerfisRoute = AdministracaoPerfisRouteImport.update({
+  id: '/administracao-perfis',
+  path: '/administracao-perfis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FichaIndividualIndexRoute = FichaIndividualIndexRouteImport.update({
+  id: '/ficha-individual/',
+  path: '/ficha-individual/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ColaboradoresIndexRoute = ColaboradoresIndexRouteImport.update({
@@ -53,85 +83,121 @@ const ColaboradoresIndexRoute = ColaboradoresIndexRouteImport.update({
   path: '/colaboradores/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ColaboradoresMatriculaRoute = ColaboradoresMatriculaRouteImport.update({
-  id: '/colaboradores/$matricula',
-  path: '/colaboradores/$matricula',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const FichaIndividualMatriculaRoute =
+  FichaIndividualMatriculaRouteImport.update({
+    id: '/ficha-individual/$matricula',
+    path: '/ficha-individual/$matricula',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/demografia': typeof DemografiaRoute
+  '/departamentos': typeof DepartamentosRoute
+  '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
+  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
-  '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
+  '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores/': typeof ColaboradoresIndexRoute
+  '/ficha-individual/': typeof FichaIndividualIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/demografia': typeof DemografiaRoute
+  '/departamentos': typeof DepartamentosRoute
+  '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
+  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
-  '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
+  '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores': typeof ColaboradoresIndexRoute
+  '/ficha-individual': typeof FichaIndividualIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/demografia': typeof DemografiaRoute
+  '/departamentos': typeof DepartamentosRoute
+  '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
+  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
-  '/colaboradores/$matricula': typeof ColaboradoresMatriculaRoute
+  '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores/': typeof ColaboradoresIndexRoute
+  '/ficha-individual/': typeof FichaIndividualIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
     | '/demografia'
+    | '/departamentos'
+    | '/evolucao-historica'
     | '/feedbacks'
+    | '/login'
     | '/relatorios'
-    | '/colaboradores/$matricula'
+    | '/ficha-individual/$matricula'
     | '/colaboradores/'
+    | '/ficha-individual/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
     | '/demografia'
+    | '/departamentos'
+    | '/evolucao-historica'
     | '/feedbacks'
+    | '/login'
     | '/relatorios'
-    | '/colaboradores/$matricula'
+    | '/ficha-individual/$matricula'
     | '/colaboradores'
+    | '/ficha-individual'
   id:
     | '__root__'
     | '/'
+    | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
     | '/demografia'
+    | '/departamentos'
+    | '/evolucao-historica'
     | '/feedbacks'
+    | '/login'
     | '/relatorios'
-    | '/colaboradores/$matricula'
+    | '/ficha-individual/$matricula'
     | '/colaboradores/'
+    | '/ficha-individual/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdministracaoPerfisRoute: typeof AdministracaoPerfisRoute
   CiclosRoute: typeof CiclosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   DemografiaRoute: typeof DemografiaRoute
+  DepartamentosRoute: typeof DepartamentosRoute
+  EvolucaoHistoricaRoute: typeof EvolucaoHistoricaRoute
   FeedbacksRoute: typeof FeedbacksRoute
+  LoginRoute: typeof LoginRoute
   RelatoriosRoute: typeof RelatoriosRoute
-  ColaboradoresMatriculaRoute: typeof ColaboradoresMatriculaRoute
+  FichaIndividualMatriculaRoute: typeof FichaIndividualMatriculaRoute
   ColaboradoresIndexRoute: typeof ColaboradoresIndexRoute
+  FichaIndividualIndexRoute: typeof FichaIndividualIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -143,11 +209,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RelatoriosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feedbacks': {
       id: '/feedbacks'
       path: '/feedbacks'
       fullPath: '/feedbacks'
       preLoaderRoute: typeof FeedbacksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evolucao-historica': {
+      id: '/evolucao-historica'
+      path: '/evolucao-historica'
+      fullPath: '/evolucao-historica'
+      preLoaderRoute: typeof EvolucaoHistoricaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/departamentos': {
+      id: '/departamentos'
+      path: '/departamentos'
+      fullPath: '/departamentos'
+      preLoaderRoute: typeof DepartamentosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demografia': {
@@ -171,11 +258,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CiclosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/administracao-perfis': {
+      id: '/administracao-perfis'
+      path: '/administracao-perfis'
+      fullPath: '/administracao-perfis'
+      preLoaderRoute: typeof AdministracaoPerfisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ficha-individual/': {
+      id: '/ficha-individual/'
+      path: '/ficha-individual'
+      fullPath: '/ficha-individual/'
+      preLoaderRoute: typeof FichaIndividualIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/colaboradores/': {
@@ -185,11 +286,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ColaboradoresIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/colaboradores/$matricula': {
-      id: '/colaboradores/$matricula'
-      path: '/colaboradores/$matricula'
-      fullPath: '/colaboradores/$matricula'
-      preLoaderRoute: typeof ColaboradoresMatriculaRouteImport
+    '/ficha-individual/$matricula': {
+      id: '/ficha-individual/$matricula'
+      path: '/ficha-individual/$matricula'
+      fullPath: '/ficha-individual/$matricula'
+      preLoaderRoute: typeof FichaIndividualMatriculaRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -197,13 +298,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdministracaoPerfisRoute: AdministracaoPerfisRoute,
   CiclosRoute: CiclosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   DemografiaRoute: DemografiaRoute,
+  DepartamentosRoute: DepartamentosRoute,
+  EvolucaoHistoricaRoute: EvolucaoHistoricaRoute,
   FeedbacksRoute: FeedbacksRoute,
+  LoginRoute: LoginRoute,
   RelatoriosRoute: RelatoriosRoute,
-  ColaboradoresMatriculaRoute: ColaboradoresMatriculaRoute,
+  FichaIndividualMatriculaRoute: FichaIndividualMatriculaRoute,
   ColaboradoresIndexRoute: ColaboradoresIndexRoute,
+  FichaIndividualIndexRoute: FichaIndividualIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

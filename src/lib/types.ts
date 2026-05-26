@@ -23,7 +23,7 @@ export interface Colaborador {
   numero?: string;
   bairro?: string;
   cidade?: string;
-  estado_uf?: string; // Evitar conflito com 'estado' (Ativo/Inativo)
+  estado_uf?: string;
   altura?: string;
   peso?: string;
   is_lideranca?: boolean;
@@ -32,7 +32,7 @@ export interface Colaborador {
 export interface Avaliacao360 {
   matricula: string;
   ciclo: string;
-  tipo_avaliador: string; // Autoavaliação, Gestor, Par, Subordinado
+  tipo_avaliador: string;
   avaliador_id: string;
   competencia: string;
   nota: number;
@@ -88,13 +88,14 @@ export interface DepartmentStats {
   potencial: number;
   participacao: number;
   gapMedio: number;
+  competenciasDetalhadas?: { competencia: string; media: number; mediaEmpresa: number }[];
 }
 
 export interface GapAnalysis {
   departamento: string;
   competencia: string;
   descricao?: string;
-  gap: number; // Gestor - Auto
+  gap: number;
 }
 
 export interface DistributionData {
@@ -122,4 +123,86 @@ export interface DashboardMetrics {
   insights: InsightText[];
   gapHeatmap: GapAnalysis[];
   distribuicaoNotas: DistributionData[];
+}
+
+export interface DemographyMetrics {
+  totalColaboradores: number;
+  idadeMedia: number;
+  percentualFeminino: number;
+  departamentoMaior: string;
+  totalLideranca: number;
+  genderData: { name: string; value: number; color: string }[];
+  ageData: { name: string; value: number }[];
+  departmentData: { name: string; total: number; lideranca: number; operacao: number }[];
+  locationData: { name: string; value: number }[];
+  insights: InsightText[];
+}
+
+export interface EvolutionCycleData {
+  ciclo: string;
+  mediaGeral: number;
+  [key: string]: string | number;
+}
+
+export interface CompetencyEvolution {
+  competencia: string;
+  ciclos: { ciclo: string; media: number }[];
+  tendencia: "up" | "down" | "stable";
+  variacao: number;
+}
+
+export interface DepartmentEvolution {
+  departamento: string;
+  ciclos: { ciclo: string; media: number }[];
+  tendencia: "up" | "down" | "stable";
+  variacao: number;
+}
+
+export interface EvolutionMetrics {
+  notaMediaAtual: number;
+  variacaoCicloAnterior: number;
+  melhorCiclo: { ciclo: string; media: number };
+  maiorVariacaoPositiva: { departamento: string; variacao: number };
+  maiorVariacaoNegativa: { departamento: string; variacao: number };
+  totalCiclos: number;
+  historicoGeral: EvolutionCycleData[];
+  evolucaoCompetencias: CompetencyEvolution[];
+  evolucaoDepartamentos: DepartmentEvolution[];
+  insights: InsightText[];
+}
+
+export type RoleType = "Administrador" | "Auditor" | "Gestor" | "Colaborador";
+export type StatusType = "Ativo" | "Bloqueado" | "Inativo";
+
+export interface SystemUser {
+  id: string;
+  matricula: string;
+  nome: string;
+  email: string;
+  cargo: string;
+  departamento: string;
+  status: StatusType;
+  role: RoleType;
+  ultimoAcesso: string;
+  modulos: string[];
+}
+
+export interface AuditLog {
+  id: string;
+  usuarioAdmin: string;
+  acao: string;
+  detalhe: string;
+  dataHora: string;
+  status: "Sucesso" | "Aviso" | "Erro";
+}
+
+export interface AdminMetrics {
+  totalUsuarios: number;
+  perfisAtivos: number;
+  totalAdministradores: number;
+  perfisRestritos: number;
+  alteracoesRecentes: number;
+  usuariosPendentes: number;
+  usuarios: SystemUser[];
+  auditoria: AuditLog[];
 }

@@ -62,9 +62,13 @@ function Dashboard() {
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-700">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Executive Analytics</h1>
-        <p className="text-muted-foreground">Visão estratégica e consolidação de resultados do ciclo de Avaliação 360°.</p>
+      <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 pb-6 mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+          Painel Executivo de Performance
+        </h1>
+        <p className="text-muted-foreground text-base sm:text-lg max-w-3xl font-medium tracking-wide">
+          Visão estratégica da avaliação 360° e da evolução dos talentos da Nordelta.
+        </p>
       </div>
 
       {/* KPI Strip */}

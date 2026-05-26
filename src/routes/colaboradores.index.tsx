@@ -273,7 +273,8 @@ function ColaboradoresList() {
                     <td className="p-4 align-middle text-right">
                       <div className="flex justify-end gap-2">
                         <Link
-                          to={`/colaboradores/${colab.matricula}`}
+                          to="/ficha-individual/$matricula"
+                          params={{ matricula: colab.matricula }}
                           className="inline-flex items-center justify-center rounded-md border border-input bg-background h-8 w-8 hover:bg-accent hover:text-accent-foreground"
                           title="Ficha Individual"
                         >

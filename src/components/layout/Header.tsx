@@ -1,12 +1,17 @@
 import { Bell, Search, LogOut, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export function Header() {
+export function Header({ isSidebarCollapsed = false }: { isSidebarCollapsed?: boolean }) {
   return (
-    <header className="fixed top-0 left-64 right-0 z-30 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={`fixed top-0 ${isSidebarCollapsed ? 'left-20' : 'left-64'} right-0 z-30 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300`}>
       <div className="flex h-full items-center justify-between px-6">
-        <div className="flex w-full max-w-sm items-center space-x-2">
-          <div className="relative w-full">
+        <div className="flex w-full max-w-lg items-center space-x-6">
+          <img 
+            src="/logo_nordelta_fundo_claro.png" 
+            alt="Nordelta 360" 
+            className="h-7 lg:h-8" 
+          />
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <input
               type="search"
@@ -27,12 +32,12 @@ export function Header() {
           
           <div className="flex items-center space-x-2 border-l pl-4">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="" alt="Admin" />
-              <AvatarFallback className="bg-primary/10 text-primary">AD</AvatarFallback>
+              <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" alt="Ana Silva" className="object-cover" />
+              <AvatarFallback className="bg-primary/10 text-primary">AS</AvatarFallback>
             </Avatar>
             <div className="hidden flex-col space-y-1 lg:flex">
-              <span className="text-sm font-medium leading-none">Admin RH</span>
-              <span className="text-xs text-muted-foreground">RH & Analytics</span>
+              <span className="text-sm font-medium leading-none">Ana Silva</span>
+              <span className="text-xs text-muted-foreground">Admin RH</span>
             </div>
           </div>
         </div>
