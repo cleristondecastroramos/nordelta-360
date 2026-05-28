@@ -7,7 +7,9 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Cell
+  Cell,
+  ReferenceLine,
+  LabelList
 } from "recharts";
 
 interface DepartmentComparisonChartProps {
@@ -16,29 +18,66 @@ interface DepartmentComparisonChartProps {
   onSelectDepartment: (dept: string) => void;
 }
 
+const CustomXAxisTick = ({ x, y, payload }: any) => {
+  const words = payload.value.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  words.forEach((word: string) => {
+    if ((currentLine + word).length > 14) {
+      if (currentLine) lines.push(currentLine.trim());
+      currentLine = word + " ";
+    } else {
+      currentLine += word + " ";
+    }
+  });
+  if (currentLine) lines.push(currentLine.trim());
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize={11}>
+        {lines.map((line, index) => (
+          <tspan x={0} dy={index === 0 ? 0 : 12} key={index}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    </g>
+  );
+};
+
 export function DepartmentComparisonChart({
   departamentos,
   selectedDepartment,
   onSelectDepartment
 }: DepartmentComparisonChartProps) {
-  // Use tailwind primary and muted colors
+  // Use tailwind primary color
   const primaryColor = "hsl(var(--primary))";
-  const mutedColor = "hsl(var(--muted))";
-  const accentColor = "hsl(var(--emerald-500))";
 
-  // Sort by name or keep as is (ranking order). Let's keep ranking order for now.
+  // Parse media to ensure it is a number
   const data = [...departamentos].slice(0, 10).map(d => ({
-    name: d.departamento.substring(0, 15) + (d.departamento.length > 15 ? "..." : ""),
+    name: d.departamento,
     fullName: d.departamento,
-    media: d.media
+    media: Number(d.media) || 0
   }));
+
+  // Robust calculation for average, avoiding NaN if data is strings
+  let sum = 0;
+  let count = 0;
+  data.forEach(d => {
+    if (!isNaN(d.media)) {
+      sum += d.media;
+      count++;
+    }
+  });
+  const mediaGeral = count > 0 ? Number((sum / count).toFixed(2)) : 0;
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover text-popover-foreground border border-border shadow-xl p-3 rounded-lg text-sm">
           <p className="font-semibold mb-1">{payload[0].payload.fullName}</p>
-          <p className="text-muted-foreground">Média Geral: <span className="font-bold text-foreground">{payload[0].value.toFixed(2)}</span></p>
+          <p className="text-muted-foreground">Média: <span className="font-bold text-foreground">{payload[0].value.toFixed(2)}</span></p>
         </div>
       );
     }
@@ -51,42 +90,64 @@ export function DepartmentComparisonChart({
         <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">Desempenho Corporativo por Área</h3>
         <p className="text-sm text-muted-foreground">Comparativo das 10 principais áreas em nota média global.</p>
       </div>
-      <div className="flex-1 min-h-[300px] w-full">
+      <div className="flex-1 min-h-[300px] w-full mt-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
-            layout="vertical"
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            margin={{ top: 25, right: 10, left: 10, bottom: 65 }}
             onClick={(state) => {
               if (state && state.activePayload && state.activePayload.length > 0) {
                 onSelectDepartment(state.activePayload[0].payload.fullName);
               }
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" opacity={0.5} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
             <XAxis 
-              type="number" 
-              domain={[0, 5]} 
-              tickCount={6} 
-              tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} 
+              dataKey="name" 
+              interval={0}
+              tick={<CustomXAxisTick />}
               axisLine={false}
               tickLine={false}
             />
             <YAxis 
-              type="category" 
-              dataKey="name" 
-              width={120} 
-              tick={{ fontSize: 12, fill: "hsl(var(--foreground))", fontWeight: 500 }} 
+              type="number"
+              domain={[0, 5.5]} 
               axisLine={false}
               tickLine={false}
+              tick={false}
+              width={0}
             />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }} />
+            {mediaGeral > 0 && (
+              <ReferenceLine 
+                y={mediaGeral} 
+                stroke="hsl(var(--foreground))" 
+                strokeDasharray="5 5" 
+                strokeWidth={2}
+                label={{ 
+                  value: "Média Geral", 
+                  position: "insideTopLeft", 
+                  fill: "hsl(var(--foreground))", 
+                  fontSize: 12, 
+                  fontWeight: 600,
+                  offset: 10
+                }}
+              />
+            )}
             <Bar 
               dataKey="media" 
-              radius={[0, 4, 4, 0]}
-              barSize={24}
+              radius={[4, 4, 0, 0]}
+              barSize={56}
               className="cursor-pointer transition-all duration-300"
             >
+              <LabelList 
+                dataKey="media" 
+                position="top" 
+                formatter={(val: number) => val.toFixed(2)} 
+                fill="hsl(var(--foreground))" 
+                fontSize={12} 
+                fontWeight={600} 
+              />
               {data.map((entry, index) => {
                 const isSelected = selectedDepartment === entry.fullName;
                 return (
