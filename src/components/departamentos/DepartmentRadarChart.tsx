@@ -30,13 +30,15 @@ export function DepartmentRadarChart({ departamento }: DepartmentRadarChartProps
     );
   }
 
-  const data = departamento.competenciasDetalhadas.map(c => ({
-    subject: c.competencia.split(" ")[0], // Use first word for brevity in radar
-    fullName: c.competencia,
-    A: c.media,
-    B: c.mediaEmpresa,
-    fullMark: 5
-  }));
+  const data = departamento.competenciasDetalhadas
+    .filter(c => c.competencia !== "comentario")
+    .map(c => ({
+      subject: c.competencia.split(" ")[0], // Use first word for brevity in radar
+      fullName: c.competencia,
+      A: c.media,
+      B: c.mediaEmpresa,
+      fullMark: 5
+    }));
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -70,18 +72,18 @@ export function DepartmentRadarChart({ departamento }: DepartmentRadarChartProps
         </h3>
         <p className="text-sm text-muted-foreground">Comparativo das pontuações do setor contra a média geral da organização.</p>
       </div>
-      <div className="flex-1 w-full min-h-[350px]">
+      <div className="flex-1 w-full min-h-[600px]">
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius="75%" data={data}>
-            <PolarGrid stroke="hsl(var(--border))" />
+          <RadarChart cx="50%" cy="50%" outerRadius="95%" data={data}>
+            <PolarGrid stroke="#e2e8f0" />
             <PolarAngleAxis 
               dataKey="subject" 
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 11, fontWeight: 500 }} 
+              tick={{ fill: "#334155", fontSize: 11, fontWeight: 600 }} 
             />
             <PolarRadiusAxis 
               angle={30} 
               domain={[0, 5]} 
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+              tick={{ fill: "#94a3b8", fontSize: 10 }}
               tickCount={6}
             />
             <RechartsTooltip content={<CustomTooltip />} />
@@ -89,18 +91,19 @@ export function DepartmentRadarChart({ departamento }: DepartmentRadarChartProps
             <Radar 
               name={departamento.departamento} 
               dataKey="A" 
-              stroke="hsl(var(--primary))" 
-              fill="hsl(var(--primary))" 
-              fillOpacity={0.5} 
-              strokeWidth={2}
+              stroke="#2563eb" 
+              fill="#3b82f6" 
+              fillOpacity={0.6} 
+              strokeWidth={3}
             />
             <Radar 
               name="Média Empresa" 
               dataKey="B" 
-              stroke="hsl(var(--slate-400))" 
-              fill="hsl(var(--slate-400))" 
-              fillOpacity={0.2}
-              strokeDasharray="3 3"
+              stroke="#f97316" 
+              fill="#f97316" 
+              fillOpacity={0.15}
+              strokeWidth={2}
+              strokeDasharray="4 4"
             />
           </RadarChart>
         </ResponsiveContainer>

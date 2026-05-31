@@ -24,7 +24,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
     {
       title: "Performance & Analytics",
       items: [
-        { name: "Dashboard Executivo", path: "/", icon: LayoutDashboard },
+        { name: "Dashboard Executivo", path: "/dashboard", icon: LayoutDashboard },
         { name: "Departamentos", path: "/departamentos", icon: Building },
         { name: "Demografia", path: "/demografia", icon: PieChart },
         { name: "Evolução Histórica", path: "/evolucao-historica", icon: TrendingUp },
@@ -90,7 +90,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
             )}
             <ul className="space-y-1.5">
               {section.items.map((item) => {
-                const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+                const isActive = location.pathname === item.path || (item.path !== "/" && item.path !== "/dashboard" && location.pathname.startsWith(item.path));
                 const Icon = item.icon;
                 
                 return (
@@ -129,7 +129,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
                 <p className="text-sm font-semibold text-slate-200 truncate">Ana Silva</p>
                 <p className="text-xs text-slate-500 truncate">Admin RH</p>
               </div>
-              <Link to="/login" className="p-1.5 hover:bg-slate-700 rounded-md transition-colors shrink-0" title="Sair">
+              <Link to="/" onClick={() => sessionStorage.removeItem('isAuthenticated')} className="p-1.5 hover:bg-slate-700 rounded-md transition-colors shrink-0" title="Sair">
                 <LogOut className="h-4 w-4 text-slate-400 hover:text-rose-400 transition-colors" />
               </Link>
             </>
@@ -145,7 +145,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
           </div>
         )}
         {isCollapsed && (
-           <Link to="/login" className="p-2 hover:bg-slate-700 rounded-md transition-colors" title="Sair">
+           <Link to="/" onClick={() => sessionStorage.removeItem('isAuthenticated')} className="p-2 hover:bg-slate-700 rounded-md transition-colors" title="Sair">
              <LogOut className="h-4 w-4 text-slate-400 hover:text-rose-400 transition-colors" />
            </Link>
         )}

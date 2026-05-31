@@ -16,6 +16,7 @@ interface DepartmentComparisonChartProps {
   departamentos: DepartmentStats[];
   selectedDepartment: string | null;
   onSelectDepartment: (dept: string) => void;
+  mediaGeral: number;
 }
 
 const CustomXAxisTick = ({ x, y, payload }: any) => {
@@ -49,7 +50,8 @@ const CustomXAxisTick = ({ x, y, payload }: any) => {
 export function DepartmentComparisonChart({
   departamentos,
   selectedDepartment,
-  onSelectDepartment
+  onSelectDepartment,
+  mediaGeral
 }: DepartmentComparisonChartProps) {
   // Use tailwind primary color
   const primaryColor = "hsl(var(--primary))";
@@ -60,17 +62,6 @@ export function DepartmentComparisonChart({
     fullName: d.departamento,
     media: Number(d.media) || 0
   }));
-
-  // Robust calculation for average, avoiding NaN if data is strings
-  let sum = 0;
-  let count = 0;
-  data.forEach(d => {
-    if (!isNaN(d.media)) {
-      sum += d.media;
-      count++;
-    }
-  });
-  const mediaGeral = count > 0 ? Number((sum / count).toFixed(2)) : 0;
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -94,7 +85,7 @@ export function DepartmentComparisonChart({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
-            margin={{ top: 25, right: 10, left: 10, bottom: 65 }}
+            margin={{ top: 30, right: 50, left: 10, bottom: 5 }}
             onClick={(state) => {
               if (state && state.activePayload && state.activePayload.length > 0) {
                 onSelectDepartment(state.activePayload[0].payload.fullName);
@@ -111,7 +102,8 @@ export function DepartmentComparisonChart({
             />
             <YAxis 
               type="number"
-              domain={[0, 5.5]} 
+              domain={[0, 4.0]} 
+
               axisLine={false}
               tickLine={false}
               tick={false}
@@ -121,15 +113,15 @@ export function DepartmentComparisonChart({
             {mediaGeral > 0 && (
               <ReferenceLine 
                 y={mediaGeral} 
-                stroke="hsl(var(--foreground))" 
-                strokeDasharray="5 5" 
-                strokeWidth={2}
+                stroke="#f97316" 
+                strokeDasharray="6 6" 
+                strokeWidth={3}
                 label={{ 
-                  value: "Média Geral", 
-                  position: "insideTopLeft", 
-                  fill: "hsl(var(--foreground))", 
-                  fontSize: 12, 
-                  fontWeight: 600,
+                  value: mediaGeral.toFixed(2), 
+                  position: "right", 
+                  fill: "#f97316", 
+                  fontSize: 14, 
+                  fontWeight: "bold",
                   offset: 10
                 }}
               />

@@ -1,0 +1,235 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Users, TrendingUp, Target, Award, Building, Activity, Info } from "lucide-react";
+import { getDashboardMetrics } from "@/lib/data-service";
+import type { DashboardMetrics } from "@/lib/types";
+
+// UI Components
+import { ExecutiveKpiCard } from "@/components/ui/executive-kpi-card";
+import { RadarExecutiveChart } from "@/components/ui/radar-executive-chart";
+import { GapHeatmap } from "@/components/ui/gap-heatmap";
+import { DepartmentRankingCard } from "@/components/ui/department-ranking-card";
+import { TalentRankingTable } from "@/components/ui/talent-ranking-table";
+import { InsightPanel } from "@/components/ui/insight-panel";
+import { ExplainerBox } from "@/components/ui/explainer-box";
+import { DistributionChart } from "@/components/ui/distribution-chart";
+import { AlertPanel } from "@/components/ui/alert-panel";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+export const Route = createFileRoute("/dashboard")({
+  component: Dashboard,
+});
+
+function Dashboard() {
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getDashboardMetrics();
+        setMetrics(data);
+      } catch (error) {
+        console.error("Failed to load metrics:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-[calc(100vh-8rem)] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">Carregando painel executivo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!metrics || metrics.totalColaboradores === 0) {
+    return (
+      <div className="max-w-3xl mx-auto mt-12">
+        <AlertPanel 
+          type="error"
+          title="Dados ainda não disponíveis"
+          items={["Não encontramos registros no banco para renderizar o painel. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias."]}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 pb-12 animate-in fade-in duration-700">
+      <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 pb-6 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+            Painel Executivo de Performance
+          </h1>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Badge variant="outline" className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 text-sm py-1 px-3 flex items-center gap-1.5 transition-colors w-fit">
+                <Info className="w-4 h-4" />
+                Contexto do Case
+              </Badge>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[700px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-2xl">
+                  <Info className="h-6 w-6 text-primary" />
+                  Contexto do Case: Nordelta 360°
+                </DialogTitle>
+                <DialogDescription className="text-base pt-2">
+                  Uma visão detalhada sobre os dados e o propósito deste sistema simulado.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-6 md:grid-cols-2 mt-4">
+                <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300">
+                  <p>
+                    <strong className="text-slate-900 dark:text-white font-semibold">Empresa Fictícia:</strong> Nordelta Soluções Corporativas (Ramo: Tecnologia B2B).
+                  </p>
+                  <p>
+                    <strong className="text-slate-900 dark:text-white font-semibold">Estrutura:</strong> 614 colaboradores distribuídos em 6 departamentos (Tecnologia, Comercial, RH, Financeiro, Operações e Marketing).
+                  </p>
+                  <p>
+                    <strong className="text-slate-900 dark:text-white font-semibold">O Sistema:</strong> Uma plataforma executiva de <em>People Analytics</em> para consolidar dados de performance, identificar gaps de percepção e guiar o desenvolvimento de talentos.
+                  </p>
+                </div>
+                <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300">
+                  <p>
+                    <strong className="text-slate-900 dark:text-white font-semibold">Tipo de Avaliação:</strong> Avaliação 360°, cruzando visões do Gestor, Autoavaliação e Pares. A escala de notas vai de 1.0 (Insatisfatório) a 5.0 (Excepcional).
+                  </p>
+                  <p>
+                    <strong className="text-slate-900 dark:text-white font-semibold">Como Utilizar:</strong> Analise os KPIs para visão global. O <strong>Radar</strong> compara a empresa com ciclos anteriores; o <strong>Heatmap</strong> identifica vieses de avaliação; e a <strong>Distribuição de Curva</strong> espelha a alta dispersão de performance da equipe.
+                  </p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <p className="text-muted-foreground text-base sm:text-lg max-w-3xl font-medium tracking-wide">
+          Visão estratégica da avaliação 360° e da evolução dos talentos da Nordelta.
+        </p>
+      </div>
+
+      {/* KPI Strip */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <ExecutiveKpiCard
+          title="Colaboradores"
+          value={metrics.totalColaboradores}
+          icon={<Users className="h-5 w-5" />}
+          tooltipTitle="Volume da Base"
+          tooltipDesc="Total de colaboradores avaliados ou participantes."
+        />
+        <ExecutiveKpiCard
+          title="Participação"
+          value={`${metrics.participacaoCiclo}%`}
+          icon={<Activity className="h-5 w-5" />}
+          trend={{ value: "2%", positive: true }}
+          tooltipTitle="Taxa de Adesão"
+          tooltipDesc="Percentual de avaliações preenchidas vs esperadas no ciclo."
+        />
+        <ExecutiveKpiCard
+          title="Nota Global"
+          value={metrics.notaMediaGeral}
+          icon={<Target className="h-5 w-5" />}
+          trend={{ value: "0.2", positive: true }}
+          tooltipTitle="Média Geral Empresa"
+          tooltipDesc="Média aritmética de todas as avaliações consolidadas da organização."
+          tooltipCalc="Soma Notas / Total Avaliações"
+          className="border-primary/20 bg-primary/5"
+        />
+        <ExecutiveKpiCard
+          title="Índice Potencial"
+          value={metrics.mediaPotencial}
+          icon={<TrendingUp className="h-5 w-5" />}
+          tooltipTitle="Média de Potencial"
+          tooltipDesc="Cálculo preditivo de potencial baseado nas notas de liderança e inovação."
+        />
+        <ExecutiveKpiCard
+          title="Percentil Médio"
+          value={metrics.percentilMedio}
+          icon={<Award className="h-5 w-5" />}
+          tooltipTitle="Percentil Global"
+          tooltipDesc="A distribuição de curva forçada da empresa."
+        />
+        <ExecutiveKpiCard
+          title="Departamentos"
+          value={metrics.totalDepartamentos}
+          icon={<Building className="h-5 w-5" />}
+          tooltipTitle="Áreas Avaliadas"
+          tooltipDesc="Total de áreas de negócios com avaliações válidas."
+        />
+      </div>
+
+      {/* Radar and Insights */}
+      <div className="grid gap-6 grid-cols-1 xl:grid-cols-3">
+        <div className="xl:col-span-2 rounded-xl border bg-card shadow-sm flex flex-col">
+          <div className="p-6 border-b flex justify-between items-center">
+            <div>
+              <h3 className="font-semibold text-lg">Mapeamento de Competências (Radar Executivo)</h3>
+              <p className="text-sm text-muted-foreground">Comparativo de Média Global vs Ciclo Anterior.</p>
+            </div>
+          </div>
+          <div className="flex-1 p-6 flex flex-col xl:flex-row gap-6 items-center">
+            <div className="w-full xl:w-2/3 h-[400px]">
+              <RadarExecutiveChart data={metrics.mediasPorCompetencia} />
+            </div>
+            <div className="w-full xl:w-1/3">
+               <ExplainerBox 
+                title="Como ler o Radar"
+                description="O preenchimento em azul sólido representa a competência atual da empresa. A linha tracejada cinza projeta o resultado do ciclo passado. Quanto mais próximo das bordas, mais madura a competência."
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="h-full min-h-[480px]">
+           <DepartmentRankingCard departamentos={metrics.departamentos} />
+        </div>
+      </div>
+
+      {/* Heatmap Section */}
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
+        <div className="p-6 border-b bg-muted/10">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-lg">Heatmap de Gaps (Gestor vs Autoavaliação)</h3>
+          </div>
+          <p className="text-[13px] text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+            Identifique facilmente as distorções de percepção. Cores azul (sky) indicam que o gestor enxerga o colaborador melhor do que ele mesmo (Síndrome do Impostor). Cores vermelho (rose) indicam que o colaborador se enxerga melhor do que o gestor (Efeito Dunning-Kruger).
+          </p>
+        </div>
+        <div className="p-6">
+           <GapHeatmap data={metrics.gapHeatmap} />
+        </div>
+      </div>
+
+      {/* Distribution & Talent */}
+      <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
+        <div className="rounded-xl border bg-card shadow-sm flex flex-col">
+          <div className="p-6 border-b">
+            <h3 className="font-semibold text-lg">Distribuição de Curva (Histograma)</h3>
+            <p className="text-sm text-muted-foreground">Concentração do volume de colaboradores por faixa de nota.</p>
+          </div>
+          <div className="p-6 flex-1 h-[350px]">
+             <DistributionChart data={metrics.distribuicaoNotas} />
+          </div>
+        </div>
+        
+        <div className="h-full min-h-[450px]">
+          <TalentRankingTable ranking={metrics.ranking} />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,5 +1,6 @@
 import { DepartmentStats } from "@/lib/types";
 import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DepartmentRankingTableProps {
   departamentos: DepartmentStats[];
@@ -79,9 +80,21 @@ export function DepartmentRankingTable({
                     </span>
                   </td>
                   <td className="px-4 py-4 text-right">
-                    <div className={`inline-flex items-center justify-center h-8 w-8 rounded-full transition-colors ${isSelected ? "bg-primary text-primary-foreground" : "text-muted-foreground bg-transparent group-hover:bg-muted"}`}>
-                      <ChevronRight className="h-4 w-4" />
-                    </div>
+                    <Button 
+                      variant={isSelected ? "default" : "outline"} 
+                      size="sm"
+                      className={`text-xs transition-colors h-8 ${isSelected ? "" : "opacity-0 group-hover:opacity-100 focus:opacity-100"}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectDepartment(depto.departamento);
+                        // Delay scroll slightly to ensure radar chart is rendered/updated if it wasn't selected
+                        setTimeout(() => {
+                          document.getElementById('department-details')?.scrollIntoView({ behavior: 'smooth' });
+                        }, 50);
+                      }}
+                    >
+                      Analisar <ChevronRight className="ml-1 h-3 w-3" />
+                    </Button>
                   </td>
                 </tr>
               );

@@ -1,13 +1,20 @@
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { PortfolioBanner } from "./PortfolioBanner";
-import { useLocation } from "@tanstack/react-router";
-import { useState } from "react";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
+  const navigate = useNavigate();
+  const isLoginPage = location.pathname === "/";
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (!isLoginPage && sessionStorage.getItem("isAuthenticated") !== "true") {
+      navigate({ to: "/" });
+    }
+  }, [isLoginPage, location.pathname, navigate]);
 
   if (isLoginPage) {
     return <>{children}</>;

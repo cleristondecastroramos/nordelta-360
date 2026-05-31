@@ -1,4 +1,4 @@
-import { Bar, BarChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis, CartesianGrid, Cell, LabelList } from "recharts";
 
 interface AgeRangeChartProps {
   data: { name: string; value: number }[];
@@ -37,10 +37,11 @@ export function AgeRangeChart({ data }: AgeRangeChartProps) {
             <YAxis 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} 
+              tick={false} 
             />
             <RechartsTooltip cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }} content={<CustomTooltip />} />
             <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={40}>
+              <LabelList dataKey="value" position="top" fill="hsl(var(--muted-foreground))" fontSize={12} fontWeight={600} />
               {data.map((entry, index) => {
                 const colors = ["#1e40af", "#4338ca", "#0f766e", "#0369a1", "#64748b", "#334155"];
                 return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;

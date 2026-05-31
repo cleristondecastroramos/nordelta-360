@@ -9,6 +9,7 @@ import { AlertPanel } from "@/components/ui/alert-panel";
 import { DemographyKpiCard } from "@/components/demografia/DemographyKpiCard";
 import { GenderDistributionChart } from "@/components/demografia/GenderDistributionChart";
 import { AgeRangeChart } from "@/components/demografia/AgeRangeChart";
+import { TenureDistributionChart } from "@/components/demografia/TenureDistributionChart";
 import { DepartmentCompositionChart } from "@/components/demografia/DepartmentCompositionChart";
 import { LocationMapChart } from "@/components/demografia/LocationMapChart";
 import { DemographyInsightPanel } from "@/components/demografia/DemographyInsightPanel";
@@ -120,10 +121,11 @@ function DemografiaPage() {
         />
       </div>
 
-      {/* Grade Superior: Gênero e Idade */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Grade Superior: Gênero, Idade e Tempo de Empresa */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <GenderDistributionChart data={metrics.genderData} />
         <AgeRangeChart data={metrics.ageData} />
+        <TenureDistributionChart data={metrics.tenureData} />
       </div>
 
       {/* Grade Central: Departamento, Localização e Insights */}

@@ -133,6 +133,7 @@ export interface DemographyMetrics {
   totalLideranca: number;
   genderData: { name: string; value: number; color: string }[];
   ageData: { name: string; value: number }[];
+  tenureData: { name: string; value: number; color: string }[];
   departmentData: { name: string; total: number; lideranca: number; operacao: number }[];
   locationData: { name: string; value: number }[];
   insights: InsightText[];

@@ -10,7 +10,7 @@ interface DepartmentEmployeeListProps {
 export function DepartmentEmployeeList({ departamento, colaboradores }: DepartmentEmployeeListProps) {
   if (!departamento) {
     return (
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full items-center justify-center min-h-[400px]">
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full items-center justify-center min-h-[300px]">
         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
           <Users className="h-8 w-8 text-muted-foreground" />
         </div>

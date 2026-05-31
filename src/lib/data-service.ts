@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Colaborador, ColaboradorResultados, DashboardMetrics, DepartmentStats, GapAnalysis, InsightText, DemographyMetrics, EvolutionMetrics, EvolutionCycleData, CompetencyEvolution, DepartmentEvolution, AdminMetrics, SystemUser, AuditLog, RoleType, StatusType } from "./types";
 import { getCompetenceInfo } from "./competence-map";
+import realScoresData from "./real_scores.json";
 
 export function checkIsLideranca(cargo: string): boolean {
   const c = (cargo || "").toLowerCase();
@@ -86,11 +87,8 @@ export function calculateRaterScores(baseValue: number, depto: string, comp: str
   }
 
   // ─── STEP 4: COMPOSE ADJUSTED BASE ───────────────────────────────────────────
-  // Use a fixed midpoint of 3.0 as the neutral center; apply all offsets on top
-  const neutralBase = 3.0;
-  const adjustedBase = Math.min(5.0, Math.max(1.0,
-    neutralBase + archetypeOffset + deptStrength + compVariance
-  ));
+  // Use real score from CSV
+  const adjustedBase = Math.min(5.0, Math.max(1.0, baseValue));
 
   // ─── STEP 5: RATER DIVERGENCE PATTERN ────────────────────────────────────────
   // 5 patterns — assigned per (colaborador × competência) deterministically
@@ -120,13 +118,94 @@ export function calculateRaterScores(baseValue: number, depto: string, comp: str
   // Apply small random noise on top of biases for realism
   const noise = (seed: string) => rand(seed) * 0.5 - 0.25;
 
-  const gestor = Math.min(5, Math.max(1, adjustedBase + gestorBias + noise(matricula + comp + "G_noise")));
-  const auto   = Math.min(5, Math.max(1, adjustedBase + autoBias   + noise(matricula + comp + "A_noise")));
-  const pares  = Math.min(5, Math.max(1, adjustedBase + paresBias  + noise(matricula + comp + "P_noise")));
+  let gestor = Math.min(4.1, Math.max(1, adjustedBase + gestorBias + noise(matricula + comp + "G_noise")));
+  let auto   = Math.min(4.1, Math.max(1, adjustedBase + autoBias   + noise(matricula + comp + "A_noise")));
+  let pares  = Math.min(4.1, Math.max(1, adjustedBase + paresBias  + noise(matricula + comp + "P_noise")));
 
   let subordinados = 0;
   if (isLideranca) {
-    subordinados = Math.min(5, Math.max(1, adjustedBase + subBias + noise(matricula + comp + "S_noise")));
+    subordinados = Math.min(4.1, Math.max(1, adjustedBase + subBias + noise(matricula + comp + "S_noise")));
+  }
+
+  // ─── OVERRIDE: SPECIFIC SCORES REQUESTED BY USER ─────────────────────────────
+  let overrideTarget: "low" | "high" | "mkt-high" | "mkt-low" | "com-low" | "dunning-kruger" | null = null;
+  
+  // DUNNING-KRUGER (Auto > Gestor -> Red Gap)
+  if ((d.includes('comercial') || d.includes('vend')) && (c.includes('ética') || c.includes('etica'))) {
+    overrideTarget = "dunning-kruger";
+  }
+  if ((d.includes('rh') || d.includes('recursos')) && (c.includes('produtividade') || c.includes('capacidade'))) {
+    overrideTarget = "dunning-kruger";
+  }
+  if ((d.includes('operac') || d.includes('operaç')) && c.includes('comunica')) {
+    overrideTarget = "dunning-kruger";
+  }
+
+  // LOW
+  if ((d.includes('comercial') || d.includes('vend')) && (c.includes('lideran') || c.includes('capacidade') || c.includes('problem') || c.includes('desenvolviment'))) {
+    overrideTarget = "com-low";
+  }
+  if ((d.includes('operac') || d.includes('operaç') || d.includes('produc') || d.includes('produç')) && (c.includes('lideran') || c.includes('desenvolviment'))) {
+    overrideTarget = "low";
+  }
+
+  // HIGH
+  if ((d.includes('tecnologia') || d.includes('ti') || d.includes('sistemas')) && (c.includes('produtividade') || c.includes('tempo') || c.includes('trabalho') || c.includes('equipe'))) {
+    overrideTarget = "high"; // Produtividade & Trabalho em Equipe
+  }
+  if ((d.includes('financ') || d.includes('contab')) && (c.includes('ética') || c.includes('etica') || c.includes('adapta') || c.includes('mudança') || c.includes('flexibilidade'))) {
+    overrideTarget = "high"; // Ética & Adaptação
+  }
+  if ((d.includes('operac') || d.includes('operaç') || d.includes('produc') || d.includes('produç')) && (c.includes('capacidade') || c.includes('problem'))) {
+    overrideTarget = "high"; // Capacidade de resolver problemas
+  }
+
+  // MARKETING OVERRIDES
+  if (d.includes('marketing') || d.includes('comunica')) {
+    if (c.includes('capacidade') || c.includes('problem') || c.includes('iniciativa') || c.includes('proativid')) {
+      overrideTarget = "mkt-high";
+    }
+    if (c.includes('qualidade') || c.includes('produtividade') || c.includes('tempo')) {
+      overrideTarget = "mkt-low";
+    }
+  }
+
+  if (overrideTarget === "low") {
+    const lowBase = 1.0 + rand(matricula + comp + "penalty") * 0.4; // 1.0 to 1.4 max
+    gestor = Math.min(4.1, Math.max(1, lowBase + noise(matricula + comp + "G_p")));
+    auto   = Math.min(4.1, Math.max(1, lowBase + noise(matricula + comp + "A_p")));
+    pares  = Math.min(4.1, Math.max(1, lowBase + noise(matricula + comp + "P_p")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, lowBase + noise(matricula + comp + "S_p")));
+  } else if (overrideTarget === "com-low") {
+    const base = 2.2 + rand(matricula + comp + "com_l") * 0.3; // 2.2 to 2.5 (~2.35)
+    gestor = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "G_p")));
+    auto   = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "A_p")));
+    pares  = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "P_p")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "S_p")));
+  } else if (overrideTarget === "high") {
+    const highBase = 3.9 + rand(matricula + comp + "bonus") * 0.2; // 3.9 to 4.1
+    gestor = Math.min(4.1, Math.max(1, highBase + noise(matricula + comp + "G_b")));
+    auto   = Math.min(4.1, Math.max(1, highBase + noise(matricula + comp + "A_b")));
+    pares  = Math.min(4.1, Math.max(1, highBase + noise(matricula + comp + "P_b")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, highBase + noise(matricula + comp + "S_b")));
+  } else if (overrideTarget === "mkt-high") {
+    const base = 3.8 + rand(matricula + comp + "mkt_h") * 0.25; // 3.8 to ~4.05
+    gestor = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "G_b")));
+    auto   = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "A_b")));
+    pares  = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "P_b")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "S_b")));
+  } else if (overrideTarget === "mkt-low") {
+    const base = 3.0 + rand(matricula + comp + "mkt_l") * 0.2; // ~3.1
+    gestor = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "G_p")));
+    auto   = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "A_p")));
+    pares  = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "P_p")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "S_p")));
+  } else if (overrideTarget === "dunning-kruger") {
+    const base = 2.8 + rand(matricula + comp + "dk") * 0.4; // 2.8 - 3.2
+    auto   = Math.min(4.1, Math.max(1, base + 0.45 + noise(matricula + comp + "A_dk"))); // ~3.2 to 3.6
+    gestor = Math.min(4.1, Math.max(1, base - 0.35 + noise(matricula + comp + "G_dk"))); // ~2.4 to 2.8
+    pares  = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "P_dk")));
+    if (isLideranca) subordinados = Math.min(4.1, Math.max(1, base + noise(matricula + comp + "S_dk")));
   }
 
   // ─── STEP 6: WEIGHTED AVERAGE ─────────────────────────────────────────────────
@@ -174,19 +253,92 @@ export function formatNordeltaEmail(email: string | null | undefined, nome: stri
   return `${prefix}@nordelta.com.br`;
 }
 
+// Alocação fixa por bairro (total = 598 colaboradores de Teresina/PI)
+const fixedAllocation: { n: string; count: number }[] = [
+  { n: "Angelim",           count: 37  }, // reduzido
+  { n: "Itararé",           count: 42  }, // reduzido
+  { n: "Mocambinho",        count: 37  },
+  { n: "Santa Maria",       count: 36  }, // reduzido
+  { n: "Parque Brasil",     count: 33  },
+  { n: "Vale Quem Tem",     count: 32  },
+  { n: "Água Mineral",      count: 28  },
+  { n: "Promorar",          count: 27  },
+  { n: "Planalto Uruguai",  count: 25  },
+  { n: "Ininga",            count: 26  },
+  { n: "Matinha",           count: 24  },
+  { n: "Saci",              count: 22  },
+  { n: "Parque Piauí",      count: 23  },
+  { n: "Piçarreira",        count: 22  },
+  { n: "Lourival Parente",  count: 21  },
+  { n: "São Joaquim",       count: 22  },
+  { n: "Pedra Mole",        count: 22  },
+  { n: "Tabuleta",          count: 21  },
+  { n: "Poty Velho",        count: 20  },
+  { n: "Morada do Sol",     count: 17  },
+  { n: "Noivos",            count:  2  },
+  { n: "São João",          count:  2  },
+  { n: "Joquey",            count:  1  },
+  { n: "Santa Isabel",      count:  2  },
+  { n: "Vermelha",          count:  1  },
+  { n: "Itaperu",           count:  1  },
+  { n: "Aeroporto",         count:  2  },
+  { n: "Marques",           count:  1  },
+  { n: "Gurupi",            count:  2  },
+  { n: "Piçarra",           count:  4  }, // novo
+  { n: "Satélite",          count:  3  }, // novo
+  { n: "Buenos Aires",      count:  4  }, // novo
+  { n: "Macaúba",           count:  3  }, // novo
+  { n: "Monte Castelo",     count:  4  }, // novo
+  { n: "Cabral",            count:  3  }, // novo
+  { n: "Vila Operária",     count:  3  }, // novo
+  { n: "Horto",             count: 13  }, // novo
+  { n: "São Cristovão",     count:  5  }, // novo
+  { n: "Fátima",            count:  5  }, // novo
+  // Total = 598 ✓
+];
+
+const exactDistribution: string[] = fixedAllocation.flatMap(b => Array(b.count).fill(b.n));
+
+export function fixColaboradorLocation(c: any): any {
+  const matriculaNum = parseInt(c.matricula?.replace(/\D/g, '') || "0", 10);
+  const isTimon = matriculaNum > 0 && matriculaNum <= 16;
+  
+  let newCidade = isTimon ? "Timon" : "Teresina";
+  let newEstado = isTimon ? "MA" : "PI";
+  let newBairro = c.bairro;
+
+  if (!isTimon) {
+    let index = matriculaNum - 17;
+    if (index < 0 || index >= exactDistribution.length) {
+      index = (matriculaNum * 7) % exactDistribution.length;
+      if (index < 0) index = 0;
+    }
+    newBairro = exactDistribution[index];
+  }
+  
+  return {
+    ...c,
+    cidade: newCidade,
+    estado_uf: newEstado,
+    bairro: isTimon ? c.bairro : newBairro,
+  };
+}
+
 export async function getColaboradoresList() {
   const { data: colaboradores } = await supabase.from("colaboradores").select("*");
   const { data: feedbacks } = await supabase.from("feedbacks_finais").select("avaliado_matricula, nota_media");
 
   if (!colaboradores) return [];
 
-  return colaboradores.map(c => {
+  return colaboradores.map(cRaw => {
+    const c = fixColaboradorLocation(cRaw);
+    const realScore = realScoresData.find((r: any) => r.avaliado_matricula === c.matricula);
     const fb = feedbacks?.find(f => f.avaliado_matricula === c.matricula);
     const avatar = getAvatarUrl(c.sexo, c.matricula, c.nome);
     return {
       ...c,
       email: formatNordeltaEmail(c.email, c.nome),
-      notaMediaGeral: fb?.nota_media || 0,
+      notaMediaGeral: realScore ? realScore.nota_media : (fb?.nota_media || 0),
       estado: "Ativo",
       avatar_url: c.foto_url && c.foto_url !== "/placeholder.svg" ? c.foto_url : avatar
     };
@@ -194,7 +346,7 @@ export async function getColaboradoresList() {
 }
 
 export async function getColaboradorResultados(matricula: string): Promise<ColaboradorResultados | null> {
-  const { data: colaborador } = await supabase.from("colaboradores").select("*").eq("matricula", matricula).single();
+  const { data: colaboradorRaw } = await supabase.from("colaboradores").select("*").eq("matricula", matricula).single();
   const { data: feedback } = await supabase.from("feedbacks_finais").select("*").eq("avaliado_matricula", matricula).single();
   
   // Buscar comentários diretamente da tabela avaliacoes (carregamento sob demanda)
@@ -204,9 +356,11 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
     .eq("avaliado_matricula", matricula)
     .not("comentario", "is", null);
 
-  if (!colaborador) return null;
+  if (!colaboradorRaw) return null;
+  const colaborador = fixColaboradorLocation(colaboradorRaw);
 
-  const indicadores: any = feedback?.indicadores || {};
+  const realScore = realScoresData.find((r: any) => r.avaliado_matricula === matricula);
+  const indicadores: any = realScore ? realScore.indicadores : (feedback?.indicadores || {});
   const isLideranca = checkIsLideranca(colaborador.cargo || "");
   
   // Simulando médias comparativas determinísticas baseadas no departamento para o Radar
@@ -243,7 +397,7 @@ export async function getColaboradorResultados(matricula: string): Promise<Colab
   const comentariosAnonimizados = ((avaliacoes as any[]) || [])
     .map(a => ({ tipo_avaliador: "Avaliador", comentario: a.comentario as string }));
 
-  const notaMediaGeral = feedback?.nota_media || 0;
+  const notaMediaGeral = realScore ? realScore.nota_media : (feedback?.nota_media || 0);
   
   const historicoCiclos = [
     { ciclo: "Ciclo 2024.1", mediaGeral: Number((Math.max(1, notaMediaGeral - 0.4)).toFixed(2)) },
@@ -326,7 +480,8 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     }
     const d = deptoMap.get(colabDepto)!;
 
-    const indicadores: any = fb.indicadores || {};
+    const realScore = realScoresData.find((r: any) => r.avaliado_matricula === colab.matricula);
+    const indicadores: any = realScore ? realScore.indicadores : (fb.indicadores || {});
     
     let userTotalScore = 0;
     let userCompCount = 0;
@@ -436,13 +591,15 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
 
   const ranking = feedbacks.map(fb => {
     const colab = colaboradores.find(c => c.matricula === fb.avaliado_matricula);
+    const realScore = realScoresData.find((r: any) => r.avaliado_matricula === fb.avaliado_matricula);
+    const notaMediaFinal = realScore ? realScore.nota_media : (fb.nota_media || 0);
     const avatar = colab ? getAvatarUrl(colab.sexo, colab.matricula, colab.nome) : undefined;
     return {
       matricula: fb.avaliado_matricula,
       nome: colab?.nome || "Desconhecido",
-      nota: fb.nota_media || 0,
-      potencial: fb.indice_potencial || Math.min(5, Number(((fb.nota_media || 0) * 1.2).toFixed(2))),
-      percentil: fb.percentil_empresa || Math.floor(Math.min(99, (fb.nota_media || 0) * 20)),
+      nota: notaMediaFinal,
+      potencial: fb.indice_potencial || Math.min(5, Number((notaMediaFinal * 1.2).toFixed(2))),
+      percentil: fb.percentil_empresa || Math.floor(Math.min(99, notaMediaFinal * 20)),
       avatar_url: colab?.foto_url && colab.foto_url !== "/placeholder.svg" ? colab.foto_url : avatar
     };
   }).sort((a, b) => b.nota - a.nota);
@@ -484,6 +641,7 @@ export async function getDemographyMetrics(): Promise<DemographyMetrics> {
   let m = 0, f = 0, unknown = 0;
   let totalAge = 0, validAgesCount = 0;
   const ageBuckets: Record<string, number> = { "18-25": 0, "26-35": 0, "36-45": 0, "46-55": 0, "56+": 0 };
+  const tenureBuckets: Record<string, number> = { "< 1 ano": 0, "1 a 3 anos": 0, "3 a 5 anos": 0, "Mais de 5 anos": 0 };
   const deptoMap = new Map<string, { total: number; lideranca: number; operacao: number }>();
   let totalLideranca = 0;
   const locMap = new Map<string, number>();
@@ -502,6 +660,19 @@ export async function getDemographyMetrics(): Promise<DemographyMetrics> {
       else if (age <= 55) ageBuckets["46-55"]++;
       else ageBuckets["56+"]++;
     }
+
+    if (c.data_admissao) {
+      // Formato esperado: YYYY-MM-DD
+      const admDate = new Date(c.data_admissao);
+      if (!isNaN(admDate.getTime())) {
+        const diffTime = Math.abs(new Date().getTime() - admDate.getTime());
+        const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365);
+        if (diffYears < 1) tenureBuckets["< 1 ano"]++;
+        else if (diffYears <= 3) tenureBuckets["1 a 3 anos"]++;
+        else if (diffYears <= 5) tenureBuckets["3 a 5 anos"]++;
+        else tenureBuckets["Mais de 5 anos"]++;
+      }
+    }
     const isLeader = checkIsLideranca(c.cargo || "");
     if (isLeader) totalLideranca++;
     const depto = c.departamento || "Sem Departamento";
@@ -509,7 +680,18 @@ export async function getDemographyMetrics(): Promise<DemographyMetrics> {
     const d = deptoMap.get(depto)!;
     d.total++;
     if (isLeader) d.lideranca++; else d.operacao++;
-    const loc = (c as any).estado_uf || "SP";
+    let loc = "N/A";
+    const cCidade = (c as any).cidade || "Teresina";
+    const cBairro = (c as any).bairro || "Centro";
+    
+    if (cCidade.toLowerCase() === "teresina") {
+      loc = `${cBairro} (Teresina/PI)`;
+    } else if (cCidade.toLowerCase() === "timon") {
+      loc = "Timon/MA";
+    } else {
+      loc = `${cCidade} / ${(c as any).estado_uf || "SP"}`;
+    }
+    
     locMap.set(loc, (locMap.get(loc) || 0) + 1);
   });
   const percentualFeminino = totalColaboradores > 0 ? (f / totalColaboradores) * 100 : 0;
@@ -520,6 +702,10 @@ export async function getDemographyMetrics(): Promise<DemographyMetrics> {
   ];
   if (unknown > 0) genderData.push({ name: "Não Informado", value: unknown, color: "#64748b" });
   const ageData = Object.entries(ageBuckets).map(([name, value]) => ({ name, value }));
+  
+  const tenureColors = ["#3b82f6", "#10b981", "#f59e0b", "#6366f1"];
+  const tenureData = Object.entries(tenureBuckets).map(([name, value], index) => ({ name, value, color: tenureColors[index % tenureColors.length] }));
+
   const departmentData = Array.from(deptoMap.entries()).map(([name, data]) => ({ name, ...data })).sort((a, b) => b.total - a.total);
   const departamentoMaior = departmentData.length > 0 ? departmentData[0].name : "N/A";
   const locationData = Array.from(locMap.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
@@ -540,6 +726,7 @@ export async function getDemographyMetrics(): Promise<DemographyMetrics> {
     departamentoMaior,
     genderData,
     ageData,
+    tenureData,
     departmentData,
     locationData,
     insights: demoInsights

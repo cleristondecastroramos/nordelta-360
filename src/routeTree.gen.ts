@@ -10,11 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeedbacksRouteImport } from './routes/feedbacks'
 import { Route as EvolucaoHistoricaRouteImport } from './routes/evolucao-historica'
 import { Route as DepartamentosRouteImport } from './routes/departamentos'
 import { Route as DemografiaRouteImport } from './routes/demografia'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CiclosRouteImport } from './routes/ciclos'
 import { Route as AdministracaoPerfisRouteImport } from './routes/administracao-perfis'
@@ -26,11 +26,6 @@ import { Route as FichaIndividualMatriculaRouteImport } from './routes/ficha-ind
 const RelatoriosRoute = RelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedbacksRoute = FeedbacksRouteImport.update({
@@ -51,6 +46,11 @@ const DepartamentosRoute = DepartamentosRouteImport.update({
 const DemografiaRoute = DemografiaRouteImport.update({
   id: '/demografia',
   path: '/demografia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -95,11 +95,11 @@ export interface FileRoutesByFullPath {
   '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/dashboard': typeof DashboardRoute
   '/demografia': typeof DemografiaRoute
   '/departamentos': typeof DepartamentosRoute
   '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
-  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
   '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores/': typeof ColaboradoresIndexRoute
@@ -110,11 +110,11 @@ export interface FileRoutesByTo {
   '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/dashboard': typeof DashboardRoute
   '/demografia': typeof DemografiaRoute
   '/departamentos': typeof DepartamentosRoute
   '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
-  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
   '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores': typeof ColaboradoresIndexRoute
@@ -126,11 +126,11 @@ export interface FileRoutesById {
   '/administracao-perfis': typeof AdministracaoPerfisRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/dashboard': typeof DashboardRoute
   '/demografia': typeof DemografiaRoute
   '/departamentos': typeof DepartamentosRoute
   '/evolucao-historica': typeof EvolucaoHistoricaRoute
   '/feedbacks': typeof FeedbacksRoute
-  '/login': typeof LoginRoute
   '/relatorios': typeof RelatoriosRoute
   '/ficha-individual/$matricula': typeof FichaIndividualMatriculaRoute
   '/colaboradores/': typeof ColaboradoresIndexRoute
@@ -143,11 +143,11 @@ export interface FileRouteTypes {
     | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
+    | '/dashboard'
     | '/demografia'
     | '/departamentos'
     | '/evolucao-historica'
     | '/feedbacks'
-    | '/login'
     | '/relatorios'
     | '/ficha-individual/$matricula'
     | '/colaboradores/'
@@ -158,11 +158,11 @@ export interface FileRouteTypes {
     | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
+    | '/dashboard'
     | '/demografia'
     | '/departamentos'
     | '/evolucao-historica'
     | '/feedbacks'
-    | '/login'
     | '/relatorios'
     | '/ficha-individual/$matricula'
     | '/colaboradores'
@@ -173,11 +173,11 @@ export interface FileRouteTypes {
     | '/administracao-perfis'
     | '/ciclos'
     | '/configuracoes'
+    | '/dashboard'
     | '/demografia'
     | '/departamentos'
     | '/evolucao-historica'
     | '/feedbacks'
-    | '/login'
     | '/relatorios'
     | '/ficha-individual/$matricula'
     | '/colaboradores/'
@@ -189,11 +189,11 @@ export interface RootRouteChildren {
   AdministracaoPerfisRoute: typeof AdministracaoPerfisRoute
   CiclosRoute: typeof CiclosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  DashboardRoute: typeof DashboardRoute
   DemografiaRoute: typeof DemografiaRoute
   DepartamentosRoute: typeof DepartamentosRoute
   EvolucaoHistoricaRoute: typeof EvolucaoHistoricaRoute
   FeedbacksRoute: typeof FeedbacksRoute
-  LoginRoute: typeof LoginRoute
   RelatoriosRoute: typeof RelatoriosRoute
   FichaIndividualMatriculaRoute: typeof FichaIndividualMatriculaRoute
   ColaboradoresIndexRoute: typeof ColaboradoresIndexRoute
@@ -207,13 +207,6 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/relatorios'
       preLoaderRoute: typeof RelatoriosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feedbacks': {
@@ -242,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/demografia'
       fullPath: '/demografia'
       preLoaderRoute: typeof DemografiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -301,11 +301,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdministracaoPerfisRoute: AdministracaoPerfisRoute,
   CiclosRoute: CiclosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  DashboardRoute: DashboardRoute,
   DemografiaRoute: DemografiaRoute,
   DepartamentosRoute: DepartamentosRoute,
   EvolucaoHistoricaRoute: EvolucaoHistoricaRoute,
   FeedbacksRoute: FeedbacksRoute,
-  LoginRoute: LoginRoute,
   RelatoriosRoute: RelatoriosRoute,
   FichaIndividualMatriculaRoute: FichaIndividualMatriculaRoute,
   ColaboradoresIndexRoute: ColaboradoresIndexRoute,

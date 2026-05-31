@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Building2, Download, Filter, Target, Users, TrendingUp, AlertTriangle } from "lucide-react";
+import { Building2, Download, Filter, Target, Users, TrendingUp, AlertTriangle, Check, Loader2 } from "lucide-react";
 import { getDashboardMetrics, getColaboradoresList } from "@/lib/data-service";
+import { exportDepartamentosToPDF } from "@/lib/pdf-export";
 import type { DashboardMetrics, Colaborador } from "@/lib/types";
 
 import { DepartmentKpiCard } from "@/components/departamentos/DepartmentKpiCard";
@@ -11,6 +12,13 @@ import { DepartmentRadarChart } from "@/components/departamentos/DepartmentRadar
 import { DepartmentGapHeatmap } from "@/components/departamentos/DepartmentGapHeatmap";
 import { DepartmentEmployeeList } from "@/components/departamentos/DepartmentEmployeeList";
 import { AlertPanel } from "@/components/ui/alert-panel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/departamentos")({
   component: DepartamentosPage,
@@ -21,6 +29,8 @@ function DepartamentosPage() {
   const [colaboradores, setColaboradores] = useState<(Colaborador & { notaMediaGeral: number })[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"maior" | "menor" | "alfabetico">("maior");
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -68,9 +78,30 @@ function DepartamentosPage() {
     );
   }
 
+  const sortedDepartamentos = [...metrics.departamentos].sort((a, b) => {
+    if (sortOrder === "maior") return b.media - a.media;
+    if (sortOrder === "menor") return a.media - b.media;
+    return a.departamento.localeCompare(b.departamento);
+  });
+
   const selectedDeptoData = metrics.departamentos.find(d => d.departamento === selectedDepartment) || null;
   const highestGapDept = [...metrics.departamentos].sort((a,b) => Math.abs(b.gapMedio) - Math.abs(a.gapMedio))[0];
   const lowestAvgDept = [...metrics.departamentos].sort((a,b) => a.media - b.media)[0];
+
+  const handleExport = async () => {
+    if (!metrics) return;
+    try {
+      setIsExporting(true);
+      toast.info("Gerando relatório PDF...", { description: "Isso pode levar alguns segundos." });
+      await exportDepartamentosToPDF(metrics, selectedDepartment);
+      toast.success("Relatório gerado!", { description: "O download do PDF começará automaticamente." });
+    } catch (err) {
+      console.error(err);
+      toast.error("Falha na geração do PDF", { description: "Ocorreu um erro ao processar os gráficos." });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-700">
@@ -85,11 +116,32 @@ function DepartamentosPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 transition-colors">
-            <Filter className="mr-2 h-4 w-4" /> Filtros
-          </button>
-          <button className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 transition-colors shadow-sm">
-            <Download className="mr-2 h-4 w-4" /> Exportar
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 transition-colors">
+                <Filter className="mr-2 h-4 w-4" /> Filtros
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => setSortOrder("maior")} className="cursor-pointer justify-between">
+                Maior Nota Global {sortOrder === "maior" && <Check className="w-4 h-4 text-primary" />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSortOrder("menor")} className="cursor-pointer justify-between">
+                Menor Nota Global {sortOrder === "menor" && <Check className="w-4 h-4 text-primary" />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSortOrder("alfabetico")} className="cursor-pointer justify-between">
+                Ordem Alfabética {sortOrder === "alfabetico" && <Check className="w-4 h-4 text-primary" />}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <button 
+            onClick={handleExport} 
+            disabled={isExporting}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 transition-colors shadow-sm disabled:opacity-70"
+          >
+            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+            {isExporting ? "Gerando..." : "Exportar"}
           </button>
         </div>
       </div>
@@ -140,14 +192,15 @@ function DepartamentosPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <div className="flex flex-col min-h-[450px]">
           <DepartmentComparisonChart 
-            departamentos={metrics.departamentos} 
+            departamentos={sortedDepartamentos} 
             selectedDepartment={selectedDepartment}
             onSelectDepartment={setSelectedDepartment}
+            mediaGeral={metrics.notaMediaGeral}
           />
         </div>
         <div className="flex flex-col min-h-[450px]">
           <DepartmentRankingTable 
-            departamentos={metrics.departamentos} 
+            departamentos={sortedDepartamentos} 
             selectedDepartment={selectedDepartment}
             onSelectDepartment={setSelectedDepartment}
           />
@@ -155,11 +208,11 @@ function DepartamentosPage() {
       </div>
 
       {/* Dynamic Detail Section (Depends on Selection) */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <div className="flex flex-col min-h-[500px]">
+      <div id="department-details" className="grid grid-cols-1 xl:grid-cols-2 gap-8 h-auto xl:h-[800px] pt-4 scroll-mt-24">
+        <div id="radar-export" className="flex flex-col min-h-[600px] h-full bg-card rounded-xl">
           <DepartmentRadarChart departamento={selectedDeptoData} />
         </div>
-        <div className="flex flex-col min-h-[500px]">
+        <div className="flex flex-col min-h-[600px] h-full">
           <DepartmentEmployeeList 
             departamento={selectedDepartment} 
             colaboradores={colaboradores} 
@@ -168,7 +221,7 @@ function DepartamentosPage() {
       </div>
 
       {/* Global Heatmap */}
-      <div className="mt-8">
+      <div className="mt-8" id="heatmap-export">
         <DepartmentGapHeatmap data={metrics.gapHeatmap} />
       </div>
 

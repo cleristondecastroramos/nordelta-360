@@ -7,9 +7,11 @@ interface DepartmentGapHeatmapProps {
 }
 
 export function DepartmentGapHeatmap({ data }: DepartmentGapHeatmapProps) {
-  // Extract unique departments and competencies
+  // Extract unique departments and competencies, excluding "comentarios"
   const departments = Array.from(new Set(data.map(d => d.departamento))).sort();
-  const competencies = Array.from(new Set(data.map(d => d.competencia))).sort();
+  const competencies = Array.from(new Set(data.map(d => d.competencia)))
+    .filter(c => !c.toLowerCase().includes("comentário") && !c.toLowerCase().includes("comentario"))
+    .sort();
 
   // Create a mapping for quick lookup
   const gapMap = new Map();
@@ -81,12 +83,31 @@ export function DepartmentGapHeatmap({ data }: DepartmentGapHeatmapProps) {
                               {gap > 0 ? "+" : ""}{gap.toFixed(2)}
                             </div>
                           </TooltipTrigger>
-                          <TooltipContent className="p-3 shadow-xl border-slate-200 dark:border-slate-800">
-                            <p className="font-semibold text-slate-900 dark:text-slate-100 mb-1">{dept} - {comp}</p>
-                            <p className="text-sm font-bold mb-2">Gap: <span className={gap < 0 ? "text-rose-500" : "text-emerald-500"}>{gap.toFixed(2)}</span></p>
-                            <p className="text-xs text-slate-600 dark:text-slate-400 max-w-[200px] leading-relaxed">
-                              {getGapExplanation(gap)}
-                            </p>
+                          <TooltipContent className="bg-card text-card-foreground p-4 shadow-xl border border-black dark:border-white/10">
+                            <div className="flex flex-col gap-2.5">
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">Departamento</p>
+                                <p className="font-semibold text-sm">{dept}</p>
+                              </div>
+                              
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">Critério</p>
+                                <p className="font-semibold text-sm">{comp}</p>
+                              </div>
+
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">Gap Analítico</p>
+                                <p className={`font-bold text-sm ${gap < 0 ? "text-rose-500" : gap > 0 ? "text-emerald-500" : "text-slate-500"}`}>
+                                  {gap > 0 ? "+" : ""}{gap.toFixed(2)}
+                                </p>
+                              </div>
+
+                              <div className="pt-2 border-t mt-0.5">
+                                <p className="text-xs text-muted-foreground max-w-[220px] leading-relaxed">
+                                  {getGapExplanation(gap)}
+                                </p>
+                              </div>
+                            </div>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

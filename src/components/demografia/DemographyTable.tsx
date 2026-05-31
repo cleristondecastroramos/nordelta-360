@@ -85,8 +85,15 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
                   <td className="px-4 py-3 text-center">
                     {colab.idade ? `${colab.idade} anos` : "-"}
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">
-                    {colab.estado_uf || "SP"}
+                  <td className="px-4 py-3 hidden md:table-cell">
+                    <div className="flex flex-col">
+                      <span className="font-medium text-foreground text-xs">
+                        {(colab as any).bairro || "Centro"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {(colab as any).cidade || "Teresina"}/{colab.estado_uf || "PI"}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link 
