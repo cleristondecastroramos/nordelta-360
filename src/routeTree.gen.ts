@@ -17,6 +17,7 @@ import { Route as DemografiaRouteImport } from './routes/demografia'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CiclosRouteImport } from './routes/ciclos'
+import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as AdministracaoPerfisRouteImport } from './routes/administracao-perfis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FichaIndividualIndexRouteImport } from './routes/ficha-individual.index'
@@ -63,6 +64,11 @@ const CiclosRoute = CiclosRouteImport.update({
   path: '/ciclos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AjudaRoute = AjudaRouteImport.update({
+  id: '/ajuda',
+  path: '/ajuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdministracaoPerfisRoute = AdministracaoPerfisRouteImport.update({
   id: '/administracao-perfis',
   path: '/administracao-perfis',
@@ -93,6 +99,7 @@ const FichaIndividualMatriculaRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/administracao-perfis': typeof AdministracaoPerfisRoute
+  '/ajuda': typeof AjudaRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/administracao-perfis': typeof AdministracaoPerfisRoute
+  '/ajuda': typeof AjudaRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/administracao-perfis': typeof AdministracaoPerfisRoute
+  '/ajuda': typeof AjudaRoute
   '/ciclos': typeof CiclosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/administracao-perfis'
+    | '/ajuda'
     | '/ciclos'
     | '/configuracoes'
     | '/dashboard'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/administracao-perfis'
+    | '/ajuda'
     | '/ciclos'
     | '/configuracoes'
     | '/dashboard'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/administracao-perfis'
+    | '/ajuda'
     | '/ciclos'
     | '/configuracoes'
     | '/dashboard'
@@ -187,6 +199,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdministracaoPerfisRoute: typeof AdministracaoPerfisRoute
+  AjudaRoute: typeof AjudaRoute
   CiclosRoute: typeof CiclosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   DashboardRoute: typeof DashboardRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CiclosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ajuda': {
+      id: '/ajuda'
+      path: '/ajuda'
+      fullPath: '/ajuda'
+      preLoaderRoute: typeof AjudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/administracao-perfis': {
       id: '/administracao-perfis'
       path: '/administracao-perfis'
@@ -299,6 +319,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdministracaoPerfisRoute: AdministracaoPerfisRoute,
+  AjudaRoute: AjudaRoute,
   CiclosRoute: CiclosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   DashboardRoute: DashboardRoute,
@@ -314,13 +335,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

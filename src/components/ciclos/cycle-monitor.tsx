@@ -182,6 +182,31 @@ function CycleDepartmentBreakdown({ stats }: { stats: CycleMonitorData["departam
 }
 
 function ReminderPanel({ alertCount, totalPending }: any) {
+  const handleExportCSV = () => {
+    const headers = ["Matrícula", "Nome", "Departamento", "Tipo Pendência", "Dias Atraso"];
+    const rows = [
+      ["G1042", "Mariana Silva", "Comercial", "Avaliação de Liderado", "2"],
+      ["S1005", "Roberto Medina", "Sucesso do Cliente", "Autoavaliação", "5"],
+      ["A1012", "Fernando Costa", "Operações", "Avaliação de Par", "1"],
+      ["D1001", "João Silva", "Comercial", "Avaliação de Liderado", "3"],
+    ];
+    
+    // Using semicolon for excel compatibility in PT-BR environments
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map(row => row.join(";"))
+    ].join("\n");
+    
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'pendencias_ciclo_ativo.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col h-full">
       <div className="p-6 pb-4 border-b">
@@ -210,7 +235,10 @@ function ReminderPanel({ alertCount, totalPending }: any) {
         </div>
         
         <div className="mt-auto pt-4">
-          <button className="w-full inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground shadow-sm">
+          <button 
+            onClick={handleExportCSV}
+            className="w-full inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground shadow-sm"
+          >
             Exportar Pendências (Planilha)
           </button>
         </div>

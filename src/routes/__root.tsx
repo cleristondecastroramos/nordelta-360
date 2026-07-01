@@ -4,14 +4,12 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
-
+import { Layout } from "@/components/layout/Layout";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -72,49 +70,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nordelta 360° — People Analytics & Performance" },
-      { name: "description", content: "Sistema executivo de avaliação de desempenho 360° e people analytics. Case de portfólio por Clériston de Castro Ramos." },
-      { name: "author", content: "Clériston de Castro Ramos" },
-      { property: "og:title", content: "Nordelta 360° — People Analytics & Performance" },
-      { property: "og:description", content: "Case de portfólio: sistema de avaliação de desempenho 360°, people analytics e visualização de dados." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@cleristonramos" },
-      { name: "twitter:title", content: "Nordelta 360° — People Analytics & Performance" },
-      { name: "twitter:description", content: "Sistema executivo de avaliação de desempenho 360° e people analytics." },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
-
-import { Layout } from "@/components/layout/Layout";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

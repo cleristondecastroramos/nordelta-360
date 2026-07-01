@@ -34,6 +34,48 @@ function AdministracaoPerfisPage() {
     load();
   }, []);
 
+  const handleExportAudit = () => {
+    if (!data || !data.auditoria) return;
+    
+    const headers = ["Status", "Ação", "Detalhe", "Responsável", "Data/Hora"];
+    const rows = data.auditoria.map(log => [
+      log.status,
+      log.acao,
+      log.detalhe,
+      log.usuarioAdmin,
+      log.dataHora
+    ]);
+    
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map(row => row.join(";"))
+    ].join("\n");
+    
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `auditoria_completa.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleNewProfile = () => {
+    setSelectedUser({
+      id: `new-${Date.now()}`,
+      matricula: "",
+      nome: "",
+      email: "",
+      cargo: "",
+      departamento: "",
+      status: "Ativo",
+      role: "Colaborador",
+      ultimoAcesso: "Nunca",
+      modulos: []
+    });
+  };
+
   if (loading || !data) {
     return (
       <div className="flex h-[calc(100vh-8rem)] items-center justify-center">
@@ -46,7 +88,7 @@ function AdministracaoPerfisPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-700 max-w-[1600px] mx-auto relative">
+    <div className="space-y-8 pb-12 animate-in fade-in duration-700 relative">
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
@@ -60,11 +102,13 @@ function AdministracaoPerfisPage() {
         </div>
         <div className="flex items-center gap-3">
           <button 
+            onClick={handleExportAudit}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
           >
             <Download className="mr-2 h-4 w-4" /> Exportar Auditoria
           </button>
           <button 
+            onClick={handleNewProfile}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 shadow-sm"
           >
             <ShieldCheck className="mr-2 h-4 w-4" /> Novo Perfil
@@ -91,7 +135,6 @@ function AdministracaoPerfisPage() {
           icon={<Lock className="h-5 w-5" />}
           tooltipTitle="Acesso Total"
           tooltipDesc="Usuários com a role Administrador. É recomendado manter esse número o menor possível."
-          highlight={true}
         />
         <ProfileKpiCard
           title="Bloqueados / Inativos"
@@ -107,10 +150,10 @@ function AdministracaoPerfisPage() {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="grid xl:grid-cols-3 gap-8">
+      <div className="grid xl:grid-cols-5 gap-8">
         
         {/* USERS TABLE */}
-        <div className="xl:col-span-2">
+        <div className="xl:col-span-3">
           <ProfileUsersTable 
             users={data.usuarios} 
             onEditUser={(user) => setSelectedUser(user)} 
@@ -118,7 +161,7 @@ function AdministracaoPerfisPage() {
         </div>
 
         {/* AUDIT TRAIL */}
-        <div>
+        <div className="xl:col-span-2">
           <AuditTrailList logs={data.auditoria} />
         </div>
       </div>

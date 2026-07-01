@@ -3,6 +3,14 @@ import type { Colaborador, ColaboradorResultados, DashboardMetrics, DepartmentSt
 import { getCompetenceInfo } from "./competence-map";
 import realScoresData from "./real_scores.json";
 
+export function transformMatricula(matricula: string, cargo: string | null | undefined): string {
+  if (!matricula) return matricula;
+  const numPart = matricula.replace(/\D/g, '').padStart(4, '0');
+  let firstLetter = (cargo || "Desconhecido").trim().charAt(0).toUpperCase();
+  if (!/^[A-Z]$/.test(firstLetter)) firstLetter = 'D';
+  return `${firstLetter}${numPart}`;
+}
+
 export function checkIsLideranca(cargo: string): boolean {
   const c = (cargo || "").toLowerCase();
   return c.includes('gerente') || c.includes('coordenador') || c.includes('supervisor') || c.includes('líder') || c.includes('lider') || c.includes('head') || c.includes('diretor') || c.includes('executivo');
@@ -332,8 +340,12 @@ export async function getColaboradoresList() {
 
   return colaboradores.map(cRaw => {
     const c = fixColaboradorLocation(cRaw);
-    const realScore = realScoresData.find((r: any) => r.avaliado_matricula === c.matricula);
-    const fb = feedbacks?.find(f => f.avaliado_matricula === c.matricula);
+    c.matricula = transformMatricula(c.matricula, c.cargo);
+    
+    // As in feedbacks_finais we also transform to match
+    const fb = feedbacks?.find(f => transformMatricula(f.avaliado_matricula, c.cargo) === c.matricula || f.avaliado_matricula === c.matricula);
+    const realScore = realScoresData.find((r: any) => transformMatricula(r.avaliado_matricula, c.cargo) === c.matricula || r.avaliado_matricula === c.matricula);
+    
     const avatar = getAvatarUrl(c.sexo, c.matricula, c.nome);
     return {
       ...c,
@@ -346,20 +358,31 @@ export async function getColaboradoresList() {
 }
 
 export async function getColaboradorResultados(matricula: string): Promise<ColaboradorResultados | null> {
-  const { data: colaboradorRaw } = await supabase.from("colaboradores").select("*").eq("matricula", matricula).single();
-  const { data: feedback } = await supabase.from("feedbacks_finais").select("*").eq("avaliado_matricula", matricula).single();
+  const isTransformed = /^[A-Z]/.test(matricula);
+  const dbMatricula = isTransformed ? `c${matricula.substring(1)}`.toLowerCase() : matricula;
+
+  const { data: colaboradorRaw } = await supabase.from("colaboradores")
+    .select("*")
+    .or(`matricula.eq.${matricula},matricula.eq.${dbMatricula}`)
+    .single();
+
+  const { data: feedback } = await supabase.from("feedbacks_finais")
+    .select("*")
+    .or(`avaliado_matricula.eq.${matricula},avaliado_matricula.eq.${dbMatricula}`)
+    .single();
   
   // Buscar comentários diretamente da tabela avaliacoes (carregamento sob demanda)
   const { data: avaliacoes } = await supabase
     .from("avaliacoes_anonimas" as any)
     .select("comentario")
-    .eq("avaliado_matricula", matricula)
+    .or(`avaliado_matricula.eq.${matricula},avaliado_matricula.eq.${dbMatricula}`)
     .not("comentario", "is", null);
 
   if (!colaboradorRaw) return null;
   const colaborador = fixColaboradorLocation(colaboradorRaw);
+  colaborador.matricula = transformMatricula(colaborador.matricula, colaborador.cargo);
 
-  const realScore = realScoresData.find((r: any) => r.avaliado_matricula === matricula);
+  const realScore = realScoresData.find((r: any) => transformMatricula(r.avaliado_matricula, colaborador.cargo) === colaborador.matricula || r.avaliado_matricula === colaborador.matricula);
   const indicadores: any = realScore ? realScore.indicadores : (feedback?.indicadores || {});
   const isLideranca = checkIsLideranca(colaborador.cargo || "");
   
@@ -480,7 +503,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     }
     const d = deptoMap.get(colabDepto)!;
 
-    const realScore = realScoresData.find((r: any) => r.avaliado_matricula === colab.matricula);
+    const realScore = realScoresData.find((r: any) => transformMatricula(r.avaliado_matricula, colab.cargo) === transformMatricula(colab.matricula, colab.cargo) || r.avaliado_matricula === colab.matricula);
     const indicadores: any = realScore ? realScore.indicadores : (fb.indicadores || {});
     
     let userTotalScore = 0;
