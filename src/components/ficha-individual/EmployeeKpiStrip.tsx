@@ -105,7 +105,7 @@ export function EmployeeKpiStrip({
       />
       <KpiBox
         title="Índice de Potencial"
-        value={`${indicePotencial}%`}
+        value={indicePotencial.toFixed(2)}
         icon={<TrendingUp className="h-5 w-5" />}
         tooltip="Métrica calculada a partir de competências comportamentais críticas para sucessão e inovação."
       />

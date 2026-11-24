@@ -7,7 +7,7 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxZHN3bG1sb2F3dnBnaGR3YW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MjgyMDMsImV4cCI6MjA5NTIwNDIwM30.c3GwPu6RuJXg7VxcV7Vzt0GKWsHWqPw72-2FE85y6vQ",
 );
 
-const filePath = "public/data/evaluations_360.csv";
+const filePath = "data/evaluations_360.csv";
 
 async function processCSV() {
   const fileStream = fs.createReadStream(filePath);

@@ -12,7 +12,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { getDashboardMetrics, getColaboradoresList } from "@/lib/data-service";
-import { exportDepartamentosToPDF } from "@/lib/pdf-export";
 import type { DashboardMetrics, Colaborador } from "@/lib/types";
 
 import { DepartmentKpiCard } from "@/components/departamentos/DepartmentKpiCard";
@@ -113,6 +112,7 @@ function DepartamentosPage() {
     try {
       setIsExporting(true);
       toast.info("Gerando relatório PDF...", { description: "Isso pode levar alguns segundos." });
+      const { exportDepartamentosToPDF } = await import("@/lib/pdf-export");
       await exportDepartamentosToPDF(metrics, selectedDepartment);
       toast.success("Relatório gerado!", {
         description: "O download do PDF começará automaticamente.",

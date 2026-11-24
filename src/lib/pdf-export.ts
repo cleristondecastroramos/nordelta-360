@@ -1,5 +1,6 @@
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+// jspdf e html2canvas são carregados sob demanda (só quando o usuário exporta),
+// para não pesarem no carregamento inicial do app.
+import type { jsPDF } from "jspdf";
 import type { DashboardMetrics } from "@/lib/types";
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ async function captureElement(id: string): Promise<HTMLCanvasElement | null> {
   await new Promise((r) => setTimeout(r, 600));
 
   try {
+    const { default: html2canvas } = await import("html2canvas");
     const canvas = await html2canvas(el, {
       scale: 2,
       useCORS: true,
@@ -144,6 +146,7 @@ export async function exportDepartamentosToPDF(
   metrics: DashboardMetrics,
   selectedDepartment: string | null,
 ): Promise<void> {
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const W = doc.internal.pageSize.getWidth(); // 210
   const H = doc.internal.pageSize.getHeight(); // 297

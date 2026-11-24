@@ -1,7 +1,7 @@
 import fs from "fs";
 import readline from "readline";
 
-const csvPath = "public/data/evaluations_360.csv";
+const csvPath = "data/evaluations_360.csv";
 const outFile = "src/lib/real_scores.json";
 
 // Target distribution

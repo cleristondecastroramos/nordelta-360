@@ -1,4 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
 import type {
   Colaborador,
   ColaboradorResultados,
@@ -18,7 +17,20 @@ import type {
   StatusType,
 } from "./types";
 import { getCompetenceInfo } from "./competence-map";
-import realScoresData from "./real_scores.json";
+import {
+  findColaborador,
+  findFeedback,
+  listColaboradores,
+  listComentarios,
+  listFeedbacks,
+} from "./db";
+
+/** Hash determinístico (djb2) normalizado para [0, 1). Evita que os dados mudem a cada recarga. */
+function stableRandom(seed: string): number {
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) h = (h * 33 + seed.charCodeAt(i)) | 0;
+  return (Math.abs(h) % 10000) / 10000;
+}
 
 export function transformMatricula(matricula: string, cargo: string | null | undefined): string {
   if (!matricula) return matricula;
@@ -495,8 +507,8 @@ export function fixColaboradorLocation(c: any): any {
   const matriculaNum = parseInt(c.matricula?.replace(/\D/g, "") || "0", 10);
   const isTimon = matriculaNum > 0 && matriculaNum <= 16;
 
-  let newCidade = isTimon ? "Timon" : "Teresina";
-  let newEstado = isTimon ? "MA" : "PI";
+  const newCidade = isTimon ? "Timon" : "Teresina";
+  const newEstado = isTimon ? "MA" : "PI";
   let newBairro = c.bairro;
 
   if (!isTimon) {
@@ -517,35 +529,19 @@ export function fixColaboradorLocation(c: any): any {
 }
 
 export async function getColaboradoresList() {
-  const { data: colaboradores } = await supabase.from("colaboradores").select("*");
-  const { data: feedbacks } = await supabase
-    .from("feedbacks_finais")
-    .select("avaliado_matricula, nota_media");
-
-  if (!colaboradores) return [];
+  const [colaboradores, feedbacks] = await Promise.all([listColaboradores(), listFeedbacks()]);
+  const notaPorMatricula = new Map(feedbacks.map((f) => [f.avaliado_matricula, f.nota_media]));
 
   return colaboradores
     .map((cRaw) => {
       const c = fixColaboradorLocation(cRaw);
       c.matricula = transformMatricula(c.matricula, c.cargo);
 
-      // As in feedbacks_finais we also transform to match
-      const fb = feedbacks?.find(
-        (f) =>
-          transformMatricula(f.avaliado_matricula, c.cargo) === c.matricula ||
-          f.avaliado_matricula === c.matricula,
-      );
-      const realScore = realScoresData.find(
-        (r: any) =>
-          transformMatricula(r.avaliado_matricula, c.cargo) === c.matricula ||
-          r.avaliado_matricula === c.matricula,
-      );
-
       const avatar = getAvatarUrl(c.sexo, c.matricula, c.nome);
       return {
         ...c,
         email: formatNordeltaEmail(c.email, c.nome),
-        notaMediaGeral: realScore ? realScore.nota_media : fb?.nota_media || 0,
+        notaMediaGeral: notaPorMatricula.get(c.matricula) || 0,
         estado: "Ativo",
         avatar_url: c.foto_url && c.foto_url !== "/placeholder.svg" ? c.foto_url : avatar,
       };
@@ -556,38 +552,14 @@ export async function getColaboradoresList() {
 export async function getColaboradorResultados(
   matricula: string,
 ): Promise<ColaboradorResultados | null> {
-  const isTransformed = /^[A-Z]/.test(matricula);
-  const dbMatricula = isTransformed ? `c${matricula.substring(1)}`.toLowerCase() : matricula;
-
-  const { data: colaboradorRaw } = await supabase
-    .from("colaboradores")
-    .select("*")
-    .or(`matricula.eq.${matricula},matricula.eq.${dbMatricula}`)
-    .single();
-
-  const { data: feedback } = await supabase
-    .from("feedbacks_finais")
-    .select("*")
-    .or(`avaliado_matricula.eq.${matricula},avaliado_matricula.eq.${dbMatricula}`)
-    .single();
-
-  // Buscar comentários diretamente da tabela avaliacoes (carregamento sob demanda)
-  const { data: avaliacoes } = await supabase
-    .from("avaliacoes_anonimas" as any)
-    .select("comentario")
-    .or(`avaliado_matricula.eq.${matricula},avaliado_matricula.eq.${dbMatricula}`)
-    .not("comentario", "is", null);
-
+  const colaboradorRaw = await findColaborador(matricula);
   if (!colaboradorRaw) return null;
   const colaborador = fixColaboradorLocation(colaboradorRaw);
-  colaborador.matricula = transformMatricula(colaborador.matricula, colaborador.cargo);
-
-  const realScore = realScoresData.find(
-    (r: any) =>
-      transformMatricula(r.avaliado_matricula, colaborador.cargo) === colaborador.matricula ||
-      r.avaliado_matricula === colaborador.matricula,
-  );
-  const indicadores: any = realScore ? realScore.indicadores : feedback?.indicadores || {};
+  const [feedback, comentarios] = await Promise.all([
+    findFeedback(colaborador.matricula),
+    listComentarios(colaboradorRaw.matricula_db),
+  ]);
+  const indicadores: Record<string, number> = feedback?.indicadores || {};
   const isLideranca = checkIsLideranca(colaborador.cargo || "");
 
   // Simulando médias comparativas determinísticas baseadas no departamento para o Radar
@@ -627,12 +599,12 @@ export async function getColaboradorResultados(
     };
   });
 
-  const comentariosAnonimizados = ((avaliacoes as any[]) || []).map((a) => ({
+  const comentariosAnonimizados = comentarios.map((comentario) => ({
     tipo_avaliador: "Avaliador",
-    comentario: a.comentario as string,
+    comentario,
   }));
 
-  const notaMediaGeral = realScore ? realScore.nota_media : feedback?.nota_media || 0;
+  const notaMediaGeral = feedback?.nota_media || 0;
 
   const historicoCiclos = [
     { ciclo: "Ciclo 2024.1", mediaGeral: Number(Math.max(1, notaMediaGeral - 0.4).toFixed(2)) },
@@ -675,7 +647,8 @@ export async function getColaboradorResultados(
     is_lideranca: isLideranca,
     notaMediaGeral,
     gapGestorAuto: feedback?.gap_gestor_auto || 0,
-    indicePotencial: feedback?.indice_potencial || Math.min(5, notaMediaGeral * 1.1),
+    indicePotencial:
+      feedback?.indice_potencial || Number(Math.min(5, notaMediaGeral * 1.1).toFixed(2)),
     percentil: feedback?.percentil_empresa || 50,
     competencias: competenciasArray,
     comentariosAnonimizados,
@@ -685,10 +658,10 @@ export async function getColaboradorResultados(
 }
 
 export async function getDashboardMetrics(): Promise<DashboardMetrics> {
-  const { data: colaboradores } = await supabase
-    .from("colaboradores")
-    .select("matricula, departamento, nome, sexo, foto_url");
-  const { data: feedbacks } = await supabase.from("feedbacks_finais").select("*");
+  const [colaboradores, feedbacks] = await Promise.all([listColaboradores(), listFeedbacks()]);
+  // nota_media é recalculada mais abaixo; o ranking usa a nota original da avaliação.
+  const notaOriginal = new Map(feedbacks.map((f) => [f.avaliado_matricula, f.nota_media]));
+  const colabPorMatricula = new Map(colaboradores.map((c) => [c.matricula, c]));
 
   if (!colaboradores || colaboradores.length === 0 || !feedbacks || feedbacks.length === 0) {
     return {
@@ -729,7 +702,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   >();
 
   feedbacks.forEach((fb) => {
-    const colab = colaboradores.find((c) => c.matricula === fb.avaliado_matricula);
+    const colab = colabPorMatricula.get(fb.avaliado_matricula);
     if (!colab) return;
 
     const colabDepto = colab.departamento || "Sem Departamento";
@@ -743,19 +716,13 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     }
     const d = deptoMap.get(colabDepto)!;
 
-    const realScore = realScoresData.find(
-      (r: any) =>
-        transformMatricula(r.avaliado_matricula, colab.cargo) ===
-          transformMatricula(colab.matricula, colab.cargo) ||
-        r.avaliado_matricula === colab.matricula,
-    );
-    const indicadores: any = realScore ? realScore.indicadores : fb.indicadores || {};
+    const indicadores = fb.indicadores;
 
     let userTotalScore = 0;
     let userCompCount = 0;
 
     Object.keys(indicadores).forEach((comp) => {
-      const isLideranca = checkIsLideranca((colab as any).cargo || "");
+      const isLideranca = checkIsLideranca(colab.cargo || "");
       const raterScores = calculateRaterScores(
         indicadores[comp],
         colabDepto,
@@ -861,7 +828,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       departamento: depto || "Sem Departamento",
       media: Number(media.toFixed(2)),
       potencial: Math.min(5, Number((media * 1.15).toFixed(2))),
-      participacao: Math.floor(80 + Math.random() * 20),
+      participacao: Math.floor(80 + stableRandom(`participacao:${depto}`) * 20),
       gapMedio: Number(gapMedio.toFixed(2)),
       competenciasDetalhadas,
     });
@@ -871,11 +838,8 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
 
   const ranking = feedbacks
     .map((fb) => {
-      const colab = colaboradores.find((c) => c.matricula === fb.avaliado_matricula);
-      const realScore = realScoresData.find(
-        (r: any) => r.avaliado_matricula === fb.avaliado_matricula,
-      );
-      const notaMediaFinal = realScore ? realScore.nota_media : fb.nota_media || 0;
+      const colab = colabPorMatricula.get(fb.avaliado_matricula);
+      const notaMediaFinal = notaOriginal.get(fb.avaliado_matricula) || 0;
       const avatar = colab ? getAvatarUrl(colab.sexo, colab.matricula, colab.nome) : undefined;
       return {
         matricula: fb.avaliado_matricula,
@@ -1109,7 +1073,7 @@ export async function getEvolutionMetrics(): Promise<EvolutionMetrics> {
 
   ciclos.forEach((ciclo, idx) => {
     const isLast = idx === ciclos.length - 1;
-    const variacaoGeral = isLast ? 0 : Math.random() * 0.3 - 0.1;
+    const variacaoGeral = isLast ? 0 : stableRandom(`evolucao:${ciclo}`) * 0.3 - 0.1;
     const mediaGeralCiclo = isLast
       ? currentMetrics.notaMediaGeral
       : Number((baseMedia + variacaoGeral).toFixed(2));
@@ -1249,7 +1213,7 @@ export async function getAdminMetrics(): Promise<AdminMetrics> {
   let perfisAtivos = 0;
   let totalAdministradores = 0;
   let perfisRestritos = 0;
-  let usuariosPendentes = 2; // Fixed simulated number
+  const usuariosPendentes = 2; // Fixed simulated number
 
   const usuarios: SystemUser[] = colaboradores.map((c, index) => {
     // Generate deterministic roles based on ID/Name length

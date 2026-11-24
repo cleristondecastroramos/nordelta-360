@@ -64,7 +64,8 @@ export function TenureDistributionChart({ data }: TenureDistributionChartProps) 
                 return (
                   <ul className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[13px] pt-5">
                     {payload?.map((entry, index) => {
-                      const perc = total > 0 ? ((entry.payload.value / total) * 100).toFixed(0) : 0;
+                      const perc =
+                        total > 0 ? (((entry.payload?.value ?? 0) / total) * 100).toFixed(0) : 0;
                       return (
                         <li key={`item-${index}`} className="flex items-center">
                           <span
