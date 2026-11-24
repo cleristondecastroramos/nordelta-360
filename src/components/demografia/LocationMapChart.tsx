@@ -12,10 +12,12 @@ export function LocationMapChart({ data }: LocationMapChartProps) {
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full max-h-[500px]">
       <div className="mb-4 shrink-0">
-        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">Distribuição Regional</h3>
+        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">
+          Distribuição Regional
+        </h3>
         <p className="text-sm text-muted-foreground">Listagem completa de polos e bairros.</p>
       </div>
-      
+
       <div className="overflow-y-auto pr-2 custom-scrollbar flex-1 border rounded-md">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-muted-foreground bg-muted/50 sticky top-0 uppercase">
@@ -31,7 +33,9 @@ export function LocationMapChart({ data }: LocationMapChartProps) {
               return (
                 <tr key={index} className="hover:bg-muted/30 transition-colors">
                   <td className="px-4 py-2.5 font-medium">{item.name}</td>
-                  <td className="px-4 py-2.5 text-right font-semibold text-primary">{item.value}</td>
+                  <td className="px-4 py-2.5 text-right font-semibold text-primary">
+                    {item.value}
+                  </td>
                   <td className="px-4 py-2.5 text-right text-muted-foreground">{perc}%</td>
                 </tr>
               );

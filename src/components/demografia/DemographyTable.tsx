@@ -10,10 +10,11 @@ interface DemographyTableProps {
 export function DemographyTable({ colaboradores }: DemographyTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filtered = colaboradores.filter(c => 
-    c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (c.departamento || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (c.cargo || "").toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = colaboradores.filter(
+    (c) =>
+      c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.departamento || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.cargo || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -24,7 +25,9 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
             <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5 flex items-center gap-2">
               Detalhamento de Colaboradores
             </h3>
-            <p className="text-sm text-muted-foreground">Listagem completa com os recortes demográficos.</p>
+            <p className="text-sm text-muted-foreground">
+              Listagem completa com os recortes demográficos.
+            </p>
           </div>
           <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -38,7 +41,7 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
           </div>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-muted-foreground uppercase bg-muted/30">
@@ -47,7 +50,9 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
               <th className="px-4 py-4 font-semibold whitespace-nowrap">Área / Departamento</th>
               <th className="px-4 py-4 font-semibold whitespace-nowrap">Gênero</th>
               <th className="px-4 py-4 font-semibold whitespace-nowrap text-center">Idade</th>
-              <th className="px-4 py-4 font-semibold whitespace-nowrap hidden md:table-cell">Localização</th>
+              <th className="px-4 py-4 font-semibold whitespace-nowrap hidden md:table-cell">
+                Localização
+              </th>
               <th className="px-4 py-4 font-semibold text-right">Ação</th>
             </tr>
           </thead>
@@ -63,14 +68,16 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
                 <tr key={colab.matricula} className="hover:bg-muted/50 transition-colors group">
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src={colab.avatar_url} 
-                        alt={colab.nome} 
+                      <img
+                        src={colab.avatar_url}
+                        alt={colab.nome}
                         className="w-9 h-9 rounded-full border border-border object-cover"
                       />
                       <div className="flex flex-col">
                         <span className="font-semibold text-foreground">{colab.nome}</span>
-                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">{colab.cargo}</span>
+                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                          {colab.cargo}
+                        </span>
                       </div>
                     </div>
                   </td>
@@ -96,7 +103,7 @@ export function DemographyTable({ colaboradores }: DemographyTableProps) {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link 
+                    <Link
                       to="/ficha-individual/$matricula"
                       params={{ matricula: colab.matricula }}
                       className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"

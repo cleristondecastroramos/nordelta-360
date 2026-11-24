@@ -23,7 +23,9 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
           <h3 className="font-semibold leading-none tracking-tight flex items-center gap-2">
             <Medal className="h-5 w-5 text-amber-500" /> Top Talentos
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">Classificação baseada na nota média e potencial.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Classificação baseada na nota média e potencial.
+          </p>
         </div>
       </div>
       <div className="overflow-x-auto flex-1">
@@ -33,18 +35,33 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
               <th className="p-4 w-12 text-center">#</th>
               <th className="p-4">Colaborador</th>
               <th className="p-4">
-                <MetricTooltip title="Nota Média" description="Média de todas as avaliações do ciclo atual.">
-                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">Score</span>
+                <MetricTooltip
+                  title="Nota Média"
+                  description="Média de todas as avaliações do ciclo atual."
+                >
+                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">
+                    Score
+                  </span>
                 </MetricTooltip>
               </th>
               <th className="p-4">
-                <MetricTooltip title="Percentil" description="Posição relativa do colaborador em relação à base total.">
-                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">Percentil</span>
+                <MetricTooltip
+                  title="Percentil"
+                  description="Posição relativa do colaborador em relação à base total."
+                >
+                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">
+                    Percentil
+                  </span>
                 </MetricTooltip>
               </th>
               <th className="p-4">
-                <MetricTooltip title="Potencial (9 Box)" description="Cálculo com peso extra em Liderança e Inovação.">
-                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">Potencial</span>
+                <MetricTooltip
+                  title="Potencial (9 Box)"
+                  description="Cálculo com peso extra em Liderança e Inovação."
+                >
+                  <span className="cursor-help border-b border-dashed border-muted-foreground/30">
+                    Potencial
+                  </span>
                 </MetricTooltip>
               </th>
               <th className="p-4 text-right">Ficha</th>
@@ -57,10 +74,10 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
                 <td className="p-4 font-medium text-foreground">
                   <div className="flex items-center gap-3">
                     {colab.avatar_url ? (
-                      <img 
-                        src={colab.avatar_url} 
-                        alt={colab.nome} 
-                        className="w-8 h-8 rounded-full border border-border object-cover" 
+                      <img
+                        src={colab.avatar_url}
+                        alt={colab.nome}
+                        className="w-8 h-8 rounded-full border border-border object-cover"
                         onError={(e) => {
                           e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colab.nome)}&background=1e40af&color=fff&size=32`;
                         }}
@@ -82,7 +99,7 @@ export function TalentRankingTable({ ranking }: TalentRankingTableProps) {
                   </div>
                 </td>
                 <td className="p-4 text-right">
-                  <Link 
+                  <Link
                     to="/ficha-individual/$matricula"
                     params={{ matricula: colab.matricula }}
                     className="text-xs font-medium text-primary hover:underline"

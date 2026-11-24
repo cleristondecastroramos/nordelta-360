@@ -32,14 +32,14 @@ export function AvatarUpload({ name, initialImage, onUpload }: AvatarUploadProps
         setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      
+
       // Notify parent
       if (onUpload) onUpload(file);
     }
   };
 
   return (
-    <div 
+    <div
       className="relative group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -47,10 +47,10 @@ export function AvatarUpload({ name, initialImage, onUpload }: AvatarUploadProps
     >
       <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-background shadow-md bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground relative">
         {preview ? (
-          <img 
-            src={preview} 
-            alt={name} 
-            className="h-full w-full object-cover transition-opacity duration-300" 
+          <img
+            src={preview}
+            alt={name}
+            className="h-full w-full object-cover transition-opacity duration-300"
             onError={(e) => {
               e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1e40af&color=fff&size=128`;
             }}
@@ -60,18 +60,20 @@ export function AvatarUpload({ name, initialImage, onUpload }: AvatarUploadProps
         )}
 
         {/* Hover Overlay */}
-        <div className={`absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+        <div
+          className={`absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white transition-opacity duration-200 ${isHovered ? "opacity-100" : "opacity-0"}`}
+        >
           <Camera className="h-6 w-6 mb-1" />
           <span className="text-xs font-medium">Alterar</span>
         </div>
       </div>
-      
-      <input 
-        type="file" 
-        ref={fileInputRef} 
-        onChange={handleFileChange} 
-        accept="image/jpeg, image/png, image/webp" 
-        className="hidden" 
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/jpeg, image/png, image/webp"
+        className="hidden"
       />
     </div>
   );

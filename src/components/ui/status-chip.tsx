@@ -16,15 +16,12 @@ const statusChipVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 export interface StatusChipProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof statusChipVariants> {}
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof statusChipVariants> {}
 
 export function StatusChip({ className, variant, ...props }: StatusChipProps) {
-  return (
-    <div className={cn(statusChipVariants({ variant }), className)} {...props} />
-  );
+  return <div className={cn(statusChipVariants({ variant }), className)} {...props} />;
 }

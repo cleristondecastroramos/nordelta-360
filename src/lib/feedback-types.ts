@@ -20,20 +20,20 @@ export interface CalibrationData {
   colaboradorDepartamento: string;
   colaboradorFotoUrl?: string;
   ciclo: string;
-  
+
   // Notas
   notaOriginal: number; // Média calculada automaticamente
   notaCalibrada: number; // Média ajustada pelo comitê
-  
+
   // Informações qualitativas
   pontosFortes: string[];
   oportunidades: string[];
   resumoFeedback: string;
-  
+
   // Observações internas de calibragem
   observacaoGestor: string;
   observacaoRh: string;
-  
+
   status: FeedbackStatus;
   historico: AuditLog[];
 }

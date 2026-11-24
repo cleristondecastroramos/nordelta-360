@@ -54,13 +54,13 @@ function FichaIndividualPage() {
   if (!data || !data.colaborador) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh] space-y-4">
-        <AlertPanel 
-          title="Colaborador não encontrado" 
-          items={[`A matrícula ${matricula} não foi localizada nos registros ativos.`]} 
-          type="error" 
+        <AlertPanel
+          title="Colaborador não encontrado"
+          items={[`A matrícula ${matricula} não foi localizada nos registros ativos.`]}
+          type="error"
           className="max-w-md w-full"
         />
-        <button 
+        <button
           onClick={() => window.history.back()}
           className="text-primary hover:underline text-sm font-medium mt-4"
         >
@@ -71,7 +71,7 @@ function FichaIndividualPage() {
   }
 
   const { colaborador } = data;
-  
+
   // Calculate trend from history
   let evolucao = 0;
   if (data.historicoCiclos && data.historicoCiclos.length >= 2) {
@@ -80,21 +80,24 @@ function FichaIndividualPage() {
     evolucao = last - prev;
   }
 
-  const topStrengths = [...data.competencias].sort((a,b) => b.mediaGeral - a.mediaGeral).slice(0, 3);
-  const topWeaknesses = [...data.competencias].sort((a,b) => a.mediaGeral - b.mediaGeral).slice(0, 3);
+  const topStrengths = [...data.competencias]
+    .sort((a, b) => b.mediaGeral - a.mediaGeral)
+    .slice(0, 3);
+  const topWeaknesses = [...data.competencias]
+    .sort((a, b) => a.mediaGeral - b.mediaGeral)
+    .slice(0, 3);
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-700 max-w-[1600px] mx-auto">
-      
       {/* 1. Cabeçalho Premium */}
-      <EmployeeProfileHeader 
+      <EmployeeProfileHeader
         colaborador={colaborador}
         onBack={() => window.history.back()}
         onExport={() => window.print()}
       />
 
       {/* 2. Faixa de KPIs Executivos */}
-      <EmployeeKpiStrip 
+      <EmployeeKpiStrip
         notaMedia={data.notaMediaGeral}
         percentil={data.percentil}
         indicePotencial={data.indicePotencial}
@@ -106,9 +109,8 @@ function FichaIndividualPage() {
       {/* 3. Área Principal com Abas */}
       <div className="rounded-xl border bg-card/30 shadow-sm relative overflow-hidden">
         <ProfileTabNavigation activeTab={activeTab} onChangeTab={setActiveTab} />
-        
+
         <div className="p-6 md:p-8 bg-background">
-          
           {/* ABA: RESUMO */}
           {activeTab === "resumo" && (
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 animate-in slide-in-from-right-4 duration-500">
@@ -121,10 +123,15 @@ function FichaIndividualPage() {
                     <Medal className="h-5 w-5" /> Maiores Forças
                   </h4>
                   <ul className="space-y-3">
-                    {topStrengths.map(c => (
-                      <li key={c.competencia} className="flex justify-between items-center bg-white dark:bg-background p-3 rounded-lg border shadow-sm">
+                    {topStrengths.map((c) => (
+                      <li
+                        key={c.competencia}
+                        className="flex justify-between items-center bg-white dark:bg-background p-3 rounded-lg border shadow-sm"
+                      >
                         <span className="font-medium text-sm text-foreground">{c.competencia}</span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400">{c.mediaGeral.toFixed(2)}</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                          {c.mediaGeral.toFixed(2)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -135,26 +142,31 @@ function FichaIndividualPage() {
                     <AlertTriangle className="h-5 w-5" /> Foco de Desenvolvimento
                   </h4>
                   <ul className="space-y-3">
-                    {topWeaknesses.map(c => (
-                      <li key={c.competencia} className="flex justify-between items-center bg-white dark:bg-background p-3 rounded-lg border shadow-sm">
+                    {topWeaknesses.map((c) => (
+                      <li
+                        key={c.competencia}
+                        className="flex justify-between items-center bg-white dark:bg-background p-3 rounded-lg border shadow-sm"
+                      >
                         <span className="font-medium text-sm text-foreground">{c.competencia}</span>
-                        <span className="font-bold text-amber-600 dark:text-amber-400">{c.mediaGeral.toFixed(2)}</span>
+                        <span className="font-bold text-amber-600 dark:text-amber-400">
+                          {c.mediaGeral.toFixed(2)}
+                        </span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <AlertPanel 
-                  title="Síntese Executiva" 
+                <AlertPanel
+                  title="Síntese Executiva"
                   items={[
                     `O talento apresenta aderência cultural com nota média de ${data.notaMediaGeral.toFixed(2)}.`,
-                    data.gapGestorAuto > 0.5 
-                      ? "Atenção: A visão do gestor é significativamente superior à autoavaliação (Síndrome do Impostor)." 
-                      : data.gapGestorAuto < -0.5 
-                        ? "Atenção: O colaborador superestima sua performance em relação à visão da liderança." 
-                        : "Existe um excelente alinhamento entre a expectativa da liderança e a percepção do próprio talento."
-                  ]} 
-                  type="info" 
+                    data.gapGestorAuto > 0.5
+                      ? "Atenção: A visão do gestor é significativamente superior à autoavaliação (Síndrome do Impostor)."
+                      : data.gapGestorAuto < -0.5
+                        ? "Atenção: O colaborador superestima sua performance em relação à visão da liderança."
+                        : "Existe um excelente alinhamento entre a expectativa da liderança e a percepção do próprio talento.",
+                  ]}
+                  type="info"
                 />
               </div>
             </div>
@@ -187,7 +199,6 @@ function FichaIndividualPage() {
               <DevelopmentPlanTable planos={data.planoDesenvolvimento} />
             </div>
           )}
-
         </div>
       </div>
     </div>

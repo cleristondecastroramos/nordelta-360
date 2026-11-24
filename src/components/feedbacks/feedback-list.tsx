@@ -1,4 +1,12 @@
-import { Search, SlidersHorizontal, CheckCircle2, Clock, AlertCircle, FileSearch, ArrowRight } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  FileSearch,
+  ArrowRight,
+} from "lucide-react";
 import type { CalibrationData, FeedbackStatus } from "@/lib/feedback-types";
 
 interface FeedbackListProps {
@@ -9,26 +17,38 @@ interface FeedbackListProps {
 export function FeedbackStatusChip({ status }: { status: FeedbackStatus }) {
   const getStyle = () => {
     switch (status) {
-      case "Aprovado": return "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800";
-      case "Em Revisão": return "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
-      case "Pendente": return "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800";
-      case "Reprovado": return "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
-      default: return "bg-slate-100 text-slate-700 border-slate-200";
+      case "Aprovado":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800";
+      case "Em Revisão":
+        return "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
+      case "Pendente":
+        return "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800";
+      case "Reprovado":
+        return "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
     }
   };
 
   const getIcon = () => {
     switch (status) {
-      case "Aprovado": return <CheckCircle2 className="w-3 h-3 mr-1" />;
-      case "Em Revisão": return <FileSearch className="w-3 h-3 mr-1" />;
-      case "Pendente": return <Clock className="w-3 h-3 mr-1" />;
-      case "Reprovado": return <AlertCircle className="w-3 h-3 mr-1" />;
-      default: return null;
+      case "Aprovado":
+        return <CheckCircle2 className="w-3 h-3 mr-1" />;
+      case "Em Revisão":
+        return <FileSearch className="w-3 h-3 mr-1" />;
+      case "Pendente":
+        return <Clock className="w-3 h-3 mr-1" />;
+      case "Reprovado":
+        return <AlertCircle className="w-3 h-3 mr-1" />;
+      default:
+        return null;
     }
   };
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getStyle()}`}>
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getStyle()}`}
+    >
       {getIcon()}
       {status}
     </span>
@@ -38,16 +58,18 @@ export function FeedbackStatusChip({ status }: { status: FeedbackStatus }) {
 export function FeedbackList({ data, onReview }: FeedbackListProps) {
   // Calculando KPIs para o dashboard rápido
   const total = data.length;
-  const aprovados = data.filter(d => d.status === "Aprovado").length;
-  const pendentes = data.filter(d => d.status === "Pendente").length;
-  const emRevisao = data.filter(d => d.status === "Em Revisão").length;
+  const aprovados = data.filter((d) => d.status === "Aprovado").length;
+  const pendentes = data.filter((d) => d.status === "Pendente").length;
+  const emRevisao = data.filter((d) => d.status === "Em Revisão").length;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Comitê de Calibragem</h2>
-          <p className="text-muted-foreground mt-1">Revise e aprove os resumos de feedback dos colaboradores.</p>
+          <p className="text-muted-foreground mt-1">
+            Revise e aprove os resumos de feedback dos colaboradores.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button className="inline-flex items-center justify-center rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors">
@@ -73,7 +95,9 @@ export function FeedbackList({ data, onReview }: FeedbackListProps) {
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{aprovados}</p>
-            <p className="text-sm text-emerald-600 mb-1">{Math.round((aprovados/total)*100)}% do total</p>
+            <p className="text-sm text-emerald-600 mb-1">
+              {Math.round((aprovados / total) * 100)}% do total
+            </p>
           </div>
         </div>
         <div className="rounded-xl border bg-amber-50/50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-800 p-5 shadow-sm">
@@ -125,7 +149,11 @@ export function FeedbackList({ data, onReview }: FeedbackListProps) {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       {item.colaboradorFotoUrl ? (
-                        <img src={item.colaboradorFotoUrl} alt={item.colaboradorNome} className="w-8 h-8 rounded-full border border-border object-cover" />
+                        <img
+                          src={item.colaboradorFotoUrl}
+                          alt={item.colaboradorNome}
+                          className="w-8 h-8 rounded-full border border-border object-cover"
+                        />
                       ) : (
                         <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
                           {item.colaboradorNome.substring(0, 2).toUpperCase()}
@@ -145,11 +173,13 @@ export function FeedbackList({ data, onReview }: FeedbackListProps) {
                     </span>
                   </td>
                   <td className="p-4 text-center">
-                    <span className={`inline-flex items-center justify-center w-10 h-6 rounded font-semibold ${
-                      item.notaCalibrada !== item.notaOriginal 
-                        ? 'bg-primary/10 text-primary border border-primary/20' 
-                        : 'bg-secondary text-foreground'
-                    }`}>
+                    <span
+                      className={`inline-flex items-center justify-center w-10 h-6 rounded font-semibold ${
+                        item.notaCalibrada !== item.notaOriginal
+                          ? "bg-primary/10 text-primary border border-primary/20"
+                          : "bg-secondary text-foreground"
+                      }`}
+                    >
                       {item.notaCalibrada.toFixed(2)}
                     </span>
                   </td>
@@ -157,7 +187,7 @@ export function FeedbackList({ data, onReview }: FeedbackListProps) {
                     <FeedbackStatusChip status={item.status} />
                   </td>
                   <td className="p-4 text-right">
-                    <button 
+                    <button
                       onClick={() => onReview(item.id)}
                       className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
                     >

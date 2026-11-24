@@ -27,10 +27,10 @@ export function PortfolioBanner() {
             Case de Portfólio
           </div>
           <p className="text-xs text-slate-300 truncate">
-            <span className="font-semibold text-white">Nordelta 360°</span>
-            {" "}é um sistema fictício criado por{" "}
-            <span className="font-semibold text-white">Clériston de Castro Ramos</span>
-            {" "}para demonstrar competências em People Analytics, Design de Produto e Engenharia Frontend.
+            <span className="font-semibold text-white">Nordelta 360°</span> é um sistema fictício
+            criado por <span className="font-semibold text-white">Clériston de Castro Ramos</span>{" "}
+            para demonstrar competências em People Analytics, Design de Produto e Engenharia
+            Frontend.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">

@@ -1,5 +1,6 @@
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+// jspdf e html2canvas são carregados sob demanda (só quando o usuário exporta),
+// para não pesarem no carregamento inicial do app.
+import type { jsPDF } from "jspdf";
 import type { DashboardMetrics } from "@/lib/types";
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ async function captureElement(id: string): Promise<HTMLCanvasElement | null> {
   await new Promise((r) => setTimeout(r, 600));
 
   try {
+    const { default: html2canvas } = await import("html2canvas");
     const canvas = await html2canvas(el, {
       scale: 2,
       useCORS: true,
@@ -69,12 +71,7 @@ async function captureElement(id: string): Promise<HTMLCanvasElement | null> {
 
 // ─── PDF helpers ──────────────────────────────────────────────────────────────
 
-function drawSectionHeader(
-  doc: jsPDF,
-  title: string,
-  y: number,
-  pageWidth: number
-): number {
+function drawSectionHeader(doc: jsPDF, title: string, y: number, pageWidth: number): number {
   doc.setFillColor(235, 240, 252);
   doc.rect(16, y - 5, pageWidth - 32, 9, "F");
   doc.setDrawColor(170, 185, 220);
@@ -87,13 +84,7 @@ function drawSectionHeader(
   return y + 13;
 }
 
-function drawBodyText(
-  doc: jsPDF,
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number
-): number {
+function drawBodyText(doc: jsPDF, text: string, x: number, y: number, maxWidth: number): number {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(75, 90, 115);
@@ -113,14 +104,11 @@ function drawFooter(doc: jsPDF, pageWidth: number, pageHeight: number) {
     "Nordelta Soluções Corporativas — Documento de uso interno e confidencial.",
     pageWidth / 2,
     pageHeight - 8,
-    { align: "center" }
+    { align: "center" },
   );
-  doc.text(
-    `Gerado em ${new Date().toLocaleDateString("pt-BR")}`,
-    pageWidth - 16,
-    pageHeight - 8,
-    { align: "right" }
-  );
+  doc.text(`Gerado em ${new Date().toLocaleDateString("pt-BR")}`, pageWidth - 16, pageHeight - 8, {
+    align: "right",
+  });
 }
 
 function embedChart(
@@ -129,7 +117,7 @@ function embedChart(
   currentY: number,
   pageWidth: number,
   pageHeight: number,
-  centered = false
+  centered = false,
 ): number {
   const marginX = 16;
   const maxW = centered ? Math.min(pageWidth * 0.7, 140) : pageWidth - marginX * 2;
@@ -156,11 +144,12 @@ function embedChart(
 
 export async function exportDepartamentosToPDF(
   metrics: DashboardMetrics,
-  selectedDepartment: string | null
+  selectedDepartment: string | null,
 ): Promise<void> {
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const W = doc.internal.pageSize.getWidth();   // 210
-  const H = doc.internal.pageSize.getHeight();  // 297
+  const W = doc.internal.pageSize.getWidth(); // 210
+  const H = doc.internal.pageSize.getHeight(); // 297
   let y = 14;
 
   // ── PAGE 1 — HEADER ─────────────────────────────────────────────────────
@@ -171,7 +160,10 @@ export async function exportDepartamentosToPDF(
       // Measure natural logo proportions
       const img = new Image();
       img.src = logoBase64;
-      await new Promise<void>((res) => { img.onload = () => res(); img.onerror = () => res(); });
+      await new Promise<void>((res) => {
+        img.onload = () => res();
+        img.onerror = () => res();
+      });
       const ratio = img.naturalWidth / img.naturalHeight;
       const logoH = 12;
       const logoW = logoH * ratio;
@@ -224,9 +216,11 @@ export async function exportDepartamentosToPDF(
   y = drawBodyText(
     doc,
     `Esta análise consolida os resultados das Avaliações de Desempenho 360° de ${metrics.totalDepartamentos} áreas organizacionais. ` +
-    "A metodologia inclui quatro perspectivas: Gestor, Autoavaliação, Pares e Subordinados. " +
-    `A média global é de ${metrics.notaMediaGeral.toFixed(2)}/5,00.`,
-    20, y, W - 40
+      "A metodologia inclui quatro perspectivas: Gestor, Autoavaliação, Pares e Subordinados. " +
+      `A média global é de ${metrics.notaMediaGeral.toFixed(2)}/5,00.`,
+    20,
+    y,
+    W - 40,
   );
 
   // Table — ALL departments sorted by media desc
@@ -257,7 +251,8 @@ export async function exportDepartamentosToPDF(
     doc.text(d.departamento, 20, y + 4.5);
 
     // Media in colour
-    const mediaColor: [number, number, number] = d.media >= 3.5 ? [22, 120, 70] : d.media >= 2.8 ? [90, 90, 90] : [170, 50, 50];
+    const mediaColor: [number, number, number] =
+      d.media >= 3.5 ? [22, 120, 70] : d.media >= 2.8 ? [90, 90, 90] : [170, 50, 50];
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...mediaColor);
     doc.text(d.media.toFixed(2), W - 70, y + 4.5);
@@ -292,9 +287,11 @@ export async function exportDepartamentosToPDF(
   y = drawBodyText(
     doc,
     "O mapa de calor exibe a magnitude das divergências de percepção por departamento e competência. " +
-    "Células em vermelho indicam superestimativa do colaborador (Efeito Dunning-Kruger), " +
-    "enquanto células em verde indicam subestimativa (Síndrome do Impostor).",
-    20, y, W - 40
+      "Células em vermelho indicam superestimativa do colaborador (Efeito Dunning-Kruger), " +
+      "enquanto células em verde indicam subestimativa (Síndrome do Impostor).",
+    20,
+    y,
+    W - 40,
   );
 
   const heatCanvas = await captureElement("heatmap-export");
@@ -318,9 +315,11 @@ export async function exportDepartamentosToPDF(
   y = drawBodyText(
     doc,
     `O gráfico de radar exibe as competências avaliadas no departamento "${deptName}". ` +
-    "Cada eixo representa uma competência. A assimetria entre as perspectivas revela " +
-    "os gaps de percepção que demandam atenção gerencial.",
-    20, y, W - 40
+      "Cada eixo representa uma competência. A assimetria entre as perspectivas revela " +
+      "os gaps de percepção que demandam atenção gerencial.",
+    20,
+    y,
+    W - 40,
   );
 
   const radarCanvas = await captureElement("radar-export");

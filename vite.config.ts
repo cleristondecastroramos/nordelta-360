@@ -8,10 +8,10 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     tsconfigPaths(),
-    TanStackRouterVite(),
+    TanStackRouterVite({ autoCodeSplitting: true }),
     react(),
   ],
   server: {
     port: 8080,
-  }
+  },
 });

@@ -51,7 +51,9 @@ function Dashboard() {
       <div className="flex h-[calc(100vh-8rem)] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="text-sm font-medium text-muted-foreground animate-pulse">Carregando painel executivo...</p>
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+            Carregando painel executivo...
+          </p>
         </div>
       </div>
     );
@@ -60,10 +62,12 @@ function Dashboard() {
   if (!metrics || metrics.totalColaboradores === 0) {
     return (
       <div className="max-w-3xl mx-auto mt-12">
-        <AlertPanel 
+        <AlertPanel
           type="error"
           title="Dados ainda não disponíveis"
-          items={["Não encontramos registros no banco para renderizar o painel. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias."]}
+          items={[
+            "Não encontramos registros no banco para renderizar o painel. Verifique a conexão com o backend ou o preenchimento das tabelas necessárias.",
+          ]}
         />
       </div>
     );
@@ -78,7 +82,10 @@ function Dashboard() {
           </h1>
           <Dialog>
             <DialogTrigger asChild>
-              <Badge variant="outline" className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 text-sm py-1 px-3 flex items-center gap-1.5 transition-colors w-fit">
+              <Badge
+                variant="outline"
+                className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 text-sm py-1 px-3 flex items-center gap-1.5 transition-colors w-fit"
+              >
                 <Info className="w-4 h-4" />
                 Contexto do Case
               </Badge>
@@ -96,21 +103,43 @@ function Dashboard() {
               <div className="grid gap-6 md:grid-cols-2 mt-4">
                 <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300">
                   <p>
-                    <strong className="text-slate-900 dark:text-white font-semibold">Empresa Fictícia:</strong> Nordelta Soluções Corporativas (Ramo: Tecnologia B2B).
+                    <strong className="text-slate-900 dark:text-white font-semibold">
+                      Empresa Fictícia:
+                    </strong>{" "}
+                    Nordelta Soluções Corporativas (Ramo: Tecnologia B2B).
                   </p>
                   <p>
-                    <strong className="text-slate-900 dark:text-white font-semibold">Estrutura:</strong> 614 colaboradores distribuídos em 6 departamentos (Tecnologia, Comercial, RH, Financeiro, Operações e Marketing).
+                    <strong className="text-slate-900 dark:text-white font-semibold">
+                      Estrutura:
+                    </strong>{" "}
+                    614 colaboradores distribuídos em 6 departamentos (Tecnologia, Comercial, RH,
+                    Financeiro, Operações e Marketing).
                   </p>
                   <p>
-                    <strong className="text-slate-900 dark:text-white font-semibold">O Sistema:</strong> Uma plataforma executiva de <em>People Analytics</em> para consolidar dados de performance, identificar gaps de percepção e guiar o desenvolvimento de talentos.
+                    <strong className="text-slate-900 dark:text-white font-semibold">
+                      O Sistema:
+                    </strong>{" "}
+                    Uma plataforma executiva de <em>People Analytics</em> para consolidar dados de
+                    performance, identificar gaps de percepção e guiar o desenvolvimento de
+                    talentos.
                   </p>
                 </div>
                 <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300">
                   <p>
-                    <strong className="text-slate-900 dark:text-white font-semibold">Tipo de Avaliação:</strong> Avaliação 360°, cruzando visões do Gestor, Autoavaliação e Pares. A escala de notas vai de 1.0 (Insatisfatório) a 5.0 (Excepcional).
+                    <strong className="text-slate-900 dark:text-white font-semibold">
+                      Tipo de Avaliação:
+                    </strong>{" "}
+                    Avaliação 360°, cruzando visões do Gestor, Autoavaliação e Pares. A escala de
+                    notas vai de 1.0 (Insatisfatório) a 5.0 (Excepcional).
                   </p>
                   <p>
-                    <strong className="text-slate-900 dark:text-white font-semibold">Como Utilizar:</strong> Analise os KPIs para visão global. O <strong>Radar</strong> compara a empresa com ciclos anteriores; o <strong>Heatmap</strong> identifica vieses de avaliação; e a <strong>Distribuição de Curva</strong> espelha a alta dispersão de performance da equipe.
+                    <strong className="text-slate-900 dark:text-white font-semibold">
+                      Como Utilizar:
+                    </strong>{" "}
+                    Analise os KPIs para visão global. O <strong>Radar</strong> compara a empresa
+                    com ciclos anteriores; o <strong>Heatmap</strong> identifica vieses de
+                    avaliação; e a <strong>Distribuição de Curva</strong> espelha a alta dispersão
+                    de performance da equipe.
                   </p>
                 </div>
               </div>
@@ -177,8 +206,12 @@ function Dashboard() {
         <div className="xl:col-span-2 rounded-xl border bg-card shadow-sm flex flex-col">
           <div className="p-6 border-b flex justify-between items-center">
             <div>
-              <h3 className="font-semibold text-lg">Mapeamento de Competências (Radar Executivo)</h3>
-              <p className="text-sm text-muted-foreground">Comparativo de Média Global vs Ciclo Anterior.</p>
+              <h3 className="font-semibold text-lg">
+                Mapeamento de Competências (Radar Executivo)
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Comparativo de Média Global vs Ciclo Anterior.
+              </p>
             </div>
           </div>
           <div className="flex-1 p-6 flex flex-col xl:flex-row gap-6 items-center">
@@ -186,16 +219,16 @@ function Dashboard() {
               <RadarExecutiveChart data={metrics.mediasPorCompetencia} />
             </div>
             <div className="w-full xl:w-1/3">
-               <ExplainerBox 
+              <ExplainerBox
                 title="Como ler o Radar"
                 description="O preenchimento em azul sólido representa a competência atual da empresa. A linha tracejada cinza projeta o resultado do ciclo passado. Quanto mais próximo das bordas, mais madura a competência."
               />
             </div>
           </div>
         </div>
-        
+
         <div className="h-full min-h-[480px]">
-           <DepartmentRankingCard departamentos={metrics.departamentos} />
+          <DepartmentRankingCard departamentos={metrics.departamentos} />
         </div>
       </div>
 
@@ -206,11 +239,14 @@ function Dashboard() {
             <h3 className="font-semibold text-lg">Heatmap de Gaps (Gestor vs Autoavaliação)</h3>
           </div>
           <p className="text-[13px] text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
-            Identifique facilmente as distorções de percepção. Cores azul (sky) indicam que o gestor enxerga o colaborador melhor do que ele mesmo (Síndrome do Impostor). Cores vermelho (rose) indicam que o colaborador se enxerga melhor do que o gestor (Efeito Dunning-Kruger).
+            Identifique facilmente as distorções de percepção. Cores azul (sky) indicam que o gestor
+            enxerga o colaborador melhor do que ele mesmo (Síndrome do Impostor). Cores vermelho
+            (rose) indicam que o colaborador se enxerga melhor do que o gestor (Efeito
+            Dunning-Kruger).
           </p>
         </div>
         <div className="p-6">
-           <GapHeatmap data={metrics.gapHeatmap} />
+          <GapHeatmap data={metrics.gapHeatmap} />
         </div>
       </div>
 
@@ -219,13 +255,15 @@ function Dashboard() {
         <div className="rounded-xl border bg-card shadow-sm flex flex-col">
           <div className="p-6 border-b">
             <h3 className="font-semibold text-lg">Distribuição de Curva (Histograma)</h3>
-            <p className="text-sm text-muted-foreground">Concentração do volume de colaboradores por faixa de nota.</p>
+            <p className="text-sm text-muted-foreground">
+              Concentração do volume de colaboradores por faixa de nota.
+            </p>
           </div>
           <div className="p-6 flex-1 h-[350px]">
-             <DistributionChart data={metrics.distribuicaoNotas} />
+            <DistributionChart data={metrics.distribuicaoNotas} />
           </div>
         </div>
-        
+
         <div className="h-full min-h-[450px]">
           <TalentRankingTable ranking={metrics.ranking} />
         </div>

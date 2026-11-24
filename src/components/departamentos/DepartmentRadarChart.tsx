@@ -7,7 +7,7 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
   Tooltip as RechartsTooltip,
-  Legend
+  Legend,
 } from "recharts";
 
 interface DepartmentRadarChartProps {
@@ -19,25 +19,36 @@ export function DepartmentRadarChart({ departamento }: DepartmentRadarChartProps
     return (
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full items-center justify-center min-h-[400px]">
         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
-          <svg className="h-8 w-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          <svg
+            className="h-8 w-8 text-muted-foreground"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+            />
           </svg>
         </div>
         <p className="text-muted-foreground text-center max-w-sm">
-          Selecione um departamento no ranking para visualizar a análise detalhada de competências em relação à média global.
+          Selecione um departamento no ranking para visualizar a análise detalhada de competências
+          em relação à média global.
         </p>
       </div>
     );
   }
 
   const data = departamento.competenciasDetalhadas
-    .filter(c => c.competencia !== "comentario")
-    .map(c => ({
+    .filter((c) => c.competencia !== "comentario")
+    .map((c) => ({
       subject: c.competencia.split(" ")[0], // Use first word for brevity in radar
       fullName: c.competencia,
       A: c.media,
       B: c.mediaEmpresa,
-      fullMark: 5
+      fullMark: 5,
     }));
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -70,37 +81,39 @@ export function DepartmentRadarChart({ departamento }: DepartmentRadarChartProps
             {departamento.departamento}
           </span>
         </h3>
-        <p className="text-sm text-muted-foreground">Comparativo das pontuações do setor contra a média geral da organização.</p>
+        <p className="text-sm text-muted-foreground">
+          Comparativo das pontuações do setor contra a média geral da organização.
+        </p>
       </div>
       <div className="flex-1 w-full min-h-[600px]">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="95%" data={data}>
             <PolarGrid stroke="#e2e8f0" />
-            <PolarAngleAxis 
-              dataKey="subject" 
-              tick={{ fill: "#334155", fontSize: 11, fontWeight: 600 }} 
+            <PolarAngleAxis
+              dataKey="subject"
+              tick={{ fill: "#334155", fontSize: 11, fontWeight: 600 }}
             />
-            <PolarRadiusAxis 
-              angle={30} 
-              domain={[0, 5]} 
+            <PolarRadiusAxis
+              angle={30}
+              domain={[0, 5]}
               tick={{ fill: "#94a3b8", fontSize: 10 }}
               tickCount={6}
             />
             <RechartsTooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-            <Radar 
-              name={departamento.departamento} 
-              dataKey="A" 
-              stroke="#2563eb" 
-              fill="#3b82f6" 
-              fillOpacity={0.6} 
+            <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+            <Radar
+              name={departamento.departamento}
+              dataKey="A"
+              stroke="#2563eb"
+              fill="#3b82f6"
+              fillOpacity={0.6}
               strokeWidth={3}
             />
-            <Radar 
-              name="Média Empresa" 
-              dataKey="B" 
-              stroke="#f97316" 
-              fill="#f97316" 
+            <Radar
+              name="Média Empresa"
+              dataKey="B"
+              stroke="#f97316"
+              fill="#f97316"
               fillOpacity={0.15}
               strokeWidth={2}
               strokeDasharray="4 4"

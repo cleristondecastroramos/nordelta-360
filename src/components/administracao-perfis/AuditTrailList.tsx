@@ -17,10 +17,14 @@ export function AuditTrailList({ logs }: AuditTrailListProps) {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "Sucesso": return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
-      case "Aviso": return <AlertCircle className="w-4 h-4 text-amber-500" />;
-      case "Erro": return <ShieldAlert className="w-4 h-4 text-rose-500" />;
-      default: return <ShieldCheck className="w-4 h-4 text-slate-500" />;
+      case "Sucesso":
+        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+      case "Aviso":
+        return <AlertCircle className="w-4 h-4 text-amber-500" />;
+      case "Erro":
+        return <ShieldAlert className="w-4 h-4 text-rose-500" />;
+      default:
+        return <ShieldCheck className="w-4 h-4 text-slate-500" />;
     }
   };
 
@@ -32,7 +36,9 @@ export function AuditTrailList({ logs }: AuditTrailListProps) {
             <Clock className="w-5 h-5 text-primary" />
             Trilha de Auditoria
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">Registro imutável das últimas alterações administrativas.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Registro imutável das últimas alterações administrativas.
+          </p>
         </div>
       </div>
       <div className="p-0">
@@ -53,18 +59,16 @@ export function AuditTrailList({ logs }: AuditTrailListProps) {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       {getStatusIcon(log.status)}
-                      <span className="font-medium text-xs uppercase tracking-wider">{log.status}</span>
+                      <span className="font-medium text-xs uppercase tracking-wider">
+                        {log.status}
+                      </span>
                     </div>
                   </td>
                   <td className="px-4 py-4 font-semibold text-foreground whitespace-nowrap">
                     {log.acao}
                   </td>
-                  <td className="px-4 py-4 text-muted-foreground min-w-[250px]">
-                    {log.detalhe}
-                  </td>
-                  <td className="px-4 py-4 font-medium">
-                    {log.usuarioAdmin}
-                  </td>
+                  <td className="px-4 py-4 text-muted-foreground min-w-[250px]">{log.detalhe}</td>
+                  <td className="px-4 py-4 font-medium">{log.usuarioAdmin}</td>
                   <td className="px-6 py-4 text-right text-muted-foreground whitespace-nowrap font-mono text-xs">
                     {log.dataHora}
                   </td>
