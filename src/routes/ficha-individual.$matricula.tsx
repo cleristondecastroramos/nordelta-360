@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { getColaboradorResultados } from "@/lib/data-service";
-import type { ColaboradorResultados } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { fichaQuery } from "@/lib/queries";
+import { useState } from "react";
 import { AlertPanel } from "@/components/ui/alert-panel";
-import { FileText, Medal, AlertTriangle } from "lucide-react";
+import { Medal, AlertTriangle } from "lucide-react";
 
 // Premium Components
 import { EmployeeProfileHeader } from "@/components/ficha-individual/EmployeeProfileHeader";
@@ -21,24 +21,8 @@ export const Route = createFileRoute("/ficha-individual/$matricula")({
 
 function FichaIndividualPage() {
   const { matricula } = Route.useParams();
-  const [data, setData] = useState<ColaboradorResultados | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isPending: loading } = useQuery(fichaQuery(matricula));
   const [activeTab, setActiveTab] = useState("resumo");
-
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await getColaboradorResultados(matricula);
-        setData(res);
-      } catch (error) {
-        console.error("Erro ao carregar a ficha:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [matricula]);
 
   if (loading) {
     return (

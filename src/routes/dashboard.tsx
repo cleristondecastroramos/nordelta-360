@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { dashboardQuery } from "@/lib/queries";
 import { Users, TrendingUp, Target, Award, Building, Activity, Info } from "lucide-react";
-import { getDashboardMetrics } from "@/lib/data-service";
-import type { DashboardMetrics } from "@/lib/types";
 
 // UI Components
 import { ExecutiveKpiCard } from "@/components/ui/executive-kpi-card";
@@ -10,7 +9,6 @@ import { RadarExecutiveChart } from "@/components/ui/radar-executive-chart";
 import { GapHeatmap } from "@/components/ui/gap-heatmap";
 import { DepartmentRankingCard } from "@/components/ui/department-ranking-card";
 import { TalentRankingTable } from "@/components/ui/talent-ranking-table";
-import { InsightPanel } from "@/components/ui/insight-panel";
 import { ExplainerBox } from "@/components/ui/explainer-box";
 import { DistributionChart } from "@/components/ui/distribution-chart";
 import { AlertPanel } from "@/components/ui/alert-panel";
@@ -29,22 +27,7 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function Dashboard() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getDashboardMetrics();
-        setMetrics(data);
-      } catch (error) {
-        console.error("Failed to load metrics:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const { data: metrics, isPending: loading } = useQuery(dashboardQuery);
 
   if (loading) {
     return (

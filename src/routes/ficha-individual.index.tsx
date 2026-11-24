@@ -1,25 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { colaboradoresQuery } from "@/lib/queries";
+import { useState } from "react";
 import { Search, UserCheck } from "lucide-react";
-import { getColaboradoresList } from "@/lib/data-service";
 
 export const Route = createFileRoute("/ficha-individual/")({
   component: FichaIndividualIndex,
 });
 
 function FichaIndividualIndex() {
-  const [colaboradores, setColaboradores] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: colaboradores = [], isPending: loading } = useQuery(colaboradoresQuery);
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    async function load() {
-      const data = await getColaboradoresList();
-      setColaboradores(data);
-      setLoading(false);
-    }
-    load();
-  }, []);
 
   const filteredData = colaboradores.filter((c) => {
     const search = searchTerm.toLowerCase();

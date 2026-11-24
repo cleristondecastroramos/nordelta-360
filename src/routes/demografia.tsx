@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { colaboradoresQuery, demografiaQuery } from "@/lib/queries";
 import { Download, Filter, Users, UserPlus, GraduationCap, Building2 } from "lucide-react";
-import { getColaboradoresList, getDemographyMetrics } from "@/lib/data-service";
-import type { DemographyMetrics, Colaborador } from "@/lib/types";
+import type { Colaborador } from "@/lib/types";
 import { AlertPanel } from "@/components/ui/alert-panel";
 
 // Componentes da Demografia
@@ -20,27 +20,11 @@ export const Route = createFileRoute("/demografia")({
 });
 
 function DemografiaPage() {
-  const [metrics, setMetrics] = useState<DemographyMetrics | null>(null);
-  const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [metricsData, colabsData] = await Promise.all([
-          getDemographyMetrics(),
-          getColaboradoresList(),
-        ]);
-        setMetrics(metricsData);
-        setColaboradores(colabsData as unknown as Colaborador[]);
-      } catch (error) {
-        console.error("Erro ao carregar dados demográficos:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
+  const metricsQuery = useQuery(demografiaQuery);
+  const colabsQuery = useQuery(colaboradoresQuery);
+  const metrics = metricsQuery.data ?? null;
+  const colaboradores = (colabsQuery.data ?? []) as unknown as Colaborador[];
+  const loading = metricsQuery.isPending || colabsQuery.isPending;
 
   if (loading) {
     return (
