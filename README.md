@@ -109,7 +109,7 @@ npm install
 ```
 
 3. **Configure as variáveis de ambiente**
-   Copie `.env.example` para `.env` e preencha com a URL e a chave pública (anon) do seu projeto Supabase.
+   Copie `.env.example` para `.env` e preencha com a URL e a chave pública (anon) do seu projeto Supabase. O deploy de produção usa o `.env.production` do repositório, que contém apenas esses valores públicos.
 
 4. **Inicie o servidor de desenvolvimento**
 
