@@ -1,3 +1,6 @@
+// Manutenção: converte as matrículas do banco para o formato inicial do cargo + número
+// e atualiza src/lib/real_scores.json. ESCREVE no Supabase (exige permissão de escrita).
+// Uso (na raiz do projeto): node scripts/update-matriculas.mjs
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";

@@ -1,3 +1,6 @@
+// Manutenção: recalcula as médias de data/evaluations_360.csv e grava em feedbacks_finais.
+// ESCREVE no Supabase (exige permissão de escrita).
+// Uso (na raiz do projeto): node scripts/update-scores.mjs
 import fs from "fs";
 import readline from "readline";
 import { createClient } from "@supabase/supabase-js";

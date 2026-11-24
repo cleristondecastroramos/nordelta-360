@@ -1,3 +1,5 @@
+// Testa a conexão com o Supabase lendo 10 matrículas da tabela colaboradores.
+// Uso (na raiz do projeto): node scripts/check-connection.mjs
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";

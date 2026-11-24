@@ -1,3 +1,6 @@
+// Gera src/lib/real_scores.json a partir de data/evaluations_360.csv,
+// redistribuindo as médias para uma curva de notas mais realista. Não acessa o banco.
+// Uso (na raiz do projeto): node scripts/disperse-scores.mjs
 import fs from "fs";
 import readline from "readline";
 

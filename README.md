@@ -1,176 +1,259 @@
 <div align="center">
 
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+<img src="public/logo_nordelta_fundo_claro.png" alt="Nordelta" width="180">
 
 # Nordelta 360°
 
-**Sistema Corporativo de Avaliação 360° e People Analytics**
+**Plataforma de Avaliação de Desempenho 360° e People Analytics**
 
-Um dashboard executivo avançado para análise de performance, simulação de feedbacks e desenvolvimento de talentos corporativos.
+Dashboard executivo para análise de performance, gaps de percepção entre avaliadores e desenvolvimento de talentos.
 
-_⚠️ Aviso: Este é um **projeto fictício** construído como case oficial para portfólio de engenharia de software e design de produto._
+[**Ver demonstração ao vivo →**](https://nordelta-360.vercel.app)
+
+![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_7-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 
 </div>
 
----
-
-## 📸 Demonstração Visual
-
-|                       **Dashboard Executivo**                        |                             **Ficha Individual**                              |
-| :------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
-| <img src="docs/screenshots/dashboard.png" alt="Dashboard Executivo"> |   <img src="docs/screenshots/ficha-individual.png" alt="Ficha Individual">    |
-| Visão geral de performance, competências e ranking por departamento. | Radar 360°, forças, pontos de desenvolvimento e plano de ação do colaborador. |
-
-|                             **Departamentos**                             |                                 **Demografia**                                  |
-| :-----------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-|    <img src="docs/screenshots/departamentos.png" alt="Departamentos">     |          <img src="docs/screenshots/demografia.png" alt="Demografia">           |
-| Comparativo entre áreas, ranking analítico e gaps gestor x autoavaliação. | Composição da força de trabalho por gênero, idade, tempo de casa e localização. |
-
-|                            **Evolução Histórica**                            |                        **Ciclos de Avaliação**                        |
-| :--------------------------------------------------------------------------: | :-------------------------------------------------------------------: |
-| <img src="docs/screenshots/evolucao-historica.png" alt="Evolução Histórica"> |   <img src="docs/screenshots/ciclos.png" alt="Ciclos de Avaliação">   |
-|     Tendência da nota média entre ciclos e leitura executiva automática.     | Criação, acompanhamento e encerramento das rodadas de avaliação 360°. |
+> [!NOTE]
+> Projeto fictício desenvolvido como case de portfólio. A "Nordelta Soluções Corporativas", seus colaboradores e todas as avaliações são dados sintéticos.
 
 ---
 
-## 🎯 Sobre o Projeto
+## Sumário
 
-O **Nordelta 360°** simula a operação interna da "Nordelta Soluções Corporativas", uma empresa de fachada para fins deste case. O sistema foi desenvolvido para atuar como uma plataforma robusta de **People Analytics e Avaliação 360°**, modelando o fluxo de dados típico de um setor de Recursos Humanos de alta maturidade analítica.
-
-O objetivo principal deste repositório é servir como uma **prova de conceito (PoC) para o meu portfólio**, atestando competências sólidas em:
-
-- Desenvolvimento e engenharia de interfaces web (B2B).
-- Arquitetura de aplicações front-end modernas.
-- Estruturação e visualização de grandes volumes de dados (Data Visualization).
-- UX/UI aplicados a dashboards corporativos e alta densidade de informação.
-- Domínio do ciclo de vida e engenharia de software voltados para produto.
-
----
-
-## 🚀 Funcionalidades
-
-O sistema conta com um ecossistema focado na avaliação e retenção de talentos:
-
-- **📊 Dashboard Executivo:** Visão macro da empresa com indicadores de performance e engajamento.
-- **👤 Ficha Individual Premium:** Perfil consolidado de cada colaborador.
-- **🎯 Visualização de Dados (Data Viz):** Gráficos de radar para soft/hard skills, histogramas de distribuição, heatmaps e rankings setoriais.
-- **👥 Diretório de Talentos:** Listagem interativa e filtro multidimensional de profissionais.
-- **📈 Evolução Histórica:** Acompanhamento do progresso de colaboradores através de métricas comparativas em ciclos anteriores.
-- **⚙️ Administração de Ciclos 360°:** Criação, andamento e finalização de ciclos de avaliação.
-- **💬 Feedbacks e Calibragem:** Painel para leitura e calibração de avaliações (pares, gestores, autoavaliação).
+- [Visão geral](#visão-geral)
+- [Demonstração](#demonstração)
+- [Funcionalidades](#funcionalidades)
+- [Stack](#stack)
+- [Arquitetura](#arquitetura)
+- [Modelo de dados](#modelo-de-dados)
+- [Como executar](#como-executar)
+- [Scripts](#scripts)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Deploy](#deploy)
+- [Roadmap](#roadmap)
+- [Autor](#autor)
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+## Visão geral
 
-Este projeto foi construído empregando tecnologias estabelecidas no ecossistema front-end para garantir performance e escalabilidade:
+O **Nordelta 360°** simula a área de Gente & Gestão de uma empresa com **614 colaboradores em 7 departamentos**, avaliados em **12 competências** por até **quatro grupos de avaliadores** (gestor, autoavaliação, pares e subordinados).
 
-- **[React](https://react.dev/)** + **[TypeScript](https://www.typescriptlang.org/)**: Base de UI robusta e estaticamente tipada.
-- **[Tailwind CSS](https://tailwindcss.com/)**: Estilização utilitária e responsiva.
-- **[TanStack Router](https://tanstack.com/router/latest)**: Roteamento modular com segurança de tipos (type-safe).
-- **[TanStack Query](https://tanstack.com/query/latest)**: Cache das consultas entre páginas.
-- **[Supabase](https://supabase.com/)**: Banco Postgres com Row Level Security que armazena colaboradores e avaliações.
-- **[Recharts](https://recharts.org/)**: Motor de composição para os componentes de gráficos.
-- **[shadcn/ui](https://ui.shadcn.com/)**: Primitivas de interface acessíveis e customizáveis.
-- **Vite**: Ferramenta de build extremamente rápida.
+A partir dessas avaliações, a plataforma responde às perguntas que um RH orientado a dados faz no fim de cada ciclo:
 
----
+- Quais áreas e competências estão acima ou abaixo da média da empresa?
+- Onde a percepção do gestor diverge da autoavaliação do colaborador?
+- Quem são os talentos de maior desempenho e potencial?
+- Como a performance evoluiu ao longo dos ciclos?
+- Qual é o perfil demográfico da força de trabalho?
 
-## 🏗 Arquitetura e Dados
-
-O design arquitetural do Nordelta 360° foca em modularização e performance de renderização:
-
-- **Dados Sintéticos no Supabase:** Colaboradores, avaliações e departamentos são fictícios e ficam em um banco Postgres no Supabase (schema e políticas de acesso em `supabase/migrations`). Os CSVs de origem estão em `data/`.
-- **Camada de dados:** `src/lib/db.ts` concentra as consultas ao Supabase; `src/lib/data-service.ts` transforma os dados em métricas (médias, gaps, percentis, rankings); as páginas consomem tudo via TanStack Query (`src/lib/queries.ts`), com cache entre navegações.
-- **Simulação de avaliadores:** As notas por grupo de avaliador (gestor, autoavaliação, pares e subordinados) são derivadas de forma determinística da nota de cada competência, então os números não mudam entre recarregamentos.
-- **Code splitting:** Cada rota é carregada sob demanda, e as bibliotecas de PDF só são baixadas quando o usuário exporta um relatório.
+O foco do projeto é **engenharia front-end, visualização de dados e design de produto** para dashboards B2B de alta densidade de informação.
 
 ---
 
-## ⚙️ Instalação e Execução
+## Demonstração
 
-Instruções para executar o projeto localmente em seu ambiente de desenvolvimento.
+**Acesse:** [nordelta-360.vercel.app](https://nordelta-360.vercel.app)
 
-1. **Clone o repositório**
+O login é apenas de demonstração. As credenciais também aparecem na tela de login, em "Credenciais de acesso".
+
+| E-mail               | Senha      |
+| -------------------- | ---------- |
+| `rh@nordelta.com.br` | `senha123` |
+
+|                        Dashboard Executivo                         |                       Ficha Individual                        |
+| :----------------------------------------------------------------: | :-----------------------------------------------------------: |
+|     <img src="docs/screenshots/dashboard.png" alt="Dashboard">     | <img src="docs/screenshots/ficha-individual.png" alt="Ficha"> |
+|                         **Departamentos**                          |                        **Demografia**                         |
+| <img src="docs/screenshots/departamentos.png" alt="Departamentos"> | <img src="docs/screenshots/demografia.png" alt="Demografia">  |
+|                       **Evolução Histórica**                       |                    **Ciclos de Avaliação**                    |
+| <img src="docs/screenshots/evolucao-historica.png" alt="Evolução"> |     <img src="docs/screenshots/ciclos.png" alt="Ciclos">      |
+
+---
+
+## Funcionalidades
+
+| Módulo                      | O que oferece                                                                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dashboard Executivo**     | KPIs consolidados, radar de competências (atual × ciclo anterior), heatmap de gaps por departamento, distribuição de notas e ranking de talentos. |
+| **Departamentos**           | Comparativo entre áreas com linha de média da empresa, ranking com potencial e gap, radar por área, lista de colaboradores e exportação em PDF.   |
+| **Demografia**              | Distribuição por sexo, faixa etária, tempo de empresa, composição dos departamentos e localização (bairros de Teresina/PI e Timon/MA).            |
+| **Evolução Histórica**      | Tendência da nota média entre ciclos, evolução por departamento e competência e leitura executiva gerada automaticamente.                         |
+| **Colaboradores**           | Diretório com busca, filtros por departamento, cargo, faixa etária e tempo de casa, e ordenação por coluna.                                       |
+| **Ficha Individual**        | Radar 360° por grupo de avaliador, forças e pontos de desenvolvimento, gap gestor × auto, percentil, histórico e plano de desenvolvimento.        |
+| **Ciclos de Avaliação**     | Criação de ciclos em etapas (wizard) e acompanhamento do progresso de cada rodada.                                                                |
+| **Feedbacks e Calibração**  | Matriz de calibração e fila de revisão de feedbacks.                                                                                              |
+| **Administração de Perfis** | Usuários, papéis (RBAC), matriz de permissões por módulo e trilha de auditoria.                                                                   |
+
+> Ciclos, Feedbacks, Relatórios e Configurações usam dados simulados no próprio front-end. As demais telas leem os dados do Supabase.
+
+---
+
+## Stack
+
+| Camada           | Tecnologia                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Interface        | [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org)                |
+| Build            | [Vite 7](https://vite.dev)                                                                  |
+| Estilo           | [Tailwind CSS 4](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix UI)   |
+| Roteamento       | [TanStack Router](https://tanstack.com/router) (rotas por arquivo, com code splitting)      |
+| Dados no cliente | [TanStack Query](https://tanstack.com/query) (cache entre páginas)                          |
+| Gráficos         | [Recharts](https://recharts.org)                                                            |
+| Banco de dados   | [Supabase](https://supabase.com) (Postgres com Row Level Security)                          |
+| Exportação       | [jsPDF](https://github.com/parallax/jsPDF) + [html2canvas](https://html2canvas.hertzen.com) |
+| Qualidade        | ESLint + Prettier                                                                           |
+| Hospedagem       | [Vercel](https://vercel.com)                                                                |
+
+---
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    DB[(Supabase<br/>Postgres + RLS)] -->|colaboradores<br/>feedbacks_finais| D[src/lib/db.ts<br/>consultas + cache]
+    S[real_scores.json<br/>notas por competência] --> D
+    D --> M[src/lib/data-service.ts<br/>métricas e indicadores]
+    M --> Q[src/lib/queries.ts<br/>TanStack Query]
+    Q --> P[Páginas<br/>src/routes]
+    P --> C[Componentes<br/>gráficos e tabelas]
+```
+
+- **`db.ts`** lê as tabelas uma vez por sessão, converte as matrículas para o formato usado na interface (inicial do cargo + número, ex.: `C0561`) e oferece buscas por matrícula em tempo constante.
+- **`data-service.ts`** transforma os dados em indicadores: médias por área e competência, gaps gestor × autoavaliação, percentis, distribuição de notas, rankings e textos de insight.
+- **`queries.ts`** centraliza as consultas do TanStack Query. Voltar a uma página reaproveita o cache em vez de recalcular tudo.
+- **Code splitting:** cada rota é carregada sob demanda, e as bibliotecas de PDF só são baixadas quando o usuário exporta um relatório.
+
+### Como as notas por avaliador são geradas
+
+O banco guarda a nota consolidada de cada colaborador por competência. As notas por grupo (gestor, auto, pares e subordinados) são derivadas dela por uma função **determinística** (`calculateRaterScores`), baseada em hash da matrícula e da competência. Ela aplica perfis de desempenho, características de cada departamento e padrões de divergência conhecidos (por exemplo, colaborador que se superestima × gestor que vê mais potencial). O resultado é realista, variado e **estável entre recarregamentos**.
+
+---
+
+## Modelo de dados
+
+O schema completo e as políticas de acesso estão em [`supabase/migrations`](supabase/migrations).
+
+| Tabela / view            | Conteúdo                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| `colaboradores`          | Cadastro: cargo, departamento, dados demográficos e endereço.                               |
+| `feedbacks_finais`       | Resultado consolidado por colaborador: indicadores, nota média, percentil, gap e potencial. |
+| `avaliacoes`             | Avaliações individuais (avaliador × avaliado × competência).                                |
+| `avaliacoes_anonimas`    | View das avaliações sem a identidade do avaliador, para preservar o anonimato.              |
+| `ciclos_avaliacao`       | Ciclos de avaliação e sua configuração.                                                     |
+| `profiles`, `user_roles` | Perfis e papéis (`admin`, `rh`, `gestor`, `colaborador`).                                   |
+
+A leitura pública das tabelas de cadastro e resultados está liberada para a demonstração funcionar sem conta. Escrita e acesso às avaliações individuais ficam restritos aos papéis `admin` e `rh`.
+
+---
+
+## Como executar
+
+**Pré-requisitos:** Node.js 20.12 ou superior e um projeto Supabase com as migrations aplicadas.
 
 ```bash
+# 1. Clonar
 git clone https://github.com/cleristondecastroramos/nordelta-360.git
 cd nordelta-360
-```
 
-2. **Instale as dependências**
-   O projeto pode ser executado usando `npm` (ou equivalente).
-
-```bash
+# 2. Instalar dependências
 npm install
-```
 
-3. **Configure as variáveis de ambiente**
-   Copie `.env.example` para `.env` e preencha com a URL e a chave pública (anon) do seu projeto Supabase. O deploy de produção usa o `.env.production` do repositório, que contém apenas esses valores públicos.
+# 3. Configurar o ambiente
+cp .env.example .env
+# edite o .env com a URL e a chave pública (anon) do seu projeto Supabase
 
-4. **Inicie o servidor de desenvolvimento**
-
-```bash
+# 4. Rodar em desenvolvimento
 npm run dev
 ```
 
-5. **Acesse no navegador**
-   Abra [http://localhost:8080](http://localhost:8080). O login é de demonstração: use as credenciais de teste exibidas na própria tela de login.
+A aplicação abre em [http://localhost:8080](http://localhost:8080).
 
-6. **Gerar build estático**
-   Para validar a geração de assets voltada a produção:
+| Variável                        | Descrição                                        |
+| ------------------------------- | ------------------------------------------------ |
+| `VITE_SUPABASE_URL`             | URL do projeto Supabase.                         |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Chave pública (role `anon`) do projeto Supabase. |
 
-```bash
-npm run build
-```
+> [!IMPORTANT]
+> Use somente a chave pública (`anon`). Ela vai no JavaScript do site e é protegida pelas políticas de RLS. Nunca use a `service_role` no front-end.
 
 ---
 
-## 📁 Estrutura de Pastas
+## Scripts
 
-Uma breve visão geral da organização do código-fonte:
+| Comando             | Descrição                                  |
+| ------------------- | ------------------------------------------ |
+| `npm run dev`       | Servidor de desenvolvimento na porta 8080. |
+| `npm run build`     | Build de produção em `dist/`.              |
+| `npm run preview`   | Serve o build de produção localmente.      |
+| `npm run typecheck` | Verificação de tipos com o TypeScript.     |
+| `npm run lint`      | Análise estática com o ESLint.             |
+| `npm run format`    | Formatação do código com o Prettier.       |
+
+Scripts de dados (rodar na raiz do projeto):
+
+| Script                               | Descrição                                                                    |
+| ------------------------------------ | ---------------------------------------------------------------------------- |
+| `node scripts/check-connection.mjs`  | Testa a conexão com o Supabase.                                              |
+| `node scripts/disperse-scores.mjs`   | Gera `src/lib/real_scores.json` a partir de `data/evaluations_360.csv`.      |
+| `node scripts/update-scores.mjs`     | Recalcula as médias do CSV e grava em `feedbacks_finais` (escreve no banco). |
+| `node scripts/update-matriculas.mjs` | Converte as matrículas do banco para o novo formato (escreve no banco).      |
+
+---
+
+## Estrutura do projeto
 
 ```
 nordelta-360/
-├── data/                # CSVs de origem dos dados sintéticos
-├── docs/screenshots/    # Prints usados neste README
-├── public/              # Assets estáticos (logos, imagens)
+├── data/                   # CSVs de origem dos dados sintéticos
+├── docs/screenshots/       # Imagens usadas neste README
+├── public/                 # Logos e imagens estáticas
+├── scripts/                # Scripts de geração e manutenção dos dados
 ├── src/
-│   ├── components/      # Componentes de UI, gráficos e layout, organizados por tela
-│   ├── integrations/    # Cliente e tipos do Supabase
-│   ├── lib/             # Camada de dados (db, data-service, queries), tipos e utilitários
-│   └── routes/          # Páginas (rotas baseadas em arquivos do TanStack Router)
-├── supabase/migrations/ # Schema do banco e políticas de acesso (RLS)
-├── package.json
-└── vite.config.ts
+│   ├── components/         # Componentes por tela + ui/ (base shadcn/ui)
+│   ├── hooks/              # Hooks reutilizáveis
+│   ├── integrations/       # Cliente e tipos gerados do Supabase
+│   ├── lib/                # Camada de dados, tipos e utilitários
+│   ├── routes/             # Páginas (rotas por arquivo do TanStack Router)
+│   ├── main.tsx            # Ponto de entrada
+│   └── styles.css          # Tema (variáveis oklch) e estilos globais
+├── supabase/migrations/    # Schema do banco e políticas de RLS
+├── .env.example            # Modelo das variáveis de ambiente
+├── .env.production         # Variáveis públicas usadas no build de produção
+└── vercel.json             # Rewrite para SPA
 ```
 
 ---
 
-## 🌱 Melhorias Futuras
+## Deploy
 
-Embora este seja um case de demonstração concluído com foco no front-end, a arquitetura permite as seguintes expansões para um ambiente de produção:
+O deploy é feito pela **Vercel**, a cada push na branch `main`.
 
-- [x] Banco de dados relacional (Postgres no Supabase).
-- [ ] Sistema robusto de Autenticação com RBAC (Administrador, RH, Líder e Colaborador).
-- [x] Exportação de relatórios em PDF.
-- [ ] Dashboards preditivos com modelos para retenção e risco de evasão de talentos.
+- O build usa o `.env.production` versionado, que contém apenas a URL e a chave pública do Supabase. Por isso não é preciso cadastrar variáveis no painel da Vercel.
+- O `vercel.json` redireciona todas as rotas para o `index.html`, para que o roteamento no navegador funcione ao acessar qualquer URL diretamente.
 
 ---
 
-## 👨‍💻 Autor
+## Roadmap
 
-**Clériston de Castro Ramos**
-
-O planejamento, design de produto, modelagem de dados simulados e a engenharia front-end desta aplicação foram executados inteiramente para este case.
-
-- 🌐 **Portfólio:** [Inserir Link do seu site/portfólio]
-- 💼 **LinkedIn:** [Inserir Link do LinkedIn]
-- 🐙 **GitHub:** [Inserir Link do GitHub]
+- [x] Banco de dados relacional com RLS (Supabase)
+- [x] Exportação de relatórios em PDF
+- [x] Code splitting por rota e cache de consultas
+- [ ] Autenticação real com papéis (admin, RH, gestor, colaborador) via Supabase Auth
+- [ ] Persistir ciclos, feedbacks e calibração no banco
+- [ ] Comentários qualitativos nas avaliações
+- [ ] Testes automatizados (unitários para `data-service` e E2E das telas principais)
+- [ ] Modelos preditivos de retenção e risco de saída
 
 ---
 
-_Construído com foco em design de produto, engenharia visual e performance de dados. 2026._
+## Autor
+
+**Clériston de Castro Ramos**: planejamento, design de produto, modelagem dos dados sintéticos e engenharia front-end.
+
+[![GitHub](https://img.shields.io/badge/GitHub-cleristondecastroramos-181717?style=flat-square&logo=github)](https://github.com/cleristondecastroramos)
