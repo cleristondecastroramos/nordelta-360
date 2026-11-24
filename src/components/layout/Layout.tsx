@@ -31,7 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Header isSidebarCollapsed={isSidebarCollapsed} />
       </div>
       <main
-        className={`${isSidebarCollapsed ? "ml-20" : "ml-64"} pt-16 print:ml-0 print:pt-0 transition-all duration-300`}
+        className={`${isSidebarCollapsed ? "ml-20" : "ml-64"} pt-[calc(4rem_+_var(--banner-h,0px))] print:ml-0 print:pt-0 transition-all duration-300`}
       >
         <div className="p-6 print:p-0">{children}</div>
       </main>

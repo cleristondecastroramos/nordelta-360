@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
-// App é uma SPA (Vite): as variáveis vêm do .env local ou das env vars do deploy (Vercel).
+// App é uma SPA (Vite): em desenvolvimento as variáveis vêm do .env local;
+// no build de produção, do .env.production (valores públicos, versionado).
 function createSupabaseClient() {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;

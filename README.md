@@ -19,17 +19,20 @@ _⚠️ Aviso: Este é um **projeto fictício** construído como case oficial pa
 
 ## 📸 Demonstração Visual
 
-_(Substitua as marcações abaixo pelas imagens e GIFs reais da sua aplicação para demonstrar a UI/UX aos recrutadores)_
+|                       **Dashboard Executivo**                        |                             **Ficha Individual**                              |
+| :------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| <img src="docs/screenshots/dashboard.png" alt="Dashboard Executivo"> |   <img src="docs/screenshots/ficha-individual.png" alt="Ficha Individual">    |
+| Visão geral de performance, competências e ranking por departamento. | Radar 360°, forças, pontos de desenvolvimento e plano de ação do colaborador. |
 
-|                                                **Dashboard Executivo**                                                 |                                            **Ficha de Colaborador**                                             |
-| :--------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
-| <img src="https://via.placeholder.com/600x350/1a1a1a/ffffff?text=Screenshot+Dashboard+Aqui" alt="Dashboard Executivo"> | <img src="https://via.placeholder.com/600x350/1a1a1a/ffffff?text=Screenshot+Ficha+Aqui" alt="Ficha Individual"> |
-|                          Visão geral de performance, engajamento e métricas organizacionais.                           |                      Análise profunda com radar de competências e histórico de feedbacks.                       |
+|                             **Departamentos**                             |                                 **Demografia**                                  |
+| :-----------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+|    <img src="docs/screenshots/departamentos.png" alt="Departamentos">     |          <img src="docs/screenshots/demografia.png" alt="Demografia">           |
+| Comparativo entre áreas, ranking analítico e gaps gestor x autoavaliação. | Composição da força de trabalho por gênero, idade, tempo de casa e localização. |
 
-|                                                **Rankings e Demografia**                                                |                                          **Ciclos de Avaliação**                                           |
-| :---------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| <img src="https://via.placeholder.com/600x350/1a1a1a/ffffff?text=Screenshot+Demografia+Aqui" alt="Análise Demográfica"> | <img src="https://via.placeholder.com/600x350/1a1a1a/ffffff?text=Screenshot+Ciclos+Aqui" alt="Ciclos 360"> |
-|                            Visualização clara da distribuição de talentos por setor e cargo.                            |                         Administração das rodadas de avaliação e gestão de status.                         |
+|                            **Evolução Histórica**                            |                        **Ciclos de Avaliação**                        |
+| :--------------------------------------------------------------------------: | :-------------------------------------------------------------------: |
+| <img src="docs/screenshots/evolucao-historica.png" alt="Evolução Histórica"> |   <img src="docs/screenshots/ciclos.png" alt="Ciclos de Avaliação">   |
+|     Tendência da nota média entre ciclos e leitura executiva automática.     | Criação, acompanhamento e encerramento das rodadas de avaliação 360°. |
 
 ---
 
@@ -68,6 +71,8 @@ Este projeto foi construído empregando tecnologias estabelecidas no ecossistema
 - **[React](https://react.dev/)** + **[TypeScript](https://www.typescriptlang.org/)**: Base de UI robusta e estaticamente tipada.
 - **[Tailwind CSS](https://tailwindcss.com/)**: Estilização utilitária e responsiva.
 - **[TanStack Router](https://tanstack.com/router/latest)**: Roteamento modular com segurança de tipos (type-safe).
+- **[TanStack Query](https://tanstack.com/query/latest)**: Cache das consultas entre páginas.
+- **[Supabase](https://supabase.com/)**: Banco Postgres com Row Level Security que armazena colaboradores e avaliações.
 - **[Recharts](https://recharts.org/)**: Motor de composição para os componentes de gráficos.
 - **[shadcn/ui](https://ui.shadcn.com/)**: Primitivas de interface acessíveis e customizáveis.
 - **Vite**: Ferramenta de build extremamente rápida.
@@ -78,9 +83,10 @@ Este projeto foi construído empregando tecnologias estabelecidas no ecossistema
 
 O design arquitetural do Nordelta 360° foca em modularização e performance de renderização:
 
-- **Dados Sintéticos:** Todos os colaboradores, resultados de avaliações, feedbacks e departamentos são providos por uma base de dados _mockada_, gerada especificamente para alimentar a UI com cenários realistas de People Analytics sem depender de APIs externas.
-- **Simulação de Operação:** O projeto emula chamadas assíncronas de um backend para que quem avalie o repositório observe os estados de carregamento (loading, success, error) idênticos aos de uma aplicação em produção.
-- **Modularização:** Os componentes visuais (via shadcn/ui) operam desacoplados da lógica de extração e manipulação de métricas (custom hooks) e da camada de exibição gráfica (Recharts).
+- **Dados Sintéticos no Supabase:** Colaboradores, avaliações e departamentos são fictícios e ficam em um banco Postgres no Supabase (schema e políticas de acesso em `supabase/migrations`). Os CSVs de origem estão em `data/`.
+- **Camada de dados:** `src/lib/db.ts` concentra as consultas ao Supabase; `src/lib/data-service.ts` transforma os dados em métricas (médias, gaps, percentis, rankings); as páginas consomem tudo via TanStack Query (`src/lib/queries.ts`), com cache entre navegações.
+- **Simulação de avaliadores:** As notas por grupo de avaliador (gestor, autoavaliação, pares e subordinados) são derivadas de forma determinística da nota de cada competência, então os números não mudam entre recarregamentos.
+- **Code splitting:** Cada rota é carregada sob demanda, e as bibliotecas de PDF só são baixadas quando o usuário exporta um relatório.
 
 ---
 
@@ -91,7 +97,7 @@ Instruções para executar o projeto localmente em seu ambiente de desenvolvimen
 1. **Clone o repositório**
 
 ```bash
-git clone https://github.com/seu-usuario/nordelta-360.git
+git clone https://github.com/cleristondecastroramos/nordelta-360.git
 cd nordelta-360
 ```
 
@@ -102,16 +108,19 @@ cd nordelta-360
 npm install
 ```
 
-3. **Inicie o servidor de desenvolvimento**
+3. **Configure as variáveis de ambiente**
+   Copie `.env.example` para `.env` e preencha com a URL e a chave pública (anon) do seu projeto Supabase. O deploy de produção usa o `.env.production` do repositório, que contém apenas esses valores públicos.
+
+4. **Inicie o servidor de desenvolvimento**
 
 ```bash
 npm run dev
 ```
 
-4. **Acesse no navegador**
-   Abra [http://localhost:8080](http://localhost:8080) para visualizar a aplicação local.
+5. **Acesse no navegador**
+   Abra [http://localhost:8080](http://localhost:8080). O login é de demonstração: use as credenciais de teste exibidas na própria tela de login.
 
-5. **Gerar build estático**
+6. **Gerar build estático**
    Para validar a geração de assets voltada a produção:
 
 ```bash
@@ -126,14 +135,15 @@ Uma breve visão geral da organização do código-fonte:
 
 ```
 nordelta-360/
-├── public/              # Assets estáticos
+├── data/                # CSVs de origem dos dados sintéticos
+├── docs/screenshots/    # Prints usados neste README
+├── public/              # Assets estáticos (logos, imagens)
 ├── src/
-│   ├── components/      # Componentes reutilizáveis (UI, Gráficos, Layouts)
-│   ├── hooks/           # Custom hooks para encapsular lógica de negócios
-│   ├── lib/             # Utilitários globais e padronizações (ex: tailwind merge)
-│   ├── routes/          # Definições e tree do TanStack Router
-│   ├── services/        # Lógica de conexão aos dados sintéticos e mock APIs
-│   └── types/           # Definições e interfaces TypeScript da aplicação
+│   ├── components/      # Componentes de UI, gráficos e layout, organizados por tela
+│   ├── integrations/    # Cliente e tipos do Supabase
+│   ├── lib/             # Camada de dados (db, data-service, queries), tipos e utilitários
+│   └── routes/          # Páginas (rotas baseadas em arquivos do TanStack Router)
+├── supabase/migrations/ # Schema do banco e políticas de acesso (RLS)
 ├── package.json
 └── vite.config.ts
 ```
@@ -144,9 +154,9 @@ nordelta-360/
 
 Embora este seja um case de demonstração concluído com foco no front-end, a arquitetura permite as seguintes expansões para um ambiente de produção:
 
-- [ ] Integração com backend real (Ex: Node.js, NestJS) e banco de dados relacional.
+- [x] Banco de dados relacional (Postgres no Supabase).
 - [ ] Sistema robusto de Autenticação com RBAC (Administrador, RH, Líder e Colaborador).
-- [ ] Exportação de fichas individuais com relatórios analíticos em PDF.
+- [x] Exportação de relatórios em PDF.
 - [ ] Dashboards preditivos com modelos para retenção e risco de evasão de talentos.
 
 ---

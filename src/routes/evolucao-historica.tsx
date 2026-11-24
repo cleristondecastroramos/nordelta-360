@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { getEvolutionMetrics } from "@/lib/data-service";
-import type { EvolutionMetrics } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { evolucaoQuery } from "@/lib/queries";
 import { Download, TrendingUp, TrendingDown, Compass, Activity, Clock } from "lucide-react";
 
 // Components
@@ -17,23 +16,7 @@ export const Route = createFileRoute("/evolucao-historica")({
 });
 
 function EvolucaoHistoricaPage() {
-  const [data, setData] = useState<EvolutionMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await getEvolutionMetrics();
-        setData(res);
-      } catch (error) {
-        console.error("Erro ao carregar dados históricos:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const { data, isPending: loading } = useQuery(evolucaoQuery);
 
   if (loading || !data) {
     return (
@@ -53,7 +36,7 @@ function EvolucaoHistoricaPage() {
   const lineChartKeys = [
     {
       key: "mediaGeral",
-      color: "hsl(var(--primary))",
+      color: "var(--primary)",
       label: "Média Global Empresa",
       isArea: true,
     },

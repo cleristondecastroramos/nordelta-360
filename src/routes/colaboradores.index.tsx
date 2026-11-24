@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { colaboradoresQuery } from "@/lib/queries";
+import { useState } from "react";
 import { Search, Eye, FileText, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
-import { getColaboradoresList } from "@/lib/data-service";
 import { StatusChip } from "@/components/ui/status-chip";
 import { calculateTenure } from "@/lib/utils";
 
@@ -10,8 +11,7 @@ export const Route = createFileRoute("/colaboradores/")({
 });
 
 function ColaboradoresList() {
-  const [colaboradores, setColaboradores] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: colaboradores = [], isPending: loading } = useQuery(colaboradoresQuery);
   const [searchTerm, setSearchTerm] = useState("");
   const [departamentoFilter, setDepartamentoFilter] = useState("Todos");
   const [cargoFilter, setCargoFilter] = useState("Todos");
@@ -21,15 +21,6 @@ function ColaboradoresList() {
     key: "notaMediaGeral",
     direction: "desc",
   });
-
-  useEffect(() => {
-    async function load() {
-      const data = await getColaboradoresList();
-      setColaboradores(data);
-      setLoading(false);
-    }
-    load();
-  }, []);
 
   const departamentos = [
     "Todos",

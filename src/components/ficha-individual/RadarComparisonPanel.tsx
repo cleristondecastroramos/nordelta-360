@@ -74,15 +74,15 @@ export function RadarComparisonPanel({ data, isLideranca }: RadarComparisonPanel
       <div className="flex-1 w-full flex items-center justify-center mt-4">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsRadar cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-            <PolarGrid stroke="hsl(var(--border))" />
+            <PolarGrid stroke="var(--border)" />
             <PolarAngleAxis
               dataKey="competencia"
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 500 }}
+              tick={{ fill: "var(--foreground)", fontSize: 12, fontWeight: 500 }}
             />
             <PolarRadiusAxis
               angle={90}
               domain={[0, 5]}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
               tickCount={6}
             />
 
@@ -97,8 +97,8 @@ export function RadarComparisonPanel({ data, isLideranca }: RadarComparisonPanel
             <Radar
               name="Gestor"
               dataKey="Gestor"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
+              stroke="var(--primary)"
+              fill="var(--primary)"
               fillOpacity={0.3}
               strokeWidth={2.5}
             />

@@ -2,9 +2,11 @@ import fs from "fs";
 import readline from "readline";
 import { createClient } from "@supabase/supabase-js";
 
+// Lê VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY do .env (Node 20.12+).
+process.loadEnvFile(".env");
 const supabase = createClient(
-  "https://uqdswlmloawvpghdwanh.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxZHN3bG1sb2F3dnBnaGR3YW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MjgyMDMsImV4cCI6MjA5NTIwNDIwM30.c3GwPu6RuJXg7VxcV7Vzt0GKWsHWqPw72-2FE85y6vQ",
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
 );
 
 const filePath = "data/evaluations_360.csv";

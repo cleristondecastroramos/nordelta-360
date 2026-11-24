@@ -45,26 +45,26 @@ export function AgeRangeChart({ data }: AgeRangeChartProps) {
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
-              stroke="hsl(var(--border))"
+              stroke="var(--border)"
               opacity={0.5}
             />
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12, fontWeight: 500 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 12, fontWeight: 500 }}
               dy={10}
             />
             <YAxis axisLine={false} tickLine={false} tick={false} />
             <RechartsTooltip
-              cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+              cursor={{ fill: "var(--muted)", opacity: 0.2 }}
               content={<CustomTooltip />}
             />
             <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={40}>
               <LabelList
                 dataKey="value"
                 position="top"
-                fill="hsl(var(--muted-foreground))"
+                fill="var(--muted-foreground)"
                 fontSize={12}
                 fontWeight={600}
               />

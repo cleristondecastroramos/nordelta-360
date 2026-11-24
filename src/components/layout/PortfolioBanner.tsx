@@ -1,15 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Briefcase, Github, ExternalLink } from "lucide-react";
 
 const STORAGE_KEY = "nordelta_portfolio_banner_dismissed";
 
+// A faixa fica fixa no topo e publica a própria altura em --banner-h, que o
+// cabeçalho, a barra lateral e o conteúdo usam para se deslocar para baixo.
+function setBannerHeight(px: number) {
+  document.documentElement.style.setProperty("--banner-h", `${px}px`);
+}
+
 export function PortfolioBanner() {
   const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const dismissed = localStorage.getItem(STORAGE_KEY);
     if (!dismissed) setVisible(true);
   }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!visible || !el) {
+      setBannerHeight(0);
+      return;
+    }
+    const observer = new ResizeObserver(() => setBannerHeight(el.offsetHeight));
+    observer.observe(el);
+    setBannerHeight(el.offsetHeight);
+    return () => {
+      observer.disconnect();
+      setBannerHeight(0);
+    };
+  }, [visible]);
 
   const dismiss = () => {
     localStorage.setItem(STORAGE_KEY, "true");
@@ -19,7 +41,10 @@ export function PortfolioBanner() {
   if (!visible) return null;
 
   return (
-    <div className="w-full bg-slate-900 text-slate-100 print:hidden z-50 relative border-b border-slate-700/50">
+    <div
+      ref={ref}
+      className="fixed inset-x-0 top-0 z-50 w-full bg-slate-900 text-slate-100 print:hidden border-b border-slate-700/50"
+    >
       <div className="max-w-screen-2xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-1.5 shrink-0 bg-primary/20 border border-primary/30 text-primary px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
@@ -48,6 +73,7 @@ export function PortfolioBanner() {
             onClick={dismiss}
             className="p-1 rounded text-slate-500 hover:text-white hover:bg-slate-700 transition-colors"
             title="Fechar aviso"
+            aria-label="Fechar aviso"
           >
             <X className="h-3.5 w-3.5" />
           </button>

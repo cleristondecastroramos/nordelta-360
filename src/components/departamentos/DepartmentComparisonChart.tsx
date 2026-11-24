@@ -36,14 +36,7 @@ const CustomXAxisTick = ({ x, y, payload }: any) => {
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <text
-        x={0}
-        y={0}
-        dy={16}
-        textAnchor="middle"
-        fill="hsl(var(--muted-foreground))"
-        fontSize={11}
-      >
+      <text x={0} y={0} dy={16} textAnchor="middle" fill="var(--muted-foreground)" fontSize={11}>
         {lines.map((line, index) => (
           <tspan x={0} dy={index === 0 ? 0 : 12} key={index}>
             {line}
@@ -61,7 +54,7 @@ export function DepartmentComparisonChart({
   mediaGeral,
 }: DepartmentComparisonChartProps) {
   // Use tailwind primary color
-  const primaryColor = "hsl(var(--primary))";
+  const primaryColor = "var(--primary)";
 
   // Parse media to ensure it is a number
   const data = [...departamentos].slice(0, 10).map((d) => ({
@@ -108,7 +101,7 @@ export function DepartmentComparisonChart({
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
-              stroke="hsl(var(--border))"
+              stroke="var(--border)"
               opacity={0.5}
             />
             <XAxis
@@ -128,7 +121,7 @@ export function DepartmentComparisonChart({
             />
             <RechartsTooltip
               content={<CustomTooltip />}
-              cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+              cursor={{ fill: "var(--muted)", opacity: 0.2 }}
             />
             {mediaGeral > 0 && (
               <ReferenceLine
@@ -156,7 +149,7 @@ export function DepartmentComparisonChart({
                 dataKey="media"
                 position="top"
                 formatter={(val: number) => val.toFixed(2)}
-                fill="hsl(var(--foreground))"
+                fill="var(--foreground)"
                 fontSize={12}
                 fontWeight={600}
               />
@@ -165,7 +158,11 @@ export function DepartmentComparisonChart({
                 return (
                   <Cell
                     key={`cell-${index}`}
-                    fill={isSelected ? primaryColor : "hsl(var(--primary) / 0.4)"}
+                    fill={
+                      isSelected
+                        ? primaryColor
+                        : "color-mix(in oklch, var(--primary) 40%, transparent)"
+                    }
                   />
                 );
               })}

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { getAdminMetrics } from "@/lib/data-service";
-import type { AdminMetrics, SystemUser } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { adminQuery } from "@/lib/queries";
+import { useState } from "react";
+import type { SystemUser } from "@/lib/types";
 import { Shield, ShieldCheck, Users, Lock, Download, Activity, FileText } from "lucide-react";
 
 // Components
@@ -15,24 +16,8 @@ export const Route = createFileRoute("/administracao-perfis")({
 });
 
 function AdministracaoPerfisPage() {
-  const [data, setData] = useState<AdminMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isPending: loading } = useQuery(adminQuery);
   const [selectedUser, setSelectedUser] = useState<SystemUser | null>(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await getAdminMetrics();
-        setData(res);
-      } catch (error) {
-        console.error("Erro ao carregar governança:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
 
   const handleExportAudit = () => {
     if (!data || !data.auditoria) return;

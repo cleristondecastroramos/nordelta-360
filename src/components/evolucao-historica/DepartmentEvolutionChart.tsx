@@ -57,14 +57,14 @@ export function DepartmentEvolutionChart({ data }: DepartmentEvolutionChartProps
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
-              stroke="hsl(var(--border))"
+              stroke="var(--border)"
               opacity={0.5}
             />
             <XAxis
               dataKey="departamento"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               angle={-45}
               textAnchor="end"
               dy={10}
@@ -72,23 +72,23 @@ export function DepartmentEvolutionChart({ data }: DepartmentEvolutionChartProps
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
             />
             <RechartsTooltip
               content={<CustomTooltip />}
-              cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+              cursor={{ fill: "var(--muted)", opacity: 0.2 }}
             />
-            <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeOpacity={0.2} />
+            <ReferenceLine y={0} stroke="var(--foreground)" strokeOpacity={0.2} />
             <Bar dataKey="variacao" radius={[4, 4, 4, 4]} barSize={30}>
               {sortedData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={
                     entry.variacao > 0
-                      ? "hsl(var(--emerald-500))"
+                      ? "var(--color-emerald-500)"
                       : entry.variacao < 0
-                        ? "hsl(var(--rose-500))"
-                        : "hsl(var(--slate-400))"
+                        ? "var(--color-rose-500)"
+                        : "var(--color-slate-400)"
                   }
                   fillOpacity={0.8}
                 />

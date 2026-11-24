@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { colaboradoresQuery, dashboardQuery } from "@/lib/queries";
+import { useState } from "react";
 import {
   Building2,
   Download,
@@ -11,8 +13,7 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
-import { getDashboardMetrics, getColaboradoresList } from "@/lib/data-service";
-import type { DashboardMetrics, Colaborador } from "@/lib/types";
+import type { Colaborador } from "@/lib/types";
 
 import { DepartmentKpiCard } from "@/components/departamentos/DepartmentKpiCard";
 import { DepartmentRankingTable } from "@/components/departamentos/DepartmentRankingTable";
@@ -34,37 +35,19 @@ export const Route = createFileRoute("/departamentos")({
 });
 
 function DepartamentosPage() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [colaboradores, setColaboradores] = useState<(Colaborador & { notaMediaGeral: number })[]>(
-    [],
-  );
-  const [loading, setLoading] = useState(true);
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const metricsQuery = useQuery(dashboardQuery);
+  const colabsQuery = useQuery(colaboradoresQuery);
+  const metrics = metricsQuery.data ?? null;
+  const colaboradores = (colabsQuery.data ?? []) as unknown as (Colaborador & {
+    notaMediaGeral: number;
+  })[];
+  const loading = metricsQuery.isPending || colabsQuery.isPending;
+  // Até o usuário escolher, mostramos o departamento com melhor média.
+  const [departamentoEscolhido, setSelectedDepartment] = useState<string | null>(null);
+  const selectedDepartment =
+    departamentoEscolhido ?? metrics?.departamentos[0]?.departamento ?? null;
   const [sortOrder, setSortOrder] = useState<"maior" | "menor" | "alfabetico">("maior");
   const [isExporting, setIsExporting] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const [metricsData, colabData] = await Promise.all([
-          getDashboardMetrics(),
-          getColaboradoresList(),
-        ]);
-        setMetrics(metricsData);
-        setColaboradores(colabData as unknown as (Colaborador & { notaMediaGeral: number })[]);
-
-        // Auto-select top department
-        if (metricsData.departamentos && metricsData.departamentos.length > 0) {
-          setSelectedDepartment(metricsData.departamentos[0].departamento);
-        }
-      } catch (error) {
-        console.error("Failed to load department metrics:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
 
   if (loading) {
     return (
