@@ -66,7 +66,7 @@ export function DepartmentCompositionChart({ data }: DepartmentCompositionChartP
             <CartesianGrid
               strokeDasharray="3 3"
               horizontal={false}
-              stroke="hsl(var(--border))"
+              stroke="var(--border)"
               opacity={0.5}
             />
             <XAxis type="number" hide />
@@ -75,11 +75,11 @@ export function DepartmentCompositionChart({ data }: DepartmentCompositionChartP
               dataKey="shortName"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 500 }}
+              tick={{ fill: "var(--foreground)", fontSize: 12, fontWeight: 500 }}
               width={110}
             />
             <RechartsTooltip
-              cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+              cursor={{ fill: "var(--muted)", opacity: 0.2 }}
               content={<CustomTooltip />}
             />
             <Legend

@@ -63,7 +63,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-0 z-40 h-screen ${isCollapsed ? "w-20" : "w-64"} border-r border-slate-800 bg-slate-950 text-slate-200 transition-all duration-300 flex flex-col shadow-xl`}
+      className={`fixed left-0 top-[var(--banner-h,0px)] z-40 h-[calc(100vh_-_var(--banner-h,0px))] ${isCollapsed ? "w-20" : "w-64"} border-r border-slate-800 bg-slate-950 text-slate-200 transition-all duration-300 flex flex-col shadow-xl`}
     >
       {/* Header */}
       <div className="flex h-16 items-center justify-between border-b border-slate-800 px-4 shrink-0">

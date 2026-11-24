@@ -83,28 +83,28 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
           <ComposedChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
-              stroke="hsl(var(--border))"
+              stroke="var(--border)"
               opacity={0.5}
             />
             <XAxis
               dataKey="ciclo"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12, fontWeight: 500 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 12, fontWeight: 500 }}
               dy={10}
             />
             <YAxis
               domain={[0, 5]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
               tickCount={6}
             />
             <RechartsTooltip content={<CustomTooltip />} />
@@ -118,18 +118,18 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
             <Line
               type="monotone"
               dataKey="mediaGeral"
-              stroke="hsl(var(--primary))"
+              stroke="var(--primary)"
               strokeWidth={3}
               dot={{
                 r: 4,
-                fill: "hsl(var(--background))",
-                stroke: "hsl(var(--primary))",
+                fill: "var(--background)",
+                stroke: "var(--primary)",
                 strokeWidth: 2,
               }}
               activeDot={{
                 r: 6,
-                fill: "hsl(var(--primary))",
-                stroke: "hsl(var(--background))",
+                fill: "var(--primary)",
+                stroke: "var(--background)",
                 strokeWidth: 2,
               }}
             />

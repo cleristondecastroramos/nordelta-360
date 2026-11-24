@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function Header({ isSidebarCollapsed = false }: { isSidebarCollapsed?: boolean }) {
   return (
     <header
-      className={`fixed top-0 ${isSidebarCollapsed ? "left-20" : "left-64"} right-0 z-30 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300`}
+      className={`fixed top-[var(--banner-h,0px)] ${isSidebarCollapsed ? "left-20" : "left-64"} right-0 z-30 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300`}
     >
       <div className="flex h-full items-center justify-between px-6">
         <div className="flex w-full max-w-lg items-center space-x-6">
