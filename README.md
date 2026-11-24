@@ -256,4 +256,6 @@ O deploy é feito pela **Vercel**, a cada push na branch `main`.
 
 **Clériston de Castro Ramos**: planejamento, design de produto, modelagem dos dados sintéticos e engenharia front-end.
 
+[![Portfólio](https://img.shields.io/badge/Portfólio-cleristoncramos--portfolio-0F172A?style=flat-square&logo=vercel&logoColor=white)](https://cleristoncramos-portfolio.vercel.app)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-cleristonramos-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/cleristonramos)
 [![GitHub](https://img.shields.io/badge/GitHub-cleristondecastroramos-181717?style=flat-square&logo=github)](https://github.com/cleristondecastroramos)
