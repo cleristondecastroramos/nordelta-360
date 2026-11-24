@@ -23,9 +23,11 @@ function FichaIndividualIndex() {
 
   const filteredData = colaboradores.filter((c) => {
     const search = searchTerm.toLowerCase();
-    return c.nome.toLowerCase().includes(search) || 
-           c.matricula.includes(searchTerm) || 
-           (c.cargo && c.cargo.toLowerCase().includes(search));
+    return (
+      c.nome.toLowerCase().includes(search) ||
+      c.matricula.includes(searchTerm) ||
+      (c.cargo && c.cargo.toLowerCase().includes(search))
+    );
   });
 
   return (
@@ -78,10 +80,10 @@ function FichaIndividualIndex() {
                   className="flex items-center gap-4 p-4 rounded-xl border bg-background hover:border-primary/50 hover:shadow-md transition-all group"
                 >
                   {colab.avatar_url ? (
-                    <img 
-                      src={colab.avatar_url} 
-                      alt={colab.nome} 
-                      className="h-12 w-12 rounded-full border border-border object-cover" 
+                    <img
+                      src={colab.avatar_url}
+                      alt={colab.nome}
+                      className="h-12 w-12 rounded-full border border-border object-cover"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colab.nome)}&background=1e40af&color=fff&size=48`;
                       }}
@@ -92,21 +94,26 @@ function FichaIndividualIndex() {
                     </div>
                   )}
                   <div className="flex-1 overflow-hidden">
-                    <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{colab.nome}</p>
+                    <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
+                      {colab.nome}
+                    </p>
                     <p className="text-xs text-muted-foreground truncate">{colab.cargo}</p>
-                    <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider">{colab.matricula}</p>
+                    <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider">
+                      {colab.matricula}
+                    </p>
                   </div>
                 </Link>
               ))}
             </div>
           )}
-          
+
           {filteredData.length > 24 && (
-             <div className="mt-8 text-center">
-               <div className="text-sm text-muted-foreground bg-slate-100 dark:bg-slate-800 p-3 rounded-lg inline-block mx-auto">
-                 Mostrando 24 de {filteredData.length} resultados. Use a busca acima para encontrar um colaborador específico.
-               </div>
-             </div>
+            <div className="mt-8 text-center">
+              <div className="text-sm text-muted-foreground bg-slate-100 dark:bg-slate-800 p-3 rounded-lg inline-block mx-auto">
+                Mostrando 24 de {filteredData.length} resultados. Use a busca acima para encontrar
+                um colaborador específico.
+              </div>
+            </div>
           )}
         </div>
       </div>

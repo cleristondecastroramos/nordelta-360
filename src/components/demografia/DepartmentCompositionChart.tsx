@@ -1,4 +1,13 @@
-import { Bar, BarChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
+} from "recharts";
 
 interface DepartmentCompositionChartProps {
   data: { name: string; total: number; lideranca: number; operacao: number }[];
@@ -6,9 +15,9 @@ interface DepartmentCompositionChartProps {
 
 export function DepartmentCompositionChart({ data }: DepartmentCompositionChartProps) {
   // Get top 8 departments to avoid cluttering
-  const chartData = data.slice(0, 8).map(d => ({
+  const chartData = data.slice(0, 8).map((d) => ({
     ...d,
-    shortName: d.name.substring(0, 15) + (d.name.length > 15 ? "..." : "")
+    shortName: d.name.substring(0, 15) + (d.name.length > 15 ? "..." : ""),
   }));
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -39,30 +48,61 @@ export function DepartmentCompositionChart({ data }: DepartmentCompositionChartP
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full">
       <div className="mb-6">
-        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">Estrutura por Departamento</h3>
-        <p className="text-sm text-muted-foreground">Proporção entre Liderança e Operação nas maiores áreas.</p>
+        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">
+          Estrutura por Departamento
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Proporção entre Liderança e Operação nas maiores áreas.
+        </p>
       </div>
       <div className="flex-1 w-full min-h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: 20, bottom: 5 }} layout="vertical" stackOffset="expand">
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" opacity={0.5} />
-            <XAxis 
-              type="number" 
-              hide
+          <BarChart
+            data={chartData}
+            margin={{ top: 5, right: 10, left: 20, bottom: 5 }}
+            layout="vertical"
+            stackOffset="expand"
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              horizontal={false}
+              stroke="hsl(var(--border))"
+              opacity={0.5}
             />
-            <YAxis 
-              type="category" 
-              dataKey="shortName" 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 500 }} 
+            <XAxis type="number" hide />
+            <YAxis
+              type="category"
+              dataKey="shortName"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 500 }}
               width={110}
             />
-            <RechartsTooltip cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }} content={<CustomTooltip />} />
-            <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-            
-            <Bar dataKey="operacao" name="Operação" stackId="a" fill="#475569" radius={[0, 0, 0, 0]} />
-            <Bar dataKey="lideranca" name="Liderança" stackId="a" fill="#1e40af" radius={[0, 4, 4, 0]} />
+            <RechartsTooltip
+              cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+              content={<CustomTooltip />}
+            />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
+            />
+
+            <Bar
+              dataKey="operacao"
+              name="Operação"
+              stackId="a"
+              fill="#475569"
+              radius={[0, 0, 0, 0]}
+            />
+            <Bar
+              dataKey="lideranca"
+              name="Liderança"
+              stackId="a"
+              fill="#1e40af"
+              radius={[0, 4, 4, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

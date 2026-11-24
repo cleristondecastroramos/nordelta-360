@@ -47,16 +47,21 @@ function EvolucaoHistoricaPage() {
   }
 
   // Prepara as chaves para o gráfico de linha: Empresa (Área) + Top 3 departamentos
-  const topDeptosNames = data.evolucaoDepartamentos.slice(0, 3).map(d => d.departamento);
+  const topDeptosNames = data.evolucaoDepartamentos.slice(0, 3).map((d) => d.departamento);
   const colors = ["#eab308", "#10b981", "#6366f1"]; // Amber, Emerald, Indigo
 
   const lineChartKeys = [
-    { key: "mediaGeral", color: "hsl(var(--primary))", label: "Média Global Empresa", isArea: true },
+    {
+      key: "mediaGeral",
+      color: "hsl(var(--primary))",
+      label: "Média Global Empresa",
+      isArea: true,
+    },
     ...topDeptosNames.map((d, i) => ({
       key: d,
       color: colors[i % colors.length],
-      label: d
-    }))
+      label: d,
+    })),
   ];
 
   return (
@@ -69,11 +74,12 @@ function EvolucaoHistoricaPage() {
             Evolução Histórica
           </h1>
           <p className="text-muted-foreground mt-1 max-w-2xl">
-            Acompanhamento contínuo da performance organizacional. Analise o crescimento, tendências de competências e estabilidade dos departamentos através dos ciclos de avaliação 360°.
+            Acompanhamento contínuo da performance organizacional. Analise o crescimento, tendências
+            de competências e estabilidade dos departamentos através dos ciclos de avaliação 360°.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => window.print()}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
           >
@@ -119,7 +125,9 @@ function EvolucaoHistoricaPage() {
             <Clock className="h-4 w-4" /> Base Histórica
           </h3>
           <div className="text-3xl font-extrabold">{data.totalCiclos}</div>
-          <p className="text-xs text-primary-foreground/70 font-medium mt-1 uppercase tracking-wider">Ciclos Analisados</p>
+          <p className="text-xs text-primary-foreground/70 font-medium mt-1 uppercase tracking-wider">
+            Ciclos Analisados
+          </p>
         </div>
       </div>
 
@@ -141,7 +149,6 @@ function EvolucaoHistoricaPage() {
 
       {/* TABELA DETALHADA */}
       <EvolutionTable data={data.evolucaoDepartamentos} />
-
     </div>
   );
 }

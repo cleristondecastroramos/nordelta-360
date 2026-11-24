@@ -1,5 +1,14 @@
 import { SystemUser } from "@/lib/types";
-import { X, Save, User as UserIcon, Mail, Building2, Briefcase, Lock, AlertTriangle } from "lucide-react";
+import {
+  X,
+  Save,
+  User as UserIcon,
+  Mail,
+  Building2,
+  Briefcase,
+  Lock,
+  AlertTriangle,
+} from "lucide-react";
 import { RoleBadge } from "./RoleBadge";
 import { AccessLevelChip } from "./AccessLevelChip";
 import { PermissionsMatrix } from "./PermissionsMatrix";
@@ -17,22 +26,22 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
     <>
       {/* Backdrop overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-in fade-in duration-200"
           onClick={onClose}
         />
       )}
 
       {/* Slide-over panel */}
-      <div 
+      <div
         className={`fixed top-0 right-0 h-full w-full max-w-md bg-background border-l border-border shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+          isOpen ? "translate-x-0" : "translate-x-full"
         } flex flex-col`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20">
           <h2 className="text-xl font-bold tracking-tight">Editar Perfil</h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -42,7 +51,6 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-          
           {/* User Info Header */}
           <div className="flex items-start gap-4">
             <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
@@ -84,11 +92,13 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
           {/* Settings Section */}
           <div className="space-y-4 pt-2 border-t border-border">
             <h4 className="font-semibold text-base">Configurações de Acesso</h4>
-            
+
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Papel do Sistema (Role)</label>
-                <select 
+                <label className="text-sm font-medium text-foreground mb-1.5 block">
+                  Papel do Sistema (Role)
+                </label>
+                <select
                   className="w-full text-sm bg-background border border-input rounded-md py-2 px-3 focus:ring-1 focus:ring-primary focus:outline-none"
                   defaultValue={user.role}
                 >
@@ -100,8 +110,10 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
               </div>
 
               <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Status da Conta</label>
-                <select 
+                <label className="text-sm font-medium text-foreground mb-1.5 block">
+                  Status da Conta
+                </label>
+                <select
                   className="w-full text-sm bg-background border border-input rounded-md py-2 px-3 focus:ring-1 focus:ring-primary focus:outline-none"
                   defaultValue={user.status}
                 >
@@ -122,7 +134,8 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg flex gap-3 text-amber-800 dark:text-amber-400">
               <AlertTriangle className="w-5 h-5 shrink-0" />
               <p className="text-xs leading-relaxed">
-                Este usuário possui privilégios de Administrador Global. Qualquer alteração em suas permissões afetará o acesso a dados sensíveis.
+                Este usuário possui privilégios de Administrador Global. Qualquer alteração em suas
+                permissões afetará o acesso a dados sensíveis.
               </p>
             </div>
           )}
@@ -130,13 +143,13 @@ export function ProfileEditorPanel({ user, isOpen, onClose }: ProfileEditorPanel
 
         {/* Footer Actions */}
         <div className="p-6 border-t border-border bg-card flex justify-end gap-3 mt-auto">
-          <button 
+          <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-input rounded-md hover:bg-accent transition-colors"
           >
             Cancelar
           </button>
-          <button 
+          <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90 transition-colors flex items-center"
           >

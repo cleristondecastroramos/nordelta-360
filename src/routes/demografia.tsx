@@ -29,7 +29,7 @@ function DemografiaPage() {
       try {
         const [metricsData, colabsData] = await Promise.all([
           getDemographyMetrics(),
-          getColaboradoresList()
+          getColaboradoresList(),
         ]);
         setMetrics(metricsData);
         setColaboradores(colabsData as unknown as Colaborador[]);
@@ -47,7 +47,9 @@ function DemografiaPage() {
       <div className="flex h-[calc(100vh-8rem)] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="text-sm font-medium text-muted-foreground animate-pulse">Carregando painel demográfico...</p>
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+            Carregando painel demográfico...
+          </p>
         </div>
       </div>
     );
@@ -56,7 +58,7 @@ function DemografiaPage() {
   if (!metrics || metrics.totalColaboradores === 0) {
     return (
       <div className="max-w-3xl mx-auto mt-12">
-        <AlertPanel 
+        <AlertPanel
           type="error"
           title="Dados Demográficos Indisponíveis"
           items={["Não há dados suficientes cadastrados na base de colaboradores."]}
@@ -146,7 +148,6 @@ function DemografiaPage() {
       <div className="mt-8">
         <DemographyTable colaboradores={colaboradores} />
       </div>
-
     </div>
   );
 }

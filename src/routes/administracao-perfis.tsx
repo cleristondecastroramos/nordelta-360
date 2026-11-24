@@ -36,26 +36,23 @@ function AdministracaoPerfisPage() {
 
   const handleExportAudit = () => {
     if (!data || !data.auditoria) return;
-    
+
     const headers = ["Status", "Ação", "Detalhe", "Responsável", "Data/Hora"];
-    const rows = data.auditoria.map(log => [
+    const rows = data.auditoria.map((log) => [
       log.status,
       log.acao,
       log.detalhe,
       log.usuarioAdmin,
-      log.dataHora
+      log.dataHora,
     ]);
-    
-    const csvContent = [
-      headers.join(";"),
-      ...rows.map(row => row.join(";"))
-    ].join("\n");
-    
-    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    const csvContent = [headers.join(";"), ...rows.map((row) => row.join(";"))].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `auditoria_completa.csv`);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `auditoria_completa.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -72,7 +69,7 @@ function AdministracaoPerfisPage() {
       status: "Ativo",
       role: "Colaborador",
       ultimoAcesso: "Nunca",
-      modulos: []
+      modulos: [],
     });
   };
 
@@ -97,17 +94,18 @@ function AdministracaoPerfisPage() {
             Administração de Perfis
           </h1>
           <p className="text-muted-foreground mt-1 max-w-2xl">
-            Governança centralizada de acessos. Gerencie papéis (RBAC), controle permissões por módulo e monitore a trilha de auditoria do sistema.
+            Governança centralizada de acessos. Gerencie papéis (RBAC), controle permissões por
+            módulo e monitore a trilha de auditoria do sistema.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={handleExportAudit}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
           >
             <Download className="mr-2 h-4 w-4" /> Exportar Auditoria
           </button>
-          <button 
+          <button
             onClick={handleNewProfile}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 shadow-sm"
           >
@@ -151,13 +149,9 @@ function AdministracaoPerfisPage() {
 
       {/* MAIN CONTENT */}
       <div className="grid xl:grid-cols-5 gap-8">
-        
         {/* USERS TABLE */}
         <div className="xl:col-span-3">
-          <ProfileUsersTable 
-            users={data.usuarios} 
-            onEditUser={(user) => setSelectedUser(user)} 
-          />
+          <ProfileUsersTable users={data.usuarios} onEditUser={(user) => setSelectedUser(user)} />
         </div>
 
         {/* AUDIT TRAIL */}
@@ -167,10 +161,10 @@ function AdministracaoPerfisPage() {
       </div>
 
       {/* EDITOR SLIDE-OVER */}
-      <ProfileEditorPanel 
-        user={selectedUser} 
-        isOpen={selectedUser !== null} 
-        onClose={() => setSelectedUser(null)} 
+      <ProfileEditorPanel
+        user={selectedUser}
+        isOpen={selectedUser !== null}
+        onClose={() => setSelectedUser(null)}
       />
     </div>
   );

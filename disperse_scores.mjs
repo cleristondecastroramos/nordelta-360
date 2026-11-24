@@ -1,8 +1,8 @@
-import fs from 'fs';
-import readline from 'readline';
+import fs from "fs";
+import readline from "readline";
 
-const csvPath = 'public/data/evaluations_360.csv';
-const outFile = 'src/lib/real_scores.json';
+const csvPath = "public/data/evaluations_360.csv";
+const outFile = "src/lib/real_scores.json";
 
 // Target distribution
 // 1.0 a 1.5: ~3%
@@ -20,26 +20,29 @@ async function disperse() {
 
   const collaborators = new Set();
   const comps = new Set();
-  
+
   let isHeader = true;
   for await (const line of rl) {
-    if (isHeader) { isHeader = false; continue; }
+    if (isHeader) {
+      isHeader = false;
+      continue;
+    }
     if (!line.trim()) continue;
-    
-    const parts = line.split(',');
+
+    const parts = line.split(",");
     collaborators.add(parts[0]);
     comps.add(parts[2]);
   }
 
   const colabsArray = Array.from(collaborators);
   const total = colabsArray.length;
-  
+
   // Shuffle for random distribution
   for (let i = total - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [colabsArray[i], colabsArray[j]] = [colabsArray[j], colabsArray[i]];
   }
-  
+
   const compArray = Array.from(comps);
 
   const buckets = [
@@ -50,7 +53,7 @@ async function disperse() {
     { min: 3.1, max: 3.5, pct: 0.25 },
     { min: 3.6, max: 4.0, pct: 0.15 },
     { min: 4.1, max: 4.5, pct: 0.07 },
-    { min: 4.6, max: 5.0, pct: 0.03 }
+    { min: 4.6, max: 5.0, pct: 0.03 },
   ];
 
   let currentIndex = 0;
@@ -58,36 +61,36 @@ async function disperse() {
 
   for (const bucket of buckets) {
     const count = Math.round(bucket.pct * total);
-    
+
     for (let i = 0; i < count && currentIndex < total; i++, currentIndex++) {
       const mat = colabsArray[currentIndex];
-      
+
       const indicadores = {};
       let sum = 0;
-      
+
       for (const comp of compArray) {
         // Generate a random score within or slightly outside the bucket to simulate variance
         // Center it around the bucket average, but with some noise
         const targetAvg = bucket.min + Math.random() * (bucket.max - bucket.min);
-        let note = targetAvg + (Math.random() * 1.0 - 0.5); 
+        let note = targetAvg + (Math.random() * 1.0 - 0.5);
         note = Math.max(1.0, Math.min(5.0, note));
-        
+
         indicadores[comp] = Number(note.toFixed(2));
         sum += note;
       }
-      
+
       const nota_media = Number((sum / compArray.length).toFixed(2));
-      
+
       finalData.push({
         avaliado_matricula: mat,
         indicadores,
-        nota_media
+        nota_media,
       });
     }
   }
 
   // Any remaining
-  while(currentIndex < total) {
+  while (currentIndex < total) {
     const mat = colabsArray[currentIndex];
     const indicadores = {};
     let sum = 0;
@@ -100,7 +103,7 @@ async function disperse() {
     finalData.push({
       avaliado_matricula: mat,
       indicadores,
-      nota_media: Number((sum / compArray.length).toFixed(2))
+      nota_media: Number((sum / compArray.length).toFixed(2)),
     });
     currentIndex++;
   }

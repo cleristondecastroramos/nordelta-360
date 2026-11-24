@@ -1,4 +1,15 @@
-import { ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, Area, ComposedChart } from "recharts";
+import {
+  ResponsiveContainer,
+  LineChart as RechartsLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  Legend,
+  Area,
+  ComposedChart,
+} from "recharts";
 import { EvolutionCycleData } from "@/lib/types";
 
 interface EvolutionLineChartProps {
@@ -15,16 +26,21 @@ export function EvolutionLineChart({ data, dataKeys }: EvolutionLineChartProps) 
           <div className="space-y-2.5">
             {payload.map((entry: any, index: number) => {
               // Get the matching label
-              const keyObj = dataKeys.find(k => k.key === entry.dataKey);
+              const keyObj = dataKeys.find((k) => k.key === entry.dataKey);
               const displayName = keyObj ? keyObj.label : entry.name;
-              
+
               return (
                 <div key={index} className="flex justify-between items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: entry.color }}
+                    ></div>
                     <span className="text-muted-foreground font-medium">{displayName}</span>
                   </div>
-                  <span className="font-bold text-foreground text-base">{Number(entry.value).toFixed(2)}</span>
+                  <span className="font-bold text-foreground text-base">
+                    {Number(entry.value).toFixed(2)}
+                  </span>
                 </div>
               );
             })}
@@ -38,8 +54,12 @@ export function EvolutionLineChart({ data, dataKeys }: EvolutionLineChartProps) 
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full min-h-[450px]">
       <div className="mb-6">
-        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">Curva de Tendência Organizacional</h3>
-        <p className="text-sm text-muted-foreground">Evolução da Nota Média Geral cruzada com as principais dimensões.</p>
+        <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5">
+          Curva de Tendência Organizacional
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Evolução da Nota Média Geral cruzada com as principais dimensões.
+        </p>
       </div>
       <div className="flex-1 w-full min-h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -50,55 +70,65 @@ export function EvolutionLineChart({ data, dataKeys }: EvolutionLineChartProps) 
                 <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
-            <XAxis 
-              dataKey="ciclo" 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 13, fontWeight: 500 }} 
-              dy={10} 
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="hsl(var(--border))"
+              opacity={0.5}
             />
-            <YAxis 
-              domain={[0, 5]} 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} 
+            <XAxis
+              dataKey="ciclo"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 13, fontWeight: 500 }}
+              dy={10}
+            />
+            <YAxis
+              domain={[0, 5]}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
               tickCount={6}
             />
             <RechartsTooltip content={<CustomTooltip />} />
-            <Legend 
-              verticalAlign="bottom" 
-              height={36} 
-              iconType="circle" 
-              wrapperStyle={{ fontSize: '13px', paddingTop: '20px', fontWeight: 500 }} 
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              wrapperStyle={{ fontSize: "13px", paddingTop: "20px", fontWeight: 500 }}
             />
-            
-            {dataKeys.map((k) => (
+
+            {dataKeys.map((k) =>
               k.isArea ? (
-                <Area 
+                <Area
                   key={k.key}
-                  type="monotone" 
-                  dataKey={k.key} 
+                  type="monotone"
+                  dataKey={k.key}
                   name={k.label}
                   stroke={k.color}
-                  fillOpacity={1} 
-                  fill="url(#colorGeral)" 
+                  fillOpacity={1}
+                  fill="url(#colorGeral)"
                   strokeWidth={3}
                 />
               ) : (
-                <Line 
+                <Line
                   key={k.key}
-                  type="monotone" 
-                  dataKey={k.key} 
+                  type="monotone"
+                  dataKey={k.key}
                   name={k.label}
-                  stroke={k.color} 
-                  strokeWidth={2.5} 
+                  stroke={k.color}
+                  strokeWidth={2.5}
                   dot={{ r: 4, fill: "hsl(var(--background))", stroke: k.color, strokeWidth: 2 }}
-                  activeDot={{ r: 6, fill: k.color, stroke: "hsl(var(--background))", strokeWidth: 2 }}
-                  strokeDasharray={k.key !== 'mediaGeral' ? "5 5" : ""}
+                  activeDot={{
+                    r: 6,
+                    fill: k.color,
+                    stroke: "hsl(var(--background))",
+                    strokeWidth: 2,
+                  }}
+                  strokeDasharray={k.key !== "mediaGeral" ? "5 5" : ""}
                 />
-              )
-            ))}
+              ),
+            )}
           </ComposedChart>
         </ResponsiveContainer>
       </div>

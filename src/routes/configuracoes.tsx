@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { 
-  Building2, 
-  Settings, 
-  Shield, 
-  Sliders, 
+import {
+  Building2,
+  Settings,
+  Shield,
+  Sliders,
   Database,
   BellRing,
   Smartphone,
@@ -14,15 +14,28 @@ import {
   Save,
   Moon,
   Sun,
-  Monitor
+  Monitor,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/configuracoes")({
@@ -45,29 +58,49 @@ function ConfiguracoesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Configurações</h2>
-          <p className="text-muted-foreground">Gerencie parâmetros, segurança e integrações da plataforma.</p>
+          <p className="text-muted-foreground">
+            Gerencie parâmetros, segurança e integrações da plataforma.
+          </p>
         </div>
         <Button onClick={handleSave} disabled={isSaving} className="shrink-0 shadow-sm">
-          <Save className="mr-2 h-4 w-4" /> 
+          <Save className="mr-2 h-4 w-4" />
           {isSaving ? "Salvando..." : "Salvar Alterações"}
         </Button>
       </div>
 
       <Tabs defaultValue="geral" className="w-full">
         <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8 h-auto p-1 bg-muted/50">
-          <TabsTrigger value="geral" className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger
+            value="geral"
+            className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
             <Building2 className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Geral</span>
           </TabsTrigger>
-          <TabsTrigger value="avaliacao" className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <Sliders className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Avaliação 360</span>
+          <TabsTrigger
+            value="avaliacao"
+            className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            <Sliders className="mr-2 h-4 w-4" />{" "}
+            <span className="hidden md:inline">Avaliação 360</span>
           </TabsTrigger>
-          <TabsTrigger value="potencial" className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <Activity className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Matriz 9-Box</span>
+          <TabsTrigger
+            value="potencial"
+            className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            <Activity className="mr-2 h-4 w-4" />{" "}
+            <span className="hidden md:inline">Matriz 9-Box</span>
           </TabsTrigger>
-          <TabsTrigger value="integracoes" className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <Database className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Integrações</span>
+          <TabsTrigger
+            value="integracoes"
+            className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            <Database className="mr-2 h-4 w-4" />{" "}
+            <span className="hidden md:inline">Integrações</span>
           </TabsTrigger>
-          <TabsTrigger value="seguranca" className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger
+            value="seguranca"
+            className="py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
             <Shield className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Segurança</span>
           </TabsTrigger>
         </TabsList>
@@ -135,13 +168,17 @@ function ConfiguracoesPage() {
           <Card className="shadow-sm border-l-4 border-l-primary">
             <CardHeader>
               <CardTitle>Escala de Avaliação</CardTitle>
-              <CardDescription>Defina como as notas serão atribuídas durante os ciclos.</CardDescription>
+              <CardDescription>
+                Defina como as notas serão atribuídas durante os ciclos.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label className="text-base">Usar escala de 1 a 10</Label>
-                  <p className="text-sm text-muted-foreground">Por padrão, a plataforma utiliza a escala de 1 a 5 (Likert).</p>
+                  <p className="text-sm text-muted-foreground">
+                    Por padrão, a plataforma utiliza a escala de 1 a 5 (Likert).
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -151,13 +188,17 @@ function ConfiguracoesPage() {
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Regras de Anonimato</CardTitle>
-              <CardDescription>Proteção de identidade para avaliações não gerenciais.</CardDescription>
+              <CardDescription>
+                Proteção de identidade para avaliações não gerenciais.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Mascarar comentários sensíveis</Label>
-                  <p className="text-sm text-muted-foreground">Filtra automaticamente palavras ofensivas usando IA.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Filtra automaticamente palavras ofensivas usando IA.
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -166,7 +207,9 @@ function ConfiguracoesPage() {
                 <div className="space-y-2">
                   <Label>Mínimo de Pares para exibir nota (Pooling)</Label>
                   <Input type="number" defaultValue={3} className="w-24" />
-                  <p className="text-xs text-muted-foreground">Se houver menos pares, a nota será somada à média geral.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Se houver menos pares, a nota será somada à média geral.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label>Mínimo de Subordinados para exibir nota</Label>
@@ -188,7 +231,9 @@ function ConfiguracoesPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label className="text-base">Exigir aprovação do Comitê de RH</Label>
-                  <p className="text-sm text-muted-foreground">As notas só são publicadas após validação do RH na aba de Feedbacks.</p>
+                  <p className="text-sm text-muted-foreground">
+                    As notas só são publicadas após validação do RH na aba de Feedbacks.
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -198,7 +243,10 @@ function ConfiguracoesPage() {
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Multiplicadores de Potencial</CardTitle>
-              <CardDescription>Pesos aplicados sobre competências específicas para calcular o eixo Y da Matriz 9-Box.</CardDescription>
+              <CardDescription>
+                Pesos aplicados sobre competências específicas para calcular o eixo Y da Matriz
+                9-Box.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -224,41 +272,66 @@ function ConfiguracoesPage() {
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Sincronização de Dados (HRMS)</CardTitle>
-              <CardDescription>Integração com folha de pagamento e gestão de pessoas (SAP, Senior, etc).</CardDescription>
+              <CardDescription>
+                Integração com folha de pagamento e gestão de pessoas (SAP, Senior, etc).
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Chave de API (API Key)</Label>
                 <div className="flex gap-2">
-                  <Input type="password" defaultValue="************************" readOnly className="font-mono text-muted-foreground" />
+                  <Input
+                    type="password"
+                    defaultValue="************************"
+                    readOnly
+                    className="font-mono text-muted-foreground"
+                  />
                   <Button variant="outline">Gerar Nova</Button>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="bg-muted/30 flex justify-between border-t mt-4 pt-4">
-              <span className="text-sm text-muted-foreground">Última sincronização: Há 2 horas</span>
-              <Button variant="secondary" size="sm">Forçar Sincronização</Button>
+              <span className="text-sm text-muted-foreground">
+                Última sincronização: Há 2 horas
+              </span>
+              <Button variant="secondary" size="sm">
+                Forçar Sincronização
+              </Button>
             </CardFooter>
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2"><BellRing className="h-5 w-5" /> Slack & Teams</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BellRing className="h-5 w-5" /> Slack & Teams
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">Envie notificações automáticas de lembretes e abertura de ciclos nos canais corporativos.</p>
-                <Button variant="outline" className="w-full">Configurar Webhook</Button>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Envie notificações automáticas de lembretes e abertura de ciclos nos canais
+                  corporativos.
+                </p>
+                <Button variant="outline" className="w-full">
+                  Configurar Webhook
+                </Button>
               </CardContent>
             </Card>
 
             <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2"><Webhook className="h-5 w-5" /> Webhooks Abertos</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Webhook className="h-5 w-5" /> Webhooks Abertos
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">Assine eventos do sistema (ex: evaluation.completed) para disparar fluxos externos.</p>
-                <Button variant="outline" className="w-full">Gerenciar Endpoints</Button>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Assine eventos do sistema (ex: evaluation.completed) para disparar fluxos
+                  externos.
+                </p>
+                <Button variant="outline" className="w-full">
+                  Gerenciar Endpoints
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -277,7 +350,9 @@ function ConfiguracoesPage() {
                   <Smartphone className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <Label className="text-base">Autenticação em Duas Etapas (2FA)</Label>
-                    <p className="text-sm text-muted-foreground">Exigir token via app autenticador no login de gestores.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Exigir token via app autenticador no login de gestores.
+                    </p>
                   </div>
                 </div>
                 <Switch defaultChecked />
@@ -288,7 +363,9 @@ function ConfiguracoesPage() {
                   <Key className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <Label className="text-base">Timeout de Sessão</Label>
-                    <p className="text-sm text-muted-foreground">Tempo de inatividade até forçar logout.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Tempo de inatividade até forçar logout.
+                    </p>
                   </div>
                 </div>
                 <div className="w-32">
@@ -311,11 +388,15 @@ function ConfiguracoesPage() {
           <Card className="shadow-sm border-red-100 dark:border-red-900">
             <CardHeader>
               <CardTitle className="text-red-600 dark:text-red-400">Zona de Perigo</CardTitle>
-              <CardDescription>Ações destrutivas que afetam todos os dados da plataforma.</CardDescription>
+              <CardDescription>
+                Ações destrutivas que afetam todos os dados da plataforma.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">Resetar todos os dados de testes e configurações</p>
+                <p className="text-sm font-medium">
+                  Resetar todos os dados de testes e configurações
+                </p>
                 <Button variant="destructive">Factory Reset</Button>
               </div>
             </CardContent>
@@ -325,4 +406,3 @@ function ConfiguracoesPage() {
     </div>
   );
 }
-

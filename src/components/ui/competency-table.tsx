@@ -28,9 +28,15 @@ export function CompetencyTable({ competencias, isLideranca = true }: Competency
               <th className="p-4 whitespace-nowrap w-auto border-r">Competência</th>
               <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Média Geral</th>
               <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Gestor</th>
-              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Autoavaliação</th>
+              <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">
+                Autoavaliação
+              </th>
               <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Pares</th>
-              {isLideranca && <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">Subordinados</th>}
+              {isLideranca && (
+                <th className="p-4 whitespace-nowrap w-[140px] text-center border-r">
+                  Subordinados
+                </th>
+              )}
               <th className="p-4 whitespace-nowrap text-center w-[140px]">Min / Máx</th>
             </tr>
           </thead>
@@ -45,7 +51,7 @@ export function CompetencyTable({ competencias, isLideranca = true }: Competency
               sorted.map((c) => {
                 const info = getCompetenceInfo(c.competencia);
                 const Icon = info.icone;
-                
+
                 return (
                   <tr key={c.competencia} className="hover:bg-muted/30 transition-colors group">
                     <td className="p-4 border-r">
@@ -55,7 +61,10 @@ export function CompetencyTable({ competencias, isLideranca = true }: Competency
                         </div>
                         <div>
                           <p className="font-semibold text-foreground leading-tight">{info.nome}</p>
-                          <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap" title={info.descricao}>
+                          <p
+                            className="text-xs text-muted-foreground mt-1 whitespace-nowrap"
+                            title={info.descricao}
+                          >
                             {info.descricao}
                           </p>
                         </div>
@@ -64,44 +73,63 @@ export function CompetencyTable({ competencias, isLideranca = true }: Competency
                     <td className="p-4 font-bold text-primary text-base align-middle text-center border-r">
                       {c.mediaGeral.toFixed(2)}
                     </td>
-                  <td className="p-4 border-r">
-                    <div className="flex items-center gap-2 justify-center">
-                      <span className={c.mediaGestor > 0 ? "text-foreground" : "text-muted-foreground/50"}>
-                        {c.mediaGestor > 0 ? c.mediaGestor.toFixed(2) : '-'}
-                      </span>
-                      {c.mediaGestor > 0 && getTrendIcon(c.mediaGestor, c.mediaGeral)}
-                    </div>
-                  </td>
-                  <td className="p-4 border-r">
-                    <div className="flex items-center gap-2 justify-center">
-                      <span className={c.mediaAuto > 0 ? "text-foreground" : "text-muted-foreground/50"}>
-                        {c.mediaAuto > 0 ? c.mediaAuto.toFixed(2) : '-'}
-                      </span>
-                      {c.mediaAuto > 0 && getTrendIcon(c.mediaAuto, c.mediaGeral)}
-                    </div>
-                  </td>
-                  <td className="p-4 border-r">
-                    <div className="flex items-center gap-2 justify-center">
-                      <span className={c.mediaPares > 0 ? "text-foreground" : "text-muted-foreground/50"}>
-                        {c.mediaPares > 0 ? c.mediaPares.toFixed(2) : '-'}
-                      </span>
-                      {c.mediaPares > 0 && getTrendIcon(c.mediaPares, c.mediaGeral)}
-                    </div>
-                  </td>
-                  {isLideranca && (
                     <td className="p-4 border-r">
                       <div className="flex items-center gap-2 justify-center">
-                        <span className={c.mediaSubordinados > 0 ? "text-foreground" : "text-muted-foreground/50"}>
-                          {c.mediaSubordinados > 0 ? c.mediaSubordinados.toFixed(2) : '-'}
+                        <span
+                          className={
+                            c.mediaGestor > 0 ? "text-foreground" : "text-muted-foreground/50"
+                          }
+                        >
+                          {c.mediaGestor > 0 ? c.mediaGestor.toFixed(2) : "-"}
                         </span>
-                        {c.mediaSubordinados > 0 && getTrendIcon(c.mediaSubordinados, c.mediaGeral)}
+                        {c.mediaGestor > 0 && getTrendIcon(c.mediaGestor, c.mediaGeral)}
                       </div>
                     </td>
-                  )}
-                  <td className="p-4 text-center text-muted-foreground tabular-nums">
-                    {c.min > 0 ? `${c.min.toFixed(2)} / ${c.max.toFixed(2)}` : '-'}
-                  </td>
-                </tr>
+                    <td className="p-4 border-r">
+                      <div className="flex items-center gap-2 justify-center">
+                        <span
+                          className={
+                            c.mediaAuto > 0 ? "text-foreground" : "text-muted-foreground/50"
+                          }
+                        >
+                          {c.mediaAuto > 0 ? c.mediaAuto.toFixed(2) : "-"}
+                        </span>
+                        {c.mediaAuto > 0 && getTrendIcon(c.mediaAuto, c.mediaGeral)}
+                      </div>
+                    </td>
+                    <td className="p-4 border-r">
+                      <div className="flex items-center gap-2 justify-center">
+                        <span
+                          className={
+                            c.mediaPares > 0 ? "text-foreground" : "text-muted-foreground/50"
+                          }
+                        >
+                          {c.mediaPares > 0 ? c.mediaPares.toFixed(2) : "-"}
+                        </span>
+                        {c.mediaPares > 0 && getTrendIcon(c.mediaPares, c.mediaGeral)}
+                      </div>
+                    </td>
+                    {isLideranca && (
+                      <td className="p-4 border-r">
+                        <div className="flex items-center gap-2 justify-center">
+                          <span
+                            className={
+                              c.mediaSubordinados > 0
+                                ? "text-foreground"
+                                : "text-muted-foreground/50"
+                            }
+                          >
+                            {c.mediaSubordinados > 0 ? c.mediaSubordinados.toFixed(2) : "-"}
+                          </span>
+                          {c.mediaSubordinados > 0 &&
+                            getTrendIcon(c.mediaSubordinados, c.mediaGeral)}
+                        </div>
+                      </td>
+                    )}
+                    <td className="p-4 text-center text-muted-foreground tabular-nums">
+                      {c.min > 0 ? `${c.min.toFixed(2)} / ${c.max.toFixed(2)}` : "-"}
+                    </td>
+                  </tr>
                 );
               })
             )}

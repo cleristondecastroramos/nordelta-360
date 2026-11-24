@@ -11,9 +11,11 @@ interface AlertPanelProps {
 export function AlertPanel({ title, items, type = "warning", className }: AlertPanelProps) {
   const styles = {
     info: "border-blue-200 bg-blue-50 text-blue-800 dark:bg-blue-900/10 dark:border-blue-900/50 dark:text-blue-400",
-    warning: "border-amber-200 bg-amber-50 text-amber-800 dark:bg-amber-900/10 dark:border-amber-900/50 dark:text-amber-400",
+    warning:
+      "border-amber-200 bg-amber-50 text-amber-800 dark:bg-amber-900/10 dark:border-amber-900/50 dark:text-amber-400",
     error: "border-destructive/30 bg-destructive/10 text-destructive dark:bg-destructive/10",
-    success: "border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-900/10 dark:border-emerald-900/50 dark:text-emerald-400",
+    success:
+      "border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-900/10 dark:border-emerald-900/50 dark:text-emerald-400",
   };
 
   const IconMap = {

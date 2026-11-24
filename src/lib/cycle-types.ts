@@ -7,23 +7,23 @@ export interface CycleConfig {
   descricao: string;
   dataInicio: string; // ISO date
   dataFim: string; // ISO date
-  
+
   // Público-alvo
   departamentos: string[];
   cargosElegiveis: string[];
   totalParticipantes: number;
-  
+
   // Regras
   permiteAutoavaliacao: boolean;
   paresAvaliamPares: boolean;
   gestorAvaliaSubordinado: boolean;
   minRespostasPorGrupo: number;
-  
+
   // Confidencialidade
   anonimatoAtivado: boolean;
   poolingMinimo: number;
   comentariosSensiveisOcultos: boolean;
-  
+
   status: CycleStatus;
 }
 

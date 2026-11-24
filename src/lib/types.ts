@@ -116,9 +116,21 @@ export interface DashboardMetrics {
   totalCompetencias: number;
   participacaoCiclo: number;
   percentilMedio: number;
-  mediasPorCompetencia: { competencia: string; descricao?: string; media: number; mediaAnterior?: number }[];
+  mediasPorCompetencia: {
+    competencia: string;
+    descricao?: string;
+    media: number;
+    mediaAnterior?: number;
+  }[];
   departamentos: DepartmentStats[];
-  ranking: { matricula: string; nome: string; nota: number; potencial: number; percentil: number; avatar_url?: string }[];
+  ranking: {
+    matricula: string;
+    nome: string;
+    nota: number;
+    potencial: number;
+    percentil: number;
+    avatar_url?: string;
+  }[];
   alertas: string[];
   insights: InsightText[];
   gapHeatmap: GapAnalysis[];

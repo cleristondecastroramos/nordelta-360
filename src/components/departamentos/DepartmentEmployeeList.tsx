@@ -7,7 +7,10 @@ interface DepartmentEmployeeListProps {
   colaboradores: (Colaborador & { notaMediaGeral: number })[];
 }
 
-export function DepartmentEmployeeList({ departamento, colaboradores }: DepartmentEmployeeListProps) {
+export function DepartmentEmployeeList({
+  departamento,
+  colaboradores,
+}: DepartmentEmployeeListProps) {
   if (!departamento) {
     return (
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col p-6 h-full items-center justify-center min-h-[300px]">
@@ -15,13 +18,14 @@ export function DepartmentEmployeeList({ departamento, colaboradores }: Departme
           <Users className="h-8 w-8 text-muted-foreground" />
         </div>
         <p className="text-muted-foreground text-center max-w-sm">
-          Selecione um departamento no ranking para visualizar os colaboradores da área e acessar suas respectivas fichas.
+          Selecione um departamento no ranking para visualizar os colaboradores da área e acessar
+          suas respectivas fichas.
         </p>
       </div>
     );
   }
 
-  const deptEmployees = colaboradores.filter(c => c.departamento === departamento);
+  const deptEmployees = colaboradores.filter((c) => c.departamento === departamento);
 
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col h-full overflow-hidden">
@@ -31,7 +35,9 @@ export function DepartmentEmployeeList({ departamento, colaboradores }: Departme
             <h3 className="font-semibold leading-none tracking-tight text-lg mb-1.5 flex items-center gap-2">
               Talentos da Área
             </h3>
-            <p className="text-sm text-muted-foreground">Visão rápida dos colaboradores vinculados a {departamento}.</p>
+            <p className="text-sm text-muted-foreground">
+              Visão rápida dos colaboradores vinculados a {departamento}.
+            </p>
           </div>
           <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">
             {deptEmployees.length} registros
@@ -46,7 +52,7 @@ export function DepartmentEmployeeList({ departamento, colaboradores }: Departme
           />
         </div>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto custom-scrollbar p-0">
         <div className="divide-y divide-border">
           {deptEmployees.length === 0 ? (
@@ -55,10 +61,13 @@ export function DepartmentEmployeeList({ departamento, colaboradores }: Departme
             </div>
           ) : (
             deptEmployees.map((colab) => (
-              <div key={colab.matricula} className="flex items-center p-4 hover:bg-muted/30 transition-colors group">
-                <img 
-                  src={colab.avatar_url} 
-                  alt={colab.nome} 
+              <div
+                key={colab.matricula}
+                className="flex items-center p-4 hover:bg-muted/30 transition-colors group"
+              >
+                <img
+                  src={colab.avatar_url}
+                  alt={colab.nome}
                   className="w-10 h-10 rounded-full border border-border object-cover"
                 />
                 <div className="ml-3 flex-1 min-w-0">
@@ -69,7 +78,7 @@ export function DepartmentEmployeeList({ departamento, colaboradores }: Departme
                   <div className="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-bold bg-primary text-primary-foreground shadow-sm">
                     {colab.notaMediaGeral.toFixed(2)}
                   </div>
-                  <Link 
+                  <Link
                     to="/ficha-individual/$matricula"
                     params={{ matricula: colab.matricula }}
                     className="text-[10px] uppercase font-bold text-primary hover:underline flex items-center mt-0.5"
