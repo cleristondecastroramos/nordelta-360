@@ -16,6 +16,7 @@ Dashboard executivo para análise de performance, gaps de percepção entre aval
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+[![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
 
@@ -38,6 +39,7 @@ Dashboard executivo para análise de performance, gaps de percepção entre aval
 - [Deploy](#deploy)
 - [Roadmap](#roadmap)
 - [Autor](#autor)
+- [Licença](#licença)
 
 ---
 
@@ -259,3 +261,9 @@ O deploy é feito pela **Vercel**, a cada push na branch `main`.
 [![Portfólio](https://img.shields.io/badge/Portfólio-cleristoncramos--portfolio-0F172A?style=flat-square&logo=vercel&logoColor=white)](https://cleristoncramos-portfolio.vercel.app)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-cleristonramos-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/cleristonramos)
 [![GitHub](https://img.shields.io/badge/GitHub-cleristondecastroramos-181717?style=flat-square&logo=github)](https://github.com/cleristondecastroramos)
+
+---
+
+## Licença
+
+Distribuído sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.

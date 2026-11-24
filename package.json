@@ -2,6 +2,7 @@
   "name": "nordelta-360",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "sideEffects": false,
   "type": "module",
   "scripts": {
